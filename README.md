@@ -1,6 +1,9 @@
 # Master in Electrical & Computer Engineering Thesis
 This repository contains the relevant files for my Master's thesis, including the code, proposal, and thesis documents.
 
+File structure info:
+* `proposal` - Root folder for the thesis proposal LaTeX sources, figures, and any other graphics
+
 The proposal and thesis are written in latex. Info on building/compiling the LaTeX sources into PDFs can be found below.
 
 Proposal:
