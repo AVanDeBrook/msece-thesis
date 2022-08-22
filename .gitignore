@@ -6,6 +6,7 @@
 **/*.fls
 **/*.log
 **/*.synctex.gz
+**/*.out
 
 # Ignore PDFs as well; these will be uploaded to the releases section on GitHub
 # as the proposal and thesis drafts become more complete

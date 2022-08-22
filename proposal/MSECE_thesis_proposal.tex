@@ -1,7 +1,12 @@
 \documentclass{article}
 
 \usepackage{cite}
-\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{lipsum}
+\usepackage{indentfirst}
+\usepackage{multicol}
+\usepackage{ragged2e}
 \usepackage[numbib]{tocbibind}
 \usepackage[lmargin=1in,rmargin=1in,tmargin=1in,bmargin=1in]{geometry}
 
@@ -19,33 +24,83 @@
     \maketitle
 
     % TODO: need to write abstract (probably last step)
+    %
+    % An abstract. In 100 to 350 words, briefly summarize the problem to solve, the objectives of the project, and the methodology to use.
     \begin{center}
         \section*{\textit{Abstract}}
-        \textit{Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.}
+        \justifying
+        \textit{\lipsum[1]}
     \end{center}
 
+    % An introduction (to the problems to be addressed). In a few paragraphs, clearly define what the problem is being addressed/solved
+    % in the thesis. Background information is needed. A literature review is needed to provide an account of the state-of-the-art solutions
+    % of this problem by other researchers or industry experts. Objectives of the thesis should be provided here as well.
     \section{Introduction}
-        The Transformer neural network architecture was originally designed and created for Neural Machine Translation (NMT) tasks \cite{vaswani_attention_2017} and has since seen massive success in various other Natural Language Processing (NLP) tasks such as language modeling (both casual and masked language modeling tasks) \cite{devlin_bert_2019}, prompt completion \cite{radford_improving_2018}, and sequence-to-sequence (S2S) classification \cite{lewis_bart_2019}.
-        Recently, Automatic Speech Recognition (ASR) models have started to incorporate language models \cite{badrinath_automatic_2022} (sometimes also referred to as linguistic models) in addition to acoustic models \cite{li2019jasper} as the state of the art models begin to shift towards generative end-to-end approaches \cite{hannun2014deep}.
-        At the time of writing this, the current state of the art ASR models are a mix between Transformer and Convolutional neural network (CNN) architectures\footnote{According to \url{https://paperswithcode.com/sota/automatic-speech-recognition-on-lrs2}} \cite{baevski2020wav2vec}.
+        The Transformer neural network architecture was originally designed and created for Neural Machine
+        Translation (NMT) tasks \cite{vaswani_attention_2017} and has since seen massive success in various
+        other Natural Language Processing (NLP) tasks such as language modeling (both casual and masked language
+        modeling tasks) \cite{devlin_bert_2019}, prompt completion \cite{radford_improving_2018}, and
+        sequence-to-sequence (S2S) classification \cite{lewis_bart_2019}.
+        Recently, Automatic Speech Recognition (ASR) models have started to incorporate language models
+        \cite{badrinath_automatic_2022} (sometimes also referred to as linguistic models) in addition to
+        acoustic models \cite{li2019jasper} as the state of the art models begin to shift towards generative
+        end-to-end approaches \cite{hannun2014deep}.
+        At the time of writing this, the current state of the art ASR models are a mix between Transformer
+        and Convolutional neural network (CNN) architectures\footnote{According to
+        \url{https://paperswithcode.com/sota/automatic-speech-recognition-on-lrs2}} \cite{baevski2020wav2vec}.
 
 
-        As ASR models begin to breakout into the aerospace domain, one of the most limiting factors in their development and deployment has been their relatively high word error rate(s) (WER) \cite{vsmidl2019air,juan2020automatic,badrinath_automatic_2022} as compared to typical state of the art models.
+        As ASR models begin to breakout into the aerospace domain, one of the most limiting factors in their
+        development and deployment has been their relatively high word error rate(s) (WER)
+        \cite{vsmidl2019air,juan2020automatic,badrinath_automatic_2022} as compared to typical state of the art models.
         This is due, at least in part, to the severe lack of transcribed data as compared to the more general ASR domain.
-        For instance the best estimates of combined labeled datasets for Air Traffic Control (ATC) communications reach approximately 180 hours of speech data \cite{juan2020automatic} whereas state of the art ASR datasets typically reach approximately 1000 hours of speech data \cite{librispeech_2015}.
-        This has lead to the recommendation of semi-supervised learning models wherein unlabeled air traffic communications are transcribed by a pretrained ASR model with a relatively low WER.
-        The transcriptions are subsequently scored by a language model to obtain some insight into the transcription quality \cite{badrinath_automatic_2022,zuluaga2021contextual}.
-        Depending on the distribution of the transcription scores, a certain percentage (best $n$ candidates) of the transcribed data is used to further fine-tune the ASR model.
+        For instance the best estimates of combined labeled datasets for Air Traffic Control (ATC)
+        communications reach approximately 180 hours of speech data \cite{juan2020automatic} whereas
+        state of the art ASR datasets typically reach approximately 1000 hours of speech data \cite{librispeech_2015}.
+        This has lead to the recommendation of semi-supervised learning models wherein unlabeled air
+        traffic communications are transcribed by a pretrained ASR model with a relatively low WER.
+        The transcriptions are subsequently scored by a language model to obtain some insight into the
+        transcription quality \cite{badrinath_automatic_2022,zuluaga2021contextual}.
+        Depending on the distribution of the transcription scores, a certain percentage (best $n$ candidates)
+        of the transcribed data is used to further fine-tune the ASR model.
 
 
-        Despite the effectiveness of transformer-based architectures for language modeling NLP tasks \cite{devlin_bert_2019,lewis_bart_2019,liu2019roberta}, there is little to no implementation of them for modeling ATC communications for semi-supervised learning or otherwise in the existing literature.
-        Additionally, my preliminary work into the transfer learning of BERT models in the ATC domain yield surprisingly high perplexity scores before overfitting to the training data.
-        This suggests that a more sophisticated approach is needed to make use of transformer-based architectures such as BERT or RoBERTa for modeling air traffic communications.
+        Despite the effectiveness of transformer-based architectures for language modeling NLP tasks
+        \cite{devlin_bert_2019,lewis_bart_2019,liu2019roberta}, there is little to no implementation
+        of them for modeling ATC communications for semi-supervised learning or otherwise in the
+        existing literature.
+        Additionally, my preliminary work into the transfer learning of BERT models in the ATC
+        domain yield surprisingly high perplexity scores before overfitting to the training data.
+        This suggests that a more sophisticated approach is needed to make use of transformer-based
+        architectures such as BERT or RoBERTa for modeling air traffic communications.
 
-    \section{Literature Review}
+    % TODO: formal literature review
+    \section{Background \& Literature}
 
+    % Methodology. Describe the approaches you plan to use for solving the problem at hand. Specify the tools/instruments/procedures/designs
+    % you need to use to finish your work. Also specify other resources, including the budgets, you need to use to finish your work.
     \section{Methodology}
+        \subsection{Environment and Source Code Management}
+            For ease of use and compatibility with existing libraries, Python (version 3.8 or later)
+            will be used to build, train, and test the models as well as to perform data analysis
+            where necessary.
+            Package/environment management will be done with Anaconda and source code management
+            will be done with Git (repository will be publicly accessible via GitHub).
 
+        \subsection{Model Development}
+            Fortunately, there are a plethora of libraries available for developing machine learning,
+            deep learning, and NLP models.
+            The main packages that have been chosen (listed in Appendix A) have front-end language
+            bindings for Python and most have back-end APIs written in C/C++ and Rust for streamlined computations.
+
+        % TODO: more work and reading into standard model metrics for LMs
+        \subsection{Model Evaluation Metrics}
+
+        % TODO: review min and max hardware required to train models i.e. bare minimum to train model,
+        % preferences for efficient training (workstation with GPU/TPU, AWS/Azure compute cluster, etc.)
+        \subsection{Resource Requirements}
+
+    % Deliverables and timeline. Provide a detailed schedule and deliverables, shown in a table like the one below.
     \section{Deliverables \& Timeline}
         \begin{table}[h!]
             \centering
@@ -62,6 +117,31 @@
         \end{table}
 
     \newpage
+    \section{Appendix A}
+        Packages for Language Model Development:
+        \begin{multicols}{2}
+            \begin{itemize}
+                \item \href{https://pytorch.org}{PyTorch}
+                \item \href{https://www.pytorchlightning.ai}{PyTorch Lightning}
+                \item \href{https://github.com/huggingface/transformers}{HuggingFace's Transformers}
+                \item \href{https://github.com/huggingface/tokenizers}{HuggingFace's Tokenizers}
+                \item \href{https://github.com/google/sentencepiece}{Google's SentencePiece}
+                \item \href{https://www.nltk.org}{Natural Lanuage Toolkit}
+                \item \href{https://scikit-learn.org}{Sci-Kit Learn}
+            \end{itemize}
+        \end{multicols}
+
+        Packages for Data Analysis:
+        \begin{itemize}
+            \item \href{https://numpy.org}{NumPy}
+            \item \href{https://pandas.pydata.org}{Pandas}
+            \item \href{https://matplotlib.org}{Matplotlib}
+            \item \href{https://scikit-learn.org}{Sci-Kit Learn}
+            \item \href{https://seaborn.pydata.org}{Seaborn}
+        \end{itemize}
+
+    \newpage
+    % References. List the references in IEEE format.
     \bibliographystyle{IEEEtran}
     \bibliography{proposal_refs}
 \end{document}
