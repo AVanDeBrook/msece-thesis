@@ -1,35 +1,51 @@
-\documentclass{article}
+\documentclass[10pt]{article}
 
 \usepackage{cite}
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{lipsum}
-\usepackage{indentfirst}
 \usepackage{multicol}
 \usepackage{ragged2e}
+\usepackage{newtxtext}
+\usepackage{setspace}
+\usepackage{sectsty}
 \usepackage[numbib]{tocbibind}
-\usepackage[lmargin=1in,rmargin=1in,tmargin=1in,bmargin=1in]{geometry}
+\usepackage[lmargin=1.5in,rmargin=1.5in,tmargin=1in]{geometry}
 
-\title{
-    Master of Science in Electrical \& Computer Engineering\\
-    \underline{Master's Thesis Proposal}\\
-    Transformer-based Language Modeling of Air Traffic Communications
-}
-
-\author{Aaron Van De Brook---2456908}
-
-\date{\today}
+% Conforming somewhat to the NeurIPS format
+\settowidth{\parindent}{}
+\setlength{\parskip}{5.5pt}
+\sectionfont{\large}
+\subsectionfont{\normalsize}
 
 \begin{document}
-    \maketitle
+    % Manually specify/format title, because making small formatting changes to the title is too damn frustrating
+    \begin{center}
+        \LARGE
+        \textbf{Transformer-based Language Modeling of Air Traffic Communications}\\
+        \Large
+        Master of Science in Electrical \& Computer Engineering\\
+        Master's Thesis Proposal\\
+
+        \vspace*{0.25in}
+
+        \normalsize
+        \textbf{Aaron Van De Brook---2456908}\\
+        \textit{Department of Electrical Engineering \& Computer Science}\\
+        \textit{Embry-Riddle Aeronautical University}\\
+        vandebra@my.erau.edu
+    \end{center}
 
     % TODO: need to write abstract (probably last step)
     %
     % An abstract. In 100 to 350 words, briefly summarize the problem to solve, the objectives of the project, and the methodology to use.
     \begin{center}
         \section*{\textit{Abstract}}
+        \noindent
         \justifying
-        \textit{\lipsum[1]}
+        \textit{
+            \lipsum[1]
+        }
     \end{center}
 
     % An introduction (to the problems to be addressed). In a few paragraphs, clearly define what the problem is being addressed/solved
@@ -46,8 +62,8 @@
         acoustic models \cite{li2019jasper} as the state of the art models begin to shift towards generative
         end-to-end approaches \cite{hannun2014deep}.
         At the time of writing this, the current state of the art ASR models are a mix between Transformer
-        and Convolutional neural network (CNN) architectures\footnote{According to
-        \url{https://paperswithcode.com/sota/automatic-speech-recognition-on-lrs2}} \cite{baevski2020wav2vec}.
+        and Convolutional neural network (CNN) architectures
+        \footnote{According to \url{https://paperswithcode.com/sota/speech-recognition-on-librispeech-test-clean}} \cite{baevski2020wav2vec}.
 
 
         As ASR models begin to breakout into the aerospace domain, one of the most limiting factors in their
@@ -76,6 +92,7 @@
 
     % TODO: formal literature review
     \section{Background \& Literature}
+
 
     % Methodology. Describe the approaches you plan to use for solving the problem at hand. Specify the tools/instruments/procedures/designs
     % you need to use to finish your work. Also specify other resources, including the budgets, you need to use to finish your work.
