@@ -22,7 +22,10 @@
     % Manually specify/format title, because making small formatting changes to the title is too damn frustrating
     \begin{center}
         \LARGE
-        \textbf{Transformer-based Language Modeling of Air Traffic Communications}\\
+        %\textbf{Transformer-based Language Modeling of Aerospace Communications}
+        %\textbf{Transformer-based Language Modeling of Air-Traffic Communications}
+        %\textbf{Transformer-based Language Modeling of Aviation English}
+        \textbf{Transformer-based Language Modeling of Aeronautical English}\\
         \Large
         Master of Science in Electrical \& Computer Engineering\\
         Master's Thesis Proposal\\
@@ -38,7 +41,8 @@
 
     % TODO: need to write abstract (probably last step)
     %
-    % An abstract. In 100 to 350 words, briefly summarize the problem to solve, the objectives of the project, and the methodology to use.
+    % An abstract. In 100 to 350 words, briefly summarize the problem to solve, the objectives of the project,
+    % and the methodology to use.
     \begin{center}
         \section*{\textit{Abstract}}
         \noindent
@@ -48,9 +52,10 @@
         }
     \end{center}
 
-    % An introduction (to the problems to be addressed). In a few paragraphs, clearly define what the problem is being addressed/solved
-    % in the thesis. Background information is needed. A literature review is needed to provide an account of the state-of-the-art solutions
-    % of this problem by other researchers or industry experts. Objectives of the thesis should be provided here as well.
+    % An introduction (to the problems to be addressed). In a few paragraphs, clearly define what the problem is being
+    % addressed/solved in the thesis. Background information is needed. A literature review is needed to provide an
+    % account of the state-of-the-art solutions of this problem by other researchers or industry experts.
+    % Objectives of the thesis should be provided here as well.
     \section{Introduction}
         The Transformer neural network architecture was originally designed and created for Neural Machine
         Translation (NMT) tasks \cite{vaswani_attention_2017} and has since seen massive success in various
@@ -59,30 +64,31 @@
         sequence-to-sequence (S2S) classification \cite{lewis_bart_2019}.
         Recently, Automatic Speech Recognition (ASR) models have started to incorporate language models
         \cite{badrinath_automatic_2022} (sometimes also referred to as linguistic models) in addition to
-        acoustic models \cite{li2019jasper} as the state of the art models begin to shift towards generative
-        end-to-end approaches \cite{hannun2014deep}.
+        acoustic models \cite{li_jasper_2019} as the state of the art models begin to shift towards generative
+        end-to-end approaches \cite{hannun_deep_2014}.
         At the time of writing this, the current state of the art ASR models are a mix between Transformer
         and Convolutional neural network (CNN) architectures
-        \footnote{According to \url{https://paperswithcode.com/sota/speech-recognition-on-librispeech-test-clean}} \cite{baevski2020wav2vec}.
+        \footnote{According to \url{https://paperswithcode.com/sota/speech-recognition-on-librispeech-test-clean}}
+        \cite{baevski_wav2vec_2020}.
 
 
         As ASR models begin to breakout into the aerospace domain, one of the most limiting factors in their
         development and deployment has been their relatively high word error rate(s) (WER)
-        \cite{vsmidl2019air,juan2020automatic,badrinath_automatic_2022} as compared to typical state of the art models.
+        \cite{smidl_air_2019,zuluaga-gomez_automatic_2020,badrinath_automatic_2022} as compared to typical state of the art models.
         This is due, at least in part, to the severe lack of transcribed data as compared to the more general ASR domain.
         For instance the best estimates of combined labeled datasets for Air Traffic Control (ATC)
-        communications reach approximately 180 hours of speech data \cite{juan2020automatic} whereas
-        state of the art ASR datasets typically reach approximately 1000 hours of speech data \cite{librispeech_2015}.
+        communications reach approximately 180 hours of speech data \cite{zuluaga-gomez_automatic_2020} whereas
+        state of the art ASR datasets typically reach approximately 1000 hours of speech data \cite{panayotov_librispeech_2015}.
         This has lead to the recommendation of semi-supervised learning models wherein unlabeled air
         traffic communications are transcribed by a pretrained ASR model with a relatively low WER.
         The transcriptions are subsequently scored by a language model to obtain some insight into the
-        transcription quality \cite{badrinath_automatic_2022,zuluaga2021contextual}.
+        transcription quality \cite{badrinath_automatic_2022,zuluaga-gomez_contextual_2021}.
         Depending on the distribution of the transcription scores, a certain percentage (best $n$ candidates)
         of the transcribed data is used to further fine-tune the ASR model.
 
 
         Despite the effectiveness of transformer-based architectures for language modeling NLP tasks
-        \cite{devlin_bert_2019,lewis_bart_2019,liu2019roberta}, there is little to no implementation
+        \cite{devlin_bert_2019,lewis_bart_2019,liu_roberta_2019}, there is little to no implementation
         of them for modeling ATC communications for semi-supervised learning or otherwise in the
         existing literature.
         Additionally, my preliminary work into the transfer learning of BERT models in the ATC
@@ -92,10 +98,49 @@
 
     % TODO: formal literature review
     \section{Background \& Literature}
+        % transformer history
+        The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved
+        state-of-the-art (28.4 BLEU on WMT 2014 English-to-German; 41.8 BLEU on WMT English-to-French datasets)
+        \cite{vaswani_attention_2017}. Transformer architectures have been found to be extremely effective at learning representations
+        and understandings of languages to predict token probabilities as opposed to transforming one language into another
+        \cite{devlin_bert_2019,liu_roberta_2019}. Transformers have also been found to be very effective at
+        other NLP-related tasks such as prompt completion and sentiment analysis among others (i.e.~auto-regressive and sequence
+        classification tasks, respectively) \cite{lewis_bart_2019,radford_improving_2018}.
 
 
-    % Methodology. Describe the approaches you plan to use for solving the problem at hand. Specify the tools/instruments/procedures/designs
-    % you need to use to finish your work. Also specify other resources, including the budgets, you need to use to finish your work.
+        % ASR context (suggest some need for semi-supervised approaches and therefore LMs)
+        End-to-end generative models for automatic speech recognition models have made significant progress in recent years with
+        current state-of-the-art models\footnote{Current at time of writing} achieving WERs as low as 2\% on LibriSpeech test sets
+        \cite{han_contextnet_2020,kriman_quartznet_2020,baevski_wav2vec_2020,li_jasper_2019}. This has led to the development of ASR
+        models for the aeronautical domain, specifically, in air traffic control communications
+        \cite{badrinath_automatic_2022,smidl_air_2019,zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017}.
+        However, due to the lack of transcribed data in the aeronautical domain
+        \cite{zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017,badrinath_automatic_2022,smidl_air_2019}
+        ASR models maintain relatively high WERs compared to their counterparts in the more generalized ASR domain
+        \cite{zuluaga-gomez_automatic_2020,badrinath_automatic_2022}. Transfer learning has even yielded limited results
+        in this domain (depending on model architecture and dataset quality)
+        \cite{badrinath_automatic_2022,zuluaga-gomez_automatic_2020}.
+
+
+        % Unsupervised/semi-supervised in general and LMs commonly used with them
+        Unsupervised and semi-supervised methodologies have become popular recently in attempts to address limited data availability
+        and develop new approaches towards modeling human speech (notably, wav2vec has achieved state-of-the-art performance with
+        very little training data)
+        \cite{baevski_wav2vec_2020,badrinath_automatic_2022,srinivasamurthy_semi-supervised_2017,zuluaga-gomez_contextual_2021}.
+        Language models are an integral part semi-supervised learning. They are used to obtain a certainty score (or uncertainty
+        score, as the case may be) for the predicted text, these are usually either word lattices or N-gram models
+        \cite{badrinath_automatic_2022,srinivasamurthy_semi-supervised_2017,zuluaga-gomez_contextual_2021}.
+        While these have proven to be good enough for most self-supervised learning tasks, they are hardly state-of-the-art.
+        Wav2vec, the current state-of-the-art unsupervised model (and possibly top performing overall), uses a contrastive process
+        between convolutional feature extraction and transformer context representations \cite{baevski_wav2vec_2020}.
+
+
+        % LMs and NLP in aero. domain
+
+
+    % Methodology. Describe the approaches you plan to use for solving the problem at hand. Specify the
+    % tools/instruments/procedures/designs you need to use to finish your work. Also specify other resources,
+    % including the budgets, you need to use to finish your work.
     \section{Methodology}
         \subsection{Environment and Source Code Management}
             For ease of use and compatibility with existing libraries, Python (version 3.8 or later)
