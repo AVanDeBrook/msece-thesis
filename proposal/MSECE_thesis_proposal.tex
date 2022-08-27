@@ -110,7 +110,7 @@
 
         % ASR context (suggest some need for semi-supervised approaches and therefore LMs)
         End-to-end generative models for automatic speech recognition models have made significant progress in recent years with
-        current state-of-the-art models\footnote{Current at time of writing} achieving WERs as low as 2\% on LibriSpeech test sets
+        current state-of-the-art models achieving WERs as low as 2\% on LibriSpeech test sets
         \cite{han_contextnet_2020,kriman_quartznet_2020,baevski_wav2vec_2020,li_jasper_2019}. This has led to the development of ASR
         models for the aeronautical domain, specifically, in air traffic control communications
         \cite{badrinath_automatic_2022,smidl_air_2019,zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017}.
@@ -136,7 +136,18 @@
 
 
         % LMs and NLP in aero. domain
-
+        Various natural language processing methods have been applied to the aerospace domain to help deal with miscommunications
+        and try to mitigate safety incidents \cite{ragnarsdottir_language_2003,tanguy_natural_2016,madeira_machine_2021}.
+        Some machine learning approaches have been implemented to analyze the text in aviation incident and safety reports to predict
+        contributing factors and topic models \cite{tanguy_natural_2016,madeira_machine_2021}. An ASR system with NLP post-processing
+        has also been proposed to analyze Air-Traffic communications and condense significant features (e.g.~weather, runway, and
+        heading info) into an XML language structure \cite{ragnarsdottir_language_2003}. Transformer language models such as BERT,
+        RoBERTa, and DeBERTa have been applied to notice to airmen (NOTAM) messages to perform named entity recognition (NER) tasks,
+        translation tasks (between notations; e.g.~NOTAM notation to Airlang to make parsing tasks easier) and reduce the workload
+        for pilots during long-haul flights \cite{arnold_knowledge_2022}. Transformer models have also been used for speaker role
+        identification tasks in the aerospace domain (e.g.~identifying pilot versus controller in communications), specifically,
+        a pretrained BERT model was used and fine-tuned on problem specific data and compared to other models that performed
+        well at speaker and role identification tasks in general \cite{guo_comparative_2022}.
 
     % Methodology. Describe the approaches you plan to use for solving the problem at hand. Specify the
     % tools/instruments/procedures/designs you need to use to finish your work. Also specify other resources,
