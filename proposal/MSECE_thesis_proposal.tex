@@ -152,22 +152,121 @@
     % Methodology. Describe the approaches you plan to use for solving the problem at hand. Specify the
     % tools/instruments/procedures/designs you need to use to finish your work. Also specify other resources,
     % including the budgets, you need to use to finish your work.
+    %
+    % TODO: CITATIONS/REFERENCES!!
     \section{Methodology}
-        \subsection{Environment and Source Code Management}
-            For ease of use and compatibility with existing libraries, Python (version 3.8 or later)
-            will be used to build, train, and test the models as well as to perform data analysis
-            where necessary.
-            Package/environment management will be done with Anaconda and source code management
-            will be done with Git (repository will be publicly accessible via GitHub).
+        This section lays out the methodology and sources for items such as data, model design, model training and testing methodology
+        such as performance metrics and loss functions, preliminary data analysis and statistics, potential application areas, and
+        project specific development and management techniques.
 
+        \subsection{Data Sources \& Means of Collection}
+        There are a few text datasets that exist that can be used either freely or accessed easily. There are also a few ASR datasets
+        in which the primary spoken language is english (or is sorted in such a way that it is easy to isolate the english transcripts
+        from the others) and the transcripts can be mined for english text for training language models. The table below lists the
+        relevant datasets (hereafter referred to as \textit{the corpus}):
+
+        % TODO: identify resources for things like NOTAMs, safety reports from relevant regulatory agencies, etc.
+        %       probably not all applicable, but worth looking into regardless.
+        \begin{table}[h!]
+            \centering
+            \begin{tabular}{c|c|c}
+                Dataset Name & Access & Citation \\
+                \hline
+                Air-Traffic Control Complete & Paid (have access) & \cite{godfrey_air_1994} \\
+                ATCSpeech & Free/Paid (apply for access) & \cite{yang_atcspeech_2020} \\
+                HIWIRE & Paid (have access) & \cite{segura_hiwire_2007} \\
+            \end{tabular}
+            \label{table:datasets}
+            \caption{Dataset name, access requirements (including prior availability through past projects), and citation information.}
+        \end{table}
+
+        Since the text in the corpus comes from a variety of sources, it will have to be processed and cleaned of special characters
+        or sequences specific to the original dataset. Since that process is so specific to the data source and original dataset(s),
+        the specific methodology used to preprocess and clean the data will be detailed later in the thesis.
+
+        % - primarily transformer based, since almost all state-of-the-art approaches are transformers. maybe Bayesian formulation as
+        %   well, depending on how "noisy" the data is.
+        % - potential optimizers to use
+        % - potential loss function(s)
+        % - baseline models for comparison: N-gram, word lattice, (maybe) RNN, CNN, LSTM
+        \subsection{Model Design(s)}
+        \textbf{Development Model(s)}. At the moment the prevailing idea for the main model architecture is the transformer
+        \cite{vaswani_attention_2017}, considering its widespread success in language modeling and other NLP tasks. Language structure
+        and grammar in aviation communications typically follows a very formal structure, however, deviations from this formality are
+        common, for this reason it may be worth considering Bayesian Deep Learning (BDL) approach to the transformer language model
+        since it has demonstrated good performance in accurately classifying data with high variance. The main tradeoffs in developing
+        a BDL-Transformer hybrid model would most likely be development time, and training time---from past work, end-to-end BDL models
+        have taken an average of three times longer than ``normal'' networks to train.
+
+
+        \textbf{Baseline Models}. These are the models against which the performance and effectiveness of language modeling, and NLP
+                                           %establish?
+        tasks moreover, will be compared to determine the gain in effectiveness and performance between the developed models and
+        previously used models. The models that have been used in previous works in similar or identical problem domains are below:
+
+        % TODO: the vertical alignment is aggravating; fix if possible
+        \begin{multicols}{2}
+            \begin{itemize}
+                \item N-Gram
+                \item Word Lattice
+                \item (tentative) RNN-based Language Models
+                \item (tentative) CNN-based Language Models
+                \item (tentative) LSTM-based Language Models
+                \item Existing pre-trained transformers, such as BERT and RoBERTa
+            \end{itemize}
+        \end{multicols}
+
+
+        \subsection{Model Performance Metrics \& Evaluation}
+        \textbf{Performance Metrics}.
+        The common accuracy/error rate quantification metric used in language modeling is perplexity, which is typically formulated as
+        the normalized inverse of the sequence probability, along with the typical classification problem metrics (i.e.~accuracy,
+        precision, recall, F-1 score).
+
+
+        \textbf{Loss Function(s)}.
+        The most common loss function used in language modeling is Cross Entropy loss. Connectionist Temporal Classification (CTC) loss
+        can also be used if the input sequence can be formulated as a time series, but this is most commonly used in ASR, since
+        transcript labels are accompanied by audio time series.
+
+
+        During the training and validation phases, the performance metrics will be logged per step (or epoch, whichever is more
+        applicable) and plotted, most likely in TensorBoard, to keep track of performance during training. During the testing phase,
+        the accuracy and average model perplexity will be reported and, if applicable, a confusion matrix will be generated and plotted
+        to help illustrate the model performance.
+
+
+        % uncertainty scoring, different decoding heads for things like masked language modeling, sequence classification,
+        % token classification (named entity recognition), prompt completion (thinking this could be used to complete corrupted
+        % text/transmissions)
+        \subsection{Application Areas}
+        As evidenced by the transformer API from HuggingFace\footnote{https://huggingface.co/docs/transformers} (and the models hosted
+        on their website), transformer models can be trained very generically through tasks such as masked language modeling to learn
+        token probabilities, and fine-tuned on downstream tasks with task specific decoding layers (also commonly referred to as heads
+        e.g.~sequence classification head, language modeling head, etc.~). Due to this fact, the range of application areas is fairly
+        extensive, ranging from casual and masked language modeling to named entity recognition (NER; also referred to as token
+        classification), prompt completion, and sequence classification tasks such as sentiment analysis and infinitely more tasks and
+        problems within those categories.
+
+
+        There are several application areas that can be addressed by the work this thesis produces, but not all will be extensively
+        tested. One of the main areas that can be addressed easily and relatively quickly is \textbf{uncertainty scoring} i.e.~using a
+        LM to score transcripts generated by ASR models and determine a level of uncertainty for the validity of the transcript.
+        A sequence classification task can be formed to \textbf{identify communication types} or perform \textbf{role identification}
+        \footnote{There is a fair amount of research here as well, so a comparison of results wouldn't be difficult to perform.}
+        (e.g.~pilot, air-controller, ground-controller, etc.; this could also be broken down into a NER task, depending on the data).
+
+        % TODO: expand or remove
+        \subsection{Environment \& Source Code Management}
+        For ease of use and compatibility with existing libraries, Python (version 3.8 or later) will be used to build, train,
+        and test the models as well as to perform data analysis where necessary. Package/environment management will be done with
+        Anaconda and source code management will be done with Git (repository will be publicly accessible via GitHub).
+
+        % TODO: expand or remove (probably keep, just elaborate a bit on specifics, identify alternatives)
         \subsection{Model Development}
-            Fortunately, there is a plethora of libraries available for developing machine learning,
-            deep learning, and NLP models.
-            The main packages that have been chosen (listed in Appendix A) have front-end language
-            bindings for Python and most have back-end APIs written in C/C++ and Rust for streamlined computations.
-
-        % TODO: more work and reading into standard model metrics for LMs
-        \subsection{Model Evaluation Metrics}
+        Fortunately, there is a plethora of libraries available for developing machine learning, deep learning, and NLP models.The
+        main packages that have been chosen (listed in Appendix A) have front-end language bindings for Python and most have
+        back-end APIs written in C/C++ and Rust for streamlined computations.
 
         % TODO: review min and max hardware required to train models i.e. bare minimum to train model,
         % preferences for efficient training (workstation with GPU/TPU, AWS/Azure compute cluster, etc.)
@@ -177,13 +276,11 @@
     \section{Deliverables \& Timeline}
         \begin{table}[h!]
             \centering
-            \begin{tabular}{|c|c|c|}
+            \begin{tabular}{c|c|c}
+                \# & Deliverable & Date \\
                 \hline
-                \# & Deliverable & Date\\
-                \hline
-                0 & Submit thesis proposal & \today\\
-                1 & & \\
-                \hline
+                0 & Submit thesis proposal & \today \\
+                1 &  & \\
             \end{tabular}
             \label{table:timeline}
             \caption{Deliverables and approximate delivery dates.}
@@ -191,6 +288,8 @@
 
     \newpage
     \section{Appendix A}
+        % TODO: the vertical alignment is aggravating; fix if possible (this one is mostly a mismatched number of items
+        %       between L/R side)
         Packages for Language Model Development:
         \begin{multicols}{2}
             \begin{itemize}
@@ -204,7 +303,7 @@
             \end{itemize}
         \end{multicols}
 
-        Packages for Data Analysis:
+        Packages for Data Analysis and Visualization:
         \begin{itemize}
             \item \href{https://numpy.org}{NumPy}
             \item \href{https://pandas.pydata.org}{Pandas}
