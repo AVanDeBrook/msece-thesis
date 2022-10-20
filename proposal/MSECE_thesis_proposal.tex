@@ -22,10 +22,7 @@
     % Manually specify/format title, because making small formatting changes to the title is too damn frustrating
     \begin{center}
         \LARGE
-        %\textbf{Transformer-based Language Modeling of Aerospace Communications}
-        \textbf{Transformer-based Language Modeling of Air-Traffic Communications}\\
-        %\textbf{Transformer-based Language Modeling of Aviation English}
-        % \textbf{Transformer-based Language Modeling of Aeronautical English}\\
+        \textbf{Language Modeling of Air-Traffic Communications}\\
         \Large
         Master of Science in Electrical \& Computer Engineering\\
         Master's Thesis Proposal\\
@@ -57,16 +54,16 @@
     % account of the state-of-the-art solutions of this problem by other researchers or industry experts.
     % Objectives of the thesis should be provided here as well.
     \section{Introduction}
-        The Transformer neural network architecture was originally designed and created for Neural Machine
+        The transformer neural network architecture was originally designed and created for Neural Machine
         Translation (NMT) tasks \cite{vaswani_attention_2017} and has since seen massive success in various
         other Natural Language Processing (NLP) tasks such as language modeling (both casual and masked language
         modeling tasks) \cite{devlin_bert_2019}, prompt completion \cite{radford_improving_2018}, and
         sequence-to-sequence (S2S) classification \cite{lewis_bart_2019}.
         Recently, Automatic Speech Recognition (ASR) models have started to incorporate language models
         \cite{badrinath_automatic_2022} (sometimes also referred to as linguistic models) in addition to
-        acoustic models \cite{li_jasper_2019} as the state of the art models begin to shift towards generative
+        acoustic models \cite{li_jasper_2019} as the state-of-the-art models begin to shift towards generative
         end-to-end approaches \cite{hannun_deep_2014}.
-        At the time of this writing, the current state of the art ASR models are a mix between Transformer
+        At the time of this writing, the current state-of-the-art ASR models are a mix between transformer
         and Convolutional neural network (CNN) architectures
         \footnote{According to \url{https://paperswithcode.com/sota/speech-recognition-on-librispeech-test-clean}}
         \cite{baevski_wav2vec_2020}.
@@ -74,11 +71,11 @@
 
         As ASR models begin to breakout into the aerospace domain, one of the most limiting factors in their
         development and deployment has been their relatively high word error rate(s) (WER)
-        \cite{smidl_air_2019,zuluaga-gomez_automatic_2020,badrinath_automatic_2022} as compared to typical state of the art models.
+        \cite{smidl_air_2019,zuluaga-gomez_automatic_2020,badrinath_automatic_2022} as compared to typical state-of-the-art models.
         This is due, at least in part, to the severe lack of transcribed data as compared to the more general ASR domain.
         For instance the best estimates of combined labeled datasets for Air Traffic Control (ATC)
         communications reach approximately 180 hours of speech data \cite{zuluaga-gomez_automatic_2020} whereas
-        state of the art ASR datasets typically reach approximately 1000 hours of speech data \cite{panayotov_librispeech_2015}.
+        state-of-the-art ASR datasets typically reach approximately 1000 hours of speech data \cite{panayotov_librispeech_2015}.
         This has lead to the recommendation of semi-supervised learning models wherein unlabeled air
         traffic communications are transcribed by a pretrained ASR model with a relatively low WER.
         The transcriptions are subsequently scored by a language model to obtain some insight into the
@@ -195,7 +192,7 @@
         and grammar in aviation communications typically follows a very formal structure, however, deviations from this formality are
         common, for this reason it may be worth considering Bayesian Deep Learning (BDL) approach to the transformer language model
         since it has demonstrated good performance in accurately classifying data with high variance. The main tradeoffs in developing
-        a BDL-Transformer hybrid model would most likely be development time, and training time---from past work, end-to-end BDL models
+        a BDL-transformer hybrid model would most likely be development time, and training time---from past work, end-to-end BDL models
         have taken an average of three times longer than ``normal'' networks to train.
 
 
@@ -209,10 +206,10 @@
             \begin{itemize}
                 \item N-Gram
                 \item Word Lattice
-                \item (tentative) RNN-based Language Models
-                \item (tentative) CNN-based Language Models
-                \item (tentative) LSTM-based Language Models
-                \item Existing pre-trained transformers, such as BERT and RoBERTa
+                \item RNN-based Language Models
+                \item CNN-based Language Models
+                \item LSTM-based Language Models
+                \item Pretrained models, e.g.~BERT, RoBERTa,
             \end{itemize}
         \end{multicols}
 
@@ -240,10 +237,10 @@
         % token classification (named entity recognition), prompt completion (thinking this could be used to complete corrupted
         % text/transmissions)
         \subsection{Application Areas}
-        As evidenced by the transformer API from HuggingFace\footnote{https://huggingface.co/docs/transformers} (and the models hosted
-        on their website), transformer models can be trained very generically through tasks such as masked language modeling to learn
+        As evidenced by the \textit{transformer} API from HuggingFace\footnote{\url{https://huggingface.co/docs/transformers}} (and the models hosted
+        on their website), transformer models can be trained to a generic checkpoint through objectives such as masked language modeling to learn
         token probabilities, and fine-tuned on downstream tasks with task specific decoding layers (also commonly referred to as heads
-        e.g.~sequence classification head, language modeling head, etc.~). Due to this fact, the range of application areas is fairly
+        e.g.~sequence classification head, language modeling head, etc.). Due to this fact, the range of application areas is fairly
         extensive, ranging from casual and masked language modeling to named entity recognition (NER; also referred to as token
         classification), prompt completion, and sequence classification tasks such as sentiment analysis and infinitely more tasks and
         problems within those categories.
@@ -256,15 +253,9 @@
         \footnote{There is a fair amount of research here as well, so a comparison of results wouldn't be difficult to perform.}
         (e.g.~pilot, air-controller, ground-controller, etc.; this could also be broken down into a NER task, depending on the data).
 
-        % TODO: expand or remove
-        \subsection{Environment \& Source Code Management}
-        For ease of use and compatibility with existing libraries, Python (version 3.8 or later) will be used to build, train,
-        and test the models as well as to perform data analysis where necessary. Package/environment management will be done with
-        Anaconda and source code management will be done with Git (repository will be publicly accessible via GitHub).
-
         % TODO: expand or remove (probably keep, just elaborate a bit on specifics, identify alternatives)
         \subsection{Model Development}
-        Fortunately, there is a plethora of libraries available for developing machine learning, deep learning, and NLP models.The
+        Fortunately, there is a plethora of libraries available for developing machine learning, deep learning, and NLP models. The
         main packages that have been chosen (listed in Appendix A) have front-end language bindings for Python and most have
         back-end APIs written in C/C++ and Rust for streamlined computations.
 
@@ -272,19 +263,30 @@
         % preferences for efficient training (workstation with GPU/TPU, AWS/Azure compute cluster, etc.)
         \subsection{Resource Requirements}
 
+    \clearpage
     % Deliverables and timeline. Provide a detailed schedule and deliverables, shown in a table like the one below.
     \section{Deliverables \& Timeline}
         \begin{table}[h!]
             \centering
-            \begin{tabular}{c|c|c}
-                \# & Deliverable & Date \\
+            \begin{tabular}{l|l}
+                \textbf{Deliverable} & \textbf{Date} \\
                 \hline
-                0 & Submit thesis proposal & \today \\
-                1 &  & \\
+                Submit thesis proposal & October, 2022 \\
+                Accumulate data sets\footnotemark[4] & December, 2022 \\
+                Finish performing data analysis\footnotemark[5] & January, 2023 \\
+                Finalize model designs and traning/testing methodologies for existing architectures & February, 2023 \\
+                Finish developing models/scripts for training, testing models & April, 2023 \\
+                Full scale training and testing of models & May, 2023 \\
+                Analysis of results\footnotemark[6] & August, 2023 \\
+                Full scale testing and analysis in designated application areas \& analysis of results & September, 2023 \\
             \end{tabular}
             \label{table:timeline}
             \caption{Deliverables and approximate delivery dates.}
         \end{table}
+        \footnotetext[4]{Most likely hosted on the schools OneDrive or SharePoint (associated with my student account).}
+        \footnotetext[5]{This includes relevant statistics about the data, as well as mining and converting all text into a common form.}
+        \footnotetext[6]{This will include tasks such as performance analysis/comparison, generating relevant plots, and preliminary testing for
+                         designated application areas.}
 
     \newpage
     \section{Appendix A}
