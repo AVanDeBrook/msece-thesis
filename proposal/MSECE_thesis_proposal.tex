@@ -69,19 +69,20 @@
         \cite{baevski_wav2vec_2020}.
 
 
-        As ASR models begin to breakout into the aerospace domain, one of the most limiting factors in their
+        As ASR models begin to breakout into the aviation domain, one of the most limiting factors in their
         development and deployment has been their relatively high word error rate(s) (WER)
         \cite{smidl_air_2019,zuluaga-gomez_automatic_2020,badrinath_automatic_2022} as compared to typical state-of-the-art models.
         This is due, at least in part, to the severe lack of transcribed data as compared to the more general ASR domain.
         For instance the best estimates of combined labeled datasets for Air Traffic Control (ATC)
         communications reach approximately 180 hours of speech data \cite{zuluaga-gomez_automatic_2020} whereas
         state-of-the-art ASR datasets typically reach approximately 1000 hours of speech data \cite{panayotov_librispeech_2015}.
-        This has lead to the recommendation of semi-supervised learning models wherein unlabeled air
+        This has lead to the use of semi-supervised learning methods wherein unlabeled air
         traffic communications are transcribed by a pretrained ASR model with a relatively low WER.
         The transcriptions are subsequently scored by a language model to obtain some insight into the
         transcription quality \cite{badrinath_automatic_2022,zuluaga-gomez_contextual_2021}.
-        Depending on the distribution of the transcription scores, a certain percentage (best $n$ candidates)
-        of the transcribed data is used to further fine-tune the ASR model.
+        Depending on the distribution of the transcription scores, a certain percentage of the transcribed data or candidate
+        samples under a specific level of uncertainty are added to the larger data set and used to retrain the model. This
+        process can repeat until there is no more unlabeled data to use or until a desired WER has been reached.
 
 
         Despite the effectiveness of transformer-based architectures for language modeling NLP tasks
@@ -109,9 +110,9 @@
         End-to-end generative models for automatic speech recognition models have made significant progress in recent years with
         current state-of-the-art models achieving WERs as low as 2\% on LibriSpeech test sets
         \cite{han_contextnet_2020,kriman_quartznet_2020,baevski_wav2vec_2020,li_jasper_2019}. This has led to the development of ASR
-        models for the aeronautical domain, specifically, in air traffic control communications
+        models for the aviation domain, specifically, in air traffic control communications
         \cite{badrinath_automatic_2022,smidl_air_2019,zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017}.
-        However, due to the lack of transcribed data in the aeronautical domain
+        However, due to the lack of transcribed data in the aviation domain
         \cite{zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017,badrinath_automatic_2022,smidl_air_2019}
         ASR models maintain relatively high WERs compared to their counterparts in the more generalized ASR domain
         \cite{zuluaga-gomez_automatic_2020,badrinath_automatic_2022}. Transfer learning has even yielded limited results
@@ -133,7 +134,7 @@
 
 
         % LMs and NLP in aero. domain
-        Various natural language processing methods have been applied to the aerospace domain to help deal with miscommunications
+        Various natural language processing methods have been applied to the aviation domain to help deal with miscommunications
         and try to mitigate safety incidents \cite{ragnarsdottir_language_2003,tanguy_natural_2016,madeira_machine_2021}.
         Some machine learning approaches have been implemented to analyze the text in aviation incident and safety reports to predict
         contributing factors and topic models \cite{tanguy_natural_2016,madeira_machine_2021}. An ASR system with NLP post-processing
@@ -142,7 +143,7 @@
         RoBERTa, and DeBERTa have been applied to notice to airmen (NOTAM) messages to perform named entity recognition (NER) tasks,
         translation tasks (between notations; e.g.~NOTAM notation to Airlang to make parsing tasks easier) and reduce the workload
         for pilots during long-haul flights \cite{arnold_knowledge_2022}. Transformer models have also been used for speaker role
-        identification tasks in the aerospace domain (e.g.~identifying pilot versus controller in communications), specifically,
+        identification tasks in the aviation domain (e.g.~identifying pilot versus controller in communications), specifically,
         a pretrained BERT model was used and fine-tuned on problem specific data and compared to other models that performed
         well at speaker and role identification tasks in general \cite{guo_comparative_2022}.
 
@@ -166,15 +167,20 @@
         %       probably not all applicable, but worth looking into regardless.
         \begin{table}[h!]
             \centering
-            \begin{tabular}{c|c|c}
-                Dataset Name & Access & Citation \\
+            \begin{tabular}{c|c|c|c}
+                Dataset Name & Access & Data Type & Citation \\
                 \hline
-                Air-Traffic Control Complete & Paid (have access) & \cite{godfrey_air_1994} \\
-                ATCSpeech & Free/Paid (apply for access) & \cite{yang_atcspeech_2020} \\
-                HIWIRE & Paid (have access) & \cite{segura_hiwire_2007} \\
+                Air-Traffic Control Complete & Paid (have access) & Real, transcripts & \cite{godfrey_air_1994} \\
+                ATCSpeech & Free/Paid (apply for access) & Real, transcripts & \cite{yang_atcspeech_2020} \\
+                HIWIRE & Paid (have access) & Simulated, scripts & \cite{segura_hiwire_2007} \\
+                ATCC & Free (have access) & Real, transcripts & \cite{smidl_air_2019} \\
+                ATCOSIM & Free (have access) & Simulated, transcripts & \cite{hofbauer_atcosim_2008} \\
             \end{tabular}
             \label{table:datasets}
-            \caption{Dataset name, access requirements (including prior availability through past projects), and citation information.}
+            \caption{Dataset name, access requirements (including prior availability through past projects), and citation information.
+                    \textbf{Real/Simulated} corresponds to real world communications that were transcribed in some way or communications
+                    that were recorded in a simulated environment. \textbf{Transcripts/Scripts} corresponds to real communications that were
+                    transcribed or scripts that were generated.}
         \end{table}
 
         Since the text in the corpus comes from a variety of sources, it will have to be processed and cleaned of special characters
@@ -283,36 +289,11 @@
             \label{table:timeline}
             \caption{Deliverables and approximate delivery dates.}
         \end{table}
-        \footnotetext[4]{Most likely hosted on the schools OneDrive or SharePoint (associated with my student account).}
+        % apparently footnotes don't work inside of float environments, so...
+        \footnotetext[4]{Most likely hosted on OneDrive or SharePoint (associated with ERAU student account).}
         \footnotetext[5]{This includes relevant statistics about the data, as well as mining and converting all text into a common form.}
         \footnotetext[6]{This will include tasks such as performance analysis/comparison, generating relevant plots, and preliminary testing for
                          designated application areas.}
-
-    \newpage
-    \section{Appendix A}
-        % TODO: the vertical alignment is aggravating; fix if possible (this one is mostly a mismatched number of items
-        %       between L/R side)
-        Packages for Language Model Development:
-        \begin{multicols}{2}
-            \begin{itemize}
-                \item \href{https://pytorch.org}{PyTorch}
-                \item \href{https://www.pytorchlightning.ai}{PyTorch Lightning}
-                \item \href{https://github.com/huggingface/transformers}{HuggingFace's Transformers}
-                \item \href{https://github.com/huggingface/tokenizers}{HuggingFace's Tokenizers}
-                \item \href{https://github.com/google/sentencepiece}{Google's SentencePiece}
-                \item \href{https://www.nltk.org}{Natural Lanuage Toolkit}
-                \item \href{https://scikit-learn.org}{Sci-Kit Learn}
-            \end{itemize}
-        \end{multicols}
-
-        Packages for Data Analysis and Visualization:
-        \begin{itemize}
-            \item \href{https://numpy.org}{NumPy}
-            \item \href{https://pandas.pydata.org}{Pandas}
-            \item \href{https://matplotlib.org}{Matplotlib}
-            \item \href{https://scikit-learn.org}{Sci-Kit Learn}
-            \item \href{https://seaborn.pydata.org}{Seaborn}
-        \end{itemize}
 
     \newpage
     % References. List the references in IEEE format.
