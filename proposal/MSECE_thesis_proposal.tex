@@ -36,16 +36,19 @@
         vandebra@my.erau.edu
     \end{center}
 
-    % TODO: need to write abstract (probably last step)
-    %
     % An abstract. In 100 to 350 words, briefly summarize the problem to solve, the objectives of the project,
     % and the methodology to use.
     \begin{center}
         \section*{\textit{Abstract}}
-        \noindent
         \justifying
         \textit{
-            \lipsum[1]
+            Transformer neural networks have proven to be effective in several problems domains and have seen extensive use
+            in Natural Language Processing (NLP), particularly language modeling, through models such as BERT, BART, and GPT. Due
+            to the success of transformers in the general NLP domain, I propose the idea of developing, training, and evaluating
+            a transformer for aviation english which, despite having regulated phraseology through organizations such as ICAO,
+            can take many forms including that of conversational english. The variance in the structure of the language used
+            in aviation communications coupled with lack of use of transformer-based language models in the current literature
+            leaves a significant gap that can be addressed by the proposed work and expanded upon in future work.
         }
     \end{center}
 
@@ -233,7 +236,7 @@
         transcript labels are accompanied by audio time series.
 
 
-        During the training and validation phases, the performance metrics will be logged per step (or epoch, whichever is more
+        During the training and validation phases, the performance metrics will be logged each step (or epoch, whichever is more
         applicable) and plotted, most likely in TensorBoard, to keep track of performance during training. During the testing phase,
         the accuracy and average model perplexity will be reported and, if applicable, a confusion matrix will be generated and plotted
         to help illustrate the model performance.
@@ -243,7 +246,7 @@
         % token classification (named entity recognition), prompt completion (thinking this could be used to complete corrupted
         % text/transmissions)
         \subsection{Application Areas}
-        As evidenced by the \textit{transformer} API from HuggingFace\footnote{\url{https://huggingface.co/docs/transformers}} (and the models hosted
+        As evidenced by the \textit{transformers} API from HuggingFace\footnote{\url{https://huggingface.co/docs/transformers}} (and the models hosted
         on their website), transformer models can be trained to a generic checkpoint through objectives such as masked language modeling to learn
         token probabilities, and fine-tuned on downstream tasks with task specific decoding layers (also commonly referred to as heads
         e.g.~sequence classification head, language modeling head, etc.). Due to this fact, the range of application areas is fairly
