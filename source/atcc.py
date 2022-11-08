@@ -3,12 +3,13 @@ import glob
 import subprocess
 from typing import *
 from data import Data
+from data import atccutils
+from pathlib import Path
 
 
 class ATCCData(Data):
     _audio_glob: List[str]
     _transcript_glob: List[str]
-
 
     def __init__(self, data_root: str):
         super(Data, self).__init__(data_root)
@@ -36,7 +37,6 @@ class ATCCData(Data):
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
         self._transcript_glob = glob.glob(transcript_glob_string, recursive=True)
 
-
     def _convert_audio_files(self, audio_paths: List[str]):
         """
         Converts files from NIST Sphere format to Microsoft WAV format. **Requires ffmpeg to be installed**.
@@ -51,14 +51,47 @@ class ATCCData(Data):
         """
         # ffmpeg required to perform the conversion from sphere to wav
         if os.system("command -v ffmpeg") != 0:
-            raise Exception("Cannot find ffmpeg. Please install ffmpeg (and add to the system path, if applicable) and rerun the script.")
+            raise Exception(
+                "Cannot find ffmpeg. Please install ffmpeg (and add to the system path, if applicable) and rerun the script."
+            )
 
         for file in audio_paths:
             if os.path.exists(file):
-                ffmpeg_command = ["ffmpeg", "-y", "-i", file, file.replace("sph", "wav")]
+                ffmpeg_command = [
+                    "ffmpeg",
+                    "-y",
+                    "-i",
+                    file,
+                    "-ar",
+                    "16000",
+                    file.replace("sph", "wav"),
+                ]
                 subprocess.run(ffmpeg_command)
 
+    def parse_transcripts(self) -> List[Dict[str, Union[str, float]]]:
+        """
+        Parse data indices in transcript files.
 
+        Returns:
+        --------
+        A list of dictionary objects, each compatible with `json.dumps`.
+        """
+        manifest_data = []
 
-    def parse_transcripts(self) -> Dict[str, Union[str, float]]:
+        for text, audio in zip(self._transcript_glob, self._audio_glob):
+            audio = Path(audio).absolute()
+            with open(text, "r", encoding="utf-8") as f:
+                transcript_data = atccutils.parse(f.readlines())
 
+            if self._required_fields in transcript_data:
+                audio_duration = (
+                    transcript_data["TIMES"]["end"] - transcript_data["TIMES"]["start"]
+                )
+                manifest_data.append(
+                    {
+                        "audio_filepath": str(audio),
+                        "text": transcript_data["TEXT"],
+                        "duration": audio_duration,
+                        "offset": transcript_data["TIMES"]["start"],
+                    }
+                )
