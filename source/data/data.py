@@ -1,4 +1,5 @@
 import os
+import seaborn.objects as so
 from typing import *
 
 
@@ -9,6 +10,7 @@ class Data(object):
 
     """
     _required_fields: List[str]
+    _manifest_data: List[Dict[str, Union[float, str]]]
 
     def __init__(self, data_root: str):
         """
@@ -31,8 +33,25 @@ class Data(object):
         """
         raise NotImplementedError()
 
-    def create_utterance_hist(self):
-        pass
+    def create_utterance_hist(self, utterance_counts=[]):
+        """
+
+        """
+        # check if manifest data has been generated, parse transcripts and generate
+        # manifest data if not
+        if len(self._manifest_data) == 0:
+            self.parse_transcripts()
+
+        # check if utterance counts (optional arg) has been provided, calculate utterance
+        # counts from transcriptions
+        if len(utterance_counts) == 0:
+            for data in self._manifest_data:
+                words = data["text"].split(" ")
+                utterance_counts.append(len(words))
+
+        p = so.Plot(utterance_counts).add(so.Bar(), so.Hist())
+        return p.plot()
+
 
     def create_spectrograms(self):
         pass

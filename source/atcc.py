@@ -91,7 +91,10 @@ class ATCCData(Data):
                     {
                         "audio_filepath": str(audio),
                         "text": transcript_data["TEXT"],
-                        "duration": audio_duration,
-                        "offset": transcript_data["TIMES"]["start"],
+                        "duration": float(audio_duration),
+                        "offset": float(transcript_data["TIMES"]["start"]),
                     }
                 )
+
+        self._manifest_data = manifest_data
+        return manifest_data
