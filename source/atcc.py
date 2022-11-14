@@ -8,6 +8,19 @@ from pathlib import Path
 
 
 class ATCCData(Data):
+    """
+    The following attributes are defined in this class due to the way the Air Traffic
+    Control Complete dataset is formatted and distributed.
+
+    Attributes:
+    -----------
+    `_audio_glob`: list of paths to audio files in the dataset.
+
+    `_transcript_glob`: list of paths to transcript files that correspond to the audio
+    files in the dataset. Transcripts are formatted as Lisp lists, each list corresponds
+    to one sample in the data i.e. one transmission.
+    """
+
     _audio_glob: List[str]
     _transcript_glob: List[str]
 
@@ -55,34 +68,45 @@ class ATCCData(Data):
                 "Cannot find ffmpeg. Please install ffmpeg (and add to the system path, if applicable) and rerun the script."
             )
 
+        # convert each audio file in sphere format to wav format
         for file in audio_paths:
             if os.path.exists(file):
                 ffmpeg_command = [
                     "ffmpeg",
+                    # force ffmpeg to assume yes to all y/n inputs
                     "-y",
                     "-i",
                     file,
+                    # resample from input format to 16kHz where applicable
                     "-ar",
                     "16000",
+                    # output file with same name and wav extension
                     file.replace("sph", "wav"),
                 ]
                 subprocess.run(ffmpeg_command)
 
     def parse_transcripts(self) -> List[Dict[str, Union[str, float]]]:
         """
-        Parse data indices in transcript files.
+        Parse data indices in transcript files into dictionary objects with required info
+        to be compatible with NeMo's manifest format.
 
         Returns:
         --------
-        A list of dictionary objects, each compatible with `json.dumps`.
+        A list of dictionary objects.
         """
         manifest_data = []
 
         for text, audio in zip(self._transcript_glob, self._audio_glob):
+            # need absolute file path for compliance with NeMo manifest format
             audio = Path(audio).absolute()
+
+            # parse transcript file (returns a list of dictionary objects where each
+            # object corresponds to each Lisp list in the transcript file)
             with open(text, "r", encoding="utf-8") as f:
                 transcript_data = atccutils.parse(f.readlines())
 
+            # filter out tape-header, tape-tail, and comment blocks (and any other
+            # extraneous info that could cause KeyErrors)
             if self._required_fields in transcript_data:
                 audio_duration = (
                     transcript_data["TIMES"]["end"] - transcript_data["TIMES"]["start"]
@@ -96,5 +120,6 @@ class ATCCData(Data):
                     }
                 )
 
+        # save manifest data to class attribute before returning
         self._manifest_data = manifest_data
         return manifest_data

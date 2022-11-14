@@ -6,7 +6,6 @@ from data import hiwireutils
 
 
 class HIWIREData(Data):
-
     def __init__(self, data_root: str):
         super(Data, self).__init__(data_root)
 

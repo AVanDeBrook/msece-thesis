@@ -1,8 +1,11 @@
 import os
 import json
 import librosa
+import librosa.display
+import matplotlib
 import seaborn.objects as so
 import matplotlib.pyplot as plt
+import numpy as np
 from collections import namedtuple
 from typing import *
 
@@ -25,15 +28,24 @@ class Data(object):
     """
     Attributes:
     -----------
+    `_required_fields`: required fields to extract from data to be compatible with NeMo's
+    manifest format. Varies from dataset to dataset.
 
-    Methods:
-    --------
+    `_manifest_data`: list of dictionary objects. Each object corresponds to one data sample
+    and typically contains the following metadata:
+    * `audio_filepath` (required) - path to the audio data (input data). Type: `str`,
+    absolute file path, conforms to `os.PathLike`
+    * `duration` (required) - duration, in seconds, of the audio data. Type: `float`
+    * `text` (required) - transcript of the audio data (label/ground truth). Type: `str`
+    * `offset` - if more than one sample is present in a single audio file, this field
+    specifies its offset i.e. start time in the audio file. Type: `float`
     """
 
     _required_fields: List[str]
     _manifest_data: List[Dict[str, Union[float, str]]]
+    _random: np.random.Generator
 
-    def __init__(self, data_root: str):
+    def __init__(self, data_root: str, random_seed: int = None):
         """
         Arguments:
         ----------
@@ -42,6 +54,9 @@ class Data(object):
         """
         assert isinstance(data_root, str)
         assert os.path.exists(data_root)
+
+        # create random number generator sequence with specified seed, if applicable
+        self._random = np.random.default_rng(random_seed)
 
     def parse_transcripts(self) -> Dict[str, Union[str, float]]:
         """
@@ -53,7 +68,11 @@ class Data(object):
         Dictionary (from `json` module) with necessary data info e.g. annotations, file
         path, audio length, offset.
         """
-        raise NotImplementedError()
+        raise NotImplementedError(
+            "This is an abstract method that should be implemented and overridden for "
+            "all classes that implement this one. If this method has been called, there "
+            "is an issue with the class that extended the Data class."
+        )
 
     def create_utterance_hist(
         self,
@@ -92,11 +111,56 @@ class Data(object):
         p = so.Plot(utterance_counts).add(so.Bar(), so.Hist())
         return p.plot()
 
-    def create_spectrograms(self):
+    def create_spectrograms(
+        self, n_plots=2, random_sample=True, plot_db=True
+    ) -> List[matplotlib.collections.QuadMesh]:
         """
+        Generates spectrogram n spectrogram plots, where n is specified by `n_plots`.
 
+        Arguments:
+        ----------
+        `n_plots`: number of plots to generate. Defaults to 2.
+
+        `random_sample`: whether to randomly sample `n_plots` from the manifest data.
+        Defaults to `True`. If `random_sample` is `False`, plots are generated in the
+        order the audio files appear in the manifest data.
+
+        `plot_db`: Whether to plot as a power spectrogram or dB. Defaults to `True`.
+
+        Returns:
+        --------
+        a list of size `n_plots` containing matplotlib plot objects for the spectrograms.
         """
-        pass
+        # check to see if manifest data has been generated (required for plots to be generated)
+        if len(self._manifest_data) == 0:
+            self.parse_transcripts()
+
+        if random_sample:
+            # use the random generator instance to randomly sample n plots
+            samples = self._random.choice(self._manifest_data, n_plots)
+        else:
+            # grab the first n samples in the manifest array
+            samples = self._manifest_data[:n_plots]
+
+        plots = []
+
+        for sample in samples:
+            audio, sample_rate = librosa.load(sample["audio_filepath"])
+
+            # create mel-spectrogram from audio data
+            spec = librosa.feature.melspectrogram(y=audio, sr=sample_rate)
+            if plot_db:
+                # convert spectrogram from power to decibels
+                spec = librosa.power_to_db(spec, ref=np.max)
+
+            # generate spectrogram plot
+            plot = librosa.display.specshow(
+                spec, sr=sample_rate, x_axis="time", y_axis="mel"
+            )
+
+            plots.append(plot)
+
+        return plots
 
     def calc_utterance_stats(self) -> UtteranceStats:
         """
