@@ -137,7 +137,7 @@ class Data(object):
 
         if random_sample:
             # use the random generator instance to randomly sample n plots
-            samples = self._random.choice(self._manifest_data, n_plots)
+            samples = self._random.choice(self._manifest_data, n_plots).tolist()
         else:
             # grab the first n samples in the manifest array
             samples = self._manifest_data[:n_plots]
@@ -150,10 +150,13 @@ class Data(object):
             # create mel-spectrogram from audio data
             spec = librosa.feature.melspectrogram(y=audio, sr=sample_rate)
             if plot_db:
-                # convert spectrogram from power to decibels
+                # convert spectrogram from power to decibels, with a reference of the
+                # maximum value in the audio signal
                 spec = librosa.power_to_db(spec, ref=np.max)
 
-            # generate spectrogram plot
+            # generate spectrogram plot:
+            #   * x axis - time in seconds
+            #   * y axis - mel-scale frequency
             plot = librosa.display.specshow(
                 spec, sr=sample_rate, x_axis="time", y_axis="mel"
             )
