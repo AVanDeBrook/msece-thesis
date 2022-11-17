@@ -53,50 +53,38 @@ def _reformat_labels(labels: List[str]) -> List[str]:
     return output
 
 
-def parse(root_path: Union[Path, str]) -> List[str]:
-    assert isinstance(root_path, Path) or isinstance(
-        root_path, str
-    ), f"root_path mus be a string of Path type"
-    if isinstance(root_path, str):
-        assert os.path.exists(root_path), "path does not exist"
-    else:
-        assert root_path.exists(), "path does not exist"
-
+def parse(transcript_path: str) -> List[str]:
+    # using pathlib to manage files/paths is easier in this case
+    transcript_path = Path(transcript_path).absolute()
     data = []
 
-    search_string = os.path.join(root_path, "**/list*.txt")
-    transcripts = glob.glob(search_string, recursive=True)
-    transcripts = [Path(path) for path in transcripts]
+    # wav files correspond to each line in the transcript file
+    # sorting by name ensures transcripts align to audio files 1-to-1
+    wav_files = sorted(
+        [
+            file.absolute()
+            for file in transcript_path.parent.iterdir()
+            if file.suffix == ".wav"
+        ],
+        key=lambda x: x.name,
+    )
 
-    for transcript in transcripts:
-        wav_files = sorted(
-            [
-                file.absolute()
-                for file in transcript.parent.iterdir()
-                if file.suffix == ".wav"
-            ],
-            key=lambda x: x.name,
+    # get labels from transcript file and reformat
+    with transcript_path.open("r") as f:
+        # skip first line (just lists how many labels are in the file)
+        labels = f.readlines()[1:]
+        # remove end of the line of each transcript
+        labels = [label[: label.find("(")].strip() for label in labels]
+        labels = _reformat_labels(labels)
+
+    # construct manifest info, save to data list as a dictionary
+    for wav, label in zip(wav_files, labels):
+        data.append(
+            {
+                "audio_filepath": str(wav),
+                "text": label,
+                "duration": float(librosa.get_duration(filename=str(wav))),
+            }
         )
 
-        with transcript.open("r") as f:
-            labels = f.readlines()[1:]
-            labels = [label[: label.find("(")].strip() for label in labels]
-            labels = _reformat_labels(labels)
-
-        for wav, label in zip(wav_files, labels):
-            data.append(
-                {
-                    "audio_filepath": str(wav),
-                    "text": label,
-                    "duration": float(librosa.get_duration(filename=str(wav))),
-                }
-            )
-
     return data
-
-
-if __name__ == "__main__":
-    manifest_all = parse("/data/s0293/S0293/speechdata")
-    os.makedirs("manifests", exist_ok=True)
-    with open("manifests/hiwire_all.json", "w") as manifest:
-        manifest.write("\n".join(manifest_all))

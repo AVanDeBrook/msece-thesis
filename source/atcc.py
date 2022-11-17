@@ -5,7 +5,7 @@ from typing import *
 from data import Data
 from data import atccutils
 from pathlib import Path
-
+from pprint import pprint
 
 class ATCCData(Data):
     """
@@ -21,11 +21,11 @@ class ATCCData(Data):
     to one sample in the data i.e. one transmission.
     """
 
-    _audio_glob: List[str]
-    _transcript_glob: List[str]
+    # _audio_glob: List[str]
+    # _transcript_glob: List[str]
 
-    def __init__(self, data_root: str):
-        super(Data, self).__init__(data_root)
+    def __init__(self, data_root: str, **kwargs):
+        super(ATCCData, self).__init__(data_root, **kwargs)
 
         # search strings for sphere and wav audio files
         sphere_glob_string = os.path.join(data_root, "**/data/audio/*.sph")
@@ -39,12 +39,6 @@ class ATCCData(Data):
         if len(sphere_glob) > 0 and len(self._audio_glob) == 0:
             self._convert_audio_files(sphere_glob)
             self._audio_glob = glob.glob(wav_glob_string, recursive=True)
-
-        # required fields to be extracted from dataset transcripts
-        self._required_fields = [
-            "TEXT",
-            "TIMES",
-        ]
 
         # paths to transcript files
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
@@ -107,19 +101,24 @@ class ATCCData(Data):
 
             # filter out tape-header, tape-tail, and comment blocks (and any other
             # extraneous info that could cause KeyErrors)
-            if self._required_fields in transcript_data:
-                audio_duration = (
-                    transcript_data["TIMES"]["end"] - transcript_data["TIMES"]["start"]
-                )
-                manifest_data.append(
-                    {
-                        "audio_filepath": str(audio),
-                        "text": transcript_data["TEXT"],
-                        "duration": float(audio_duration),
-                        "offset": float(transcript_data["TIMES"]["start"]),
-                    }
-                )
+            for datum in transcript_data:
+                if "TEXT" in datum.keys():
+                    audio_duration = (
+                        datum["TIMES"]["end"] - datum["TIMES"]["start"]
+                    )
+                    manifest_data.append(
+                        {
+                            "audio_filepath": str(audio),
+                            "text": datum["TEXT"],
+                            "duration": float(audio_duration),
+                            "offset": float(datum["TIMES"]["start"]),
+                        }
+                    )
 
         # save manifest data to class attribute before returning
-        self._manifest_data = manifest_data
+        ATCCData._manifest_data = manifest_data
         return manifest_data
+
+    @property
+    def name(self):
+        return "ATCC"

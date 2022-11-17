@@ -3,11 +3,15 @@ import json
 import librosa
 import librosa.display
 import matplotlib
+import matplotlib.collections
+import matplotlib.figure
+import seaborn.objects
 import seaborn.objects as so
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import namedtuple
 from typing import *
+from pathlib import Path
 
 
 UtteranceStats = namedtuple(
@@ -24,13 +28,10 @@ Named tuple for ease of access and return for utterance statistics for the datas
 """
 
 
-class Data(object):
+class Data:
     """
     Attributes:
     -----------
-    `_required_fields`: required fields to extract from data to be compatible with NeMo's
-    manifest format. Varies from dataset to dataset.
-
     `_manifest_data`: list of dictionary objects. Each object corresponds to one data sample
     and typically contains the following metadata:
     * `audio_filepath` (required) - path to the audio data (input data). Type: `str`,
@@ -39,9 +40,10 @@ class Data(object):
     * `text` (required) - transcript of the audio data (label/ground truth). Type: `str`
     * `offset` - if more than one sample is present in a single audio file, this field
     specifies its offset i.e. start time in the audio file. Type: `float`
+
+    `_random`:
     """
 
-    _required_fields: List[str]
     _manifest_data: List[Dict[str, Union[float, str]]]
     _random: np.random.Generator
 
@@ -56,7 +58,7 @@ class Data(object):
         assert os.path.exists(data_root)
 
         # create random number generator sequence with specified seed, if applicable
-        self._random = np.random.default_rng(random_seed)
+        Data._random = np.random.default_rng(random_seed)
 
     def parse_transcripts(self) -> Dict[str, Union[str, float]]:
         """
@@ -78,12 +80,14 @@ class Data(object):
         self,
         utterance_counts: List[int] = [],
         plot_type: Literal["matplotlib", "seaborn"] = "seaborn",
-    ) -> Union[so.Plot, plt.Figure]:
+    ) -> Union[seaborn.objects.Plot, matplotlib.figure.Figure]:
         """
         Calculates the number of utterances in each sample and generates a histogram.
 
         Utterance counts are determined by splitting each transcript on whitespace and
         calculating the length of the resulting list.
+
+        TODO: add flexibility for plot types.
 
         Arguments:
         ----------
@@ -109,7 +113,8 @@ class Data(object):
                 utterance_counts.append(len(words))
 
         p = so.Plot(utterance_counts).add(so.Bar(), so.Hist())
-        return p.plot()
+        p.label()
+        return p
 
     def create_spectrograms(
         self, n_plots=2, random_sample=True, plot_db=True
@@ -135,6 +140,8 @@ class Data(object):
         if len(self._manifest_data) == 0:
             self.parse_transcripts()
 
+        assert len(self._manifest_data) != 0
+
         if random_sample:
             # use the random generator instance to randomly sample n plots
             samples = self._random.choice(self._manifest_data, n_plots).tolist()
@@ -142,9 +149,8 @@ class Data(object):
             # grab the first n samples in the manifest array
             samples = self._manifest_data[:n_plots]
 
-        plots = []
-
-        for sample in samples:
+        fig, ax = plt.subplots(nrows=n_plots, ncols=1, sharex=True)
+        for i, sample in enumerate(samples):
             audio, sample_rate = librosa.load(sample["audio_filepath"])
 
             # create mel-spectrogram from audio data
@@ -157,13 +163,15 @@ class Data(object):
             # generate spectrogram plot:
             #   * x axis - time in seconds
             #   * y axis - mel-scale frequency
-            plot = librosa.display.specshow(
-                spec, sr=sample_rate, x_axis="time", y_axis="mel"
+            img = librosa.display.specshow(
+                spec, sr=sample_rate, x_axis="time", y_axis="mel", ax=ax[i]
             )
 
-            plots.append(plot)
+            ax[i].set(title="Mel-frequency Spectrogram")
+            ax[i].label_outer()
 
-        return plots
+        fig.colorbar(img, ax=ax, format="%+2.f dB")
+        return fig
 
     def calc_utterance_stats(self) -> UtteranceStats:
         """
@@ -215,7 +223,8 @@ class Data(object):
         --------
         None
         """
-        os.makedirs(outfile, exist_ok=make_dirs)
+        outfile = Path(outfile).absolute()
+        os.makedirs(str(outfile.parent), exist_ok=make_dirs)
 
         # check if manifest data has been generated
         if len(self._manifest_data) == 0:
@@ -223,7 +232,13 @@ class Data(object):
 
         # write each data point its own line in the file, in json format (conform to NeMo
         # manifest specification)
-        with open(outfile, "w") as manifest:
+        with open(str(outfile), "w") as manifest:
             for entry in self._manifest_data:
                 manifest.write(json.dumps(entry))
                 manifest.write("\n")
+
+    @property
+    def name(self) -> str:
+        raise NotImplementedError(
+            "This property should be implemented by the extending class"
+        )
