@@ -7,8 +7,15 @@ from data import atccutils
 from pathlib import Path
 from pprint import pprint
 
-class ATCCData(Data):
+class ATCCompleteData(Data):
     """
+    This class defines the data format of the Air Traffic Control Complete dataset and
+    provides functions for parsing the data into a common format for automatic data
+    analysis (see ~Data).
+
+    This dataset is described in depth and can be obtained here:
+        https://catalog.ldc.upenn.edu/LDC94S14A
+
     The following attributes are defined in this class due to the way the Air Traffic
     Control Complete dataset is formatted and distributed.
 
@@ -25,7 +32,7 @@ class ATCCData(Data):
     # _transcript_glob: List[str]
 
     def __init__(self, data_root: str, **kwargs):
-        super(ATCCData, self).__init__(data_root, **kwargs)
+        super(ATCCompleteData, self).__init__(data_root, **kwargs)
 
         # search strings for sphere and wav audio files
         sphere_glob_string = os.path.join(data_root, "**/data/audio/*.sph")
@@ -116,7 +123,7 @@ class ATCCData(Data):
                     )
 
         # save manifest data to class attribute before returning
-        ATCCData._manifest_data = manifest_data
+        ATCCompleteData._manifest_data = manifest_data
         return manifest_data
 
     @property

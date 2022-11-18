@@ -1,7 +1,7 @@
 from typing import *
 from hiwire import HIWIREData
 from data import Data, UtteranceStats
-from atcc import ATCCData
+from atccomplete import ATCCompleteData
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # root dataset paths corresponding to data analysis classes
     datasets: Dict[str, Data]  = {
         "/data/s0293/S0293/speechdata": HIWIREData,
-        "/data/atc0_comp_ldc945s14a/atc0_comp_raw": ATCCData,
+        "/data/atc0_comp_ldc945s14a/atc0_comp_raw": ATCCompleteData,
     }
 
     for root_path, data_class in datasets.items():

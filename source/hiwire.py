@@ -10,6 +10,9 @@ class HIWIREData(Data):
     The following attributes are defined in this class due to the specific formatting of
     the HIWIRE dataset.
 
+    This dataset can be obtained here:
+        https://catalogue.elra.info/en-us/repository/browse/ELRA-S0293/
+
     Attributes:
     -----------
     `_transcript_glob`: list of aths of transcript files that contain labels for the audio data in the dataset.
