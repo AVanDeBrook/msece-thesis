@@ -15,3 +15,6 @@
 # Python cache artifacts
 source/**/__pycache__
 source/**/*.pyc
+
+# VS Code workspace settings
+.vscode
