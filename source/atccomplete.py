@@ -7,6 +7,7 @@ from data import atccutils
 from pathlib import Path
 from pprint import pprint
 
+
 class ATCCompleteData(Data):
     """
     This class defines the data format of the Air Traffic Control Complete dataset and
@@ -110,9 +111,7 @@ class ATCCompleteData(Data):
             # extraneous info that could cause KeyErrors)
             for datum in transcript_data:
                 if "TEXT" in datum.keys():
-                    audio_duration = (
-                        datum["TIMES"]["end"] - datum["TIMES"]["start"]
-                    )
+                    audio_duration = datum["TIMES"]["end"] - datum["TIMES"]["start"]
                     manifest_data.append(
                         {
                             "audio_filepath": str(audio),
@@ -128,4 +127,4 @@ class ATCCompleteData(Data):
 
     @property
     def name(self):
-        return "ATCC"
+        return "Air Traffic Control Complete"

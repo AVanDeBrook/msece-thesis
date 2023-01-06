@@ -1,7 +1,4 @@
 import os
-import json
-import librosa
-import librosa.display
 import matplotlib
 import matplotlib.collections
 import matplotlib.figure
@@ -14,15 +11,11 @@ from typing import *
 from pathlib import Path
 
 
-UtteranceStats = namedtuple(
-    "UtteranceStats", ["utterances", "sample_duration", "samples"]
-)
+TokenStats = namedtuple("TokenStats", ["tokens", "samples"])
 """
 Named tuple for ease of access and return for utterance statistics for the dataset.
 
-`utterances` corresponds to the total number of utterances found in the dataset
-
-`sample_duration` corresponds to the cumulative duration of the samples in the dataset
+`tokens` corresponds to the total number of tokens found in the dataset
 
 `samples` corresponds to the number of samples in the dataset
 """
@@ -30,6 +23,12 @@ Named tuple for ease of access and return for utterance statistics for the datas
 
 class Data:
     """
+    Top-level Data class that provides several methods for processing and analyzing text datasets for NLP processes.
+
+    This class should be extended and the following methods/properties implemented for each dataset:
+    * `parse_transcripts`
+    * `name`
+
     Attributes:
     -----------
     `_manifest_data`: list of dictionary objects. Each object corresponds to one data sample
@@ -41,11 +40,14 @@ class Data:
     * `offset` - if more than one sample is present in a single audio file, this field
     specifies its offset i.e. start time in the audio file. Type: `float`
 
-    `_random`:
+    `_random`: numpy seeded RNG instance
+
+    `_normalized`: bool indicating whether samples in the dataset have been normalized/preprocessed
     """
 
     _manifest_data: List[Dict[str, Union[float, str]]]
     _random: np.random.Generator
+    _normalized: bool
 
     def __init__(self, data_root: str, random_seed: int = None):
         """
@@ -76,7 +78,7 @@ class Data:
             "is an issue with the class that extended the Data class."
         )
 
-    def create_utterance_hist(
+    def create_token_hist(
         self,
         utterance_counts: List[int] = [],
         plot_type: Literal["matplotlib", "seaborn"] = "seaborn",
@@ -116,64 +118,7 @@ class Data:
         p.label()
         return p
 
-    def create_spectrograms(
-        self, n_plots=2, random_sample=True, plot_db=True
-    ) -> List[matplotlib.collections.QuadMesh]:
-        """
-        Generates spectrogram n spectrogram plots, where n is specified by `n_plots`.
-
-        Arguments:
-        ----------
-        `n_plots`: number of plots to generate. Defaults to 2.
-
-        `random_sample`: whether to randomly sample `n_plots` from the manifest data.
-        Defaults to `True`. If `random_sample` is `False`, plots are generated in the
-        order the audio files appear in the manifest data.
-
-        `plot_db`: Whether to plot as a power spectrogram or dB. Defaults to `True`.
-
-        Returns:
-        --------
-        a list of size `n_plots` containing matplotlib plot objects for the spectrograms.
-        """
-        # check to see if manifest data has been generated (required for plots to be generated)
-        if len(self._manifest_data) == 0:
-            self.parse_transcripts()
-
-        assert len(self._manifest_data) != 0
-
-        if random_sample:
-            # use the random generator instance to randomly sample n plots
-            samples = self._random.choice(self._manifest_data, n_plots).tolist()
-        else:
-            # grab the first n samples in the manifest array
-            samples = self._manifest_data[:n_plots]
-
-        fig, ax = plt.subplots(nrows=n_plots, ncols=1, sharex=True)
-        for i, sample in enumerate(samples):
-            audio, sample_rate = librosa.load(sample["audio_filepath"])
-
-            # create mel-spectrogram from audio data
-            spec = librosa.feature.melspectrogram(y=audio, sr=sample_rate)
-            if plot_db:
-                # convert spectrogram from power to decibels, with a reference of the
-                # maximum value in the audio signal
-                spec = librosa.power_to_db(spec, ref=np.max)
-
-            # generate spectrogram plot:
-            #   * x axis - time in seconds
-            #   * y axis - mel-scale frequency
-            img = librosa.display.specshow(
-                spec, sr=sample_rate, x_axis="time", y_axis="mel", ax=ax[i]
-            )
-
-            ax[i].set(title="Mel-frequency Spectrogram")
-            ax[i].label_outer()
-
-        fig.colorbar(img, ax=ax, format="%+2.f dB")
-        return fig
-
-    def calc_utterance_stats(self) -> UtteranceStats:
+    def calc_token_stats(self) -> TokenStats:
         """
         Calculate the following:
         * Total number of utterances in the data
@@ -182,33 +127,60 @@ class Data:
 
         Returns:
         --------
-        an `UtteranceStats` named tuple with `utterances`, `sample_duration`, and
-        `samples` field corresponding to total utterance counts, total sample duration,
+        an `TokenStats` named tuple with `tokens` and `samples` field corresponding to total utterance counts, total sample duration,
         and total samples in the data
         """
         # check if manifest data has been generated
         if len(self._manifest_data) == 0:
             self.parse_transcripts()
 
-        total_utterance_count = 0
-        total_sample_duration = 0.0
+        total_token_count = 0
 
         for data in self._manifest_data:
-            # utterances are essentially just words in the transcripts, splitting on
-            # whitespace accomplishes the goal
             utterances = data["text"].split(" ")
-            duration = data["duration"]
+            total_token_count += len(utterances)
 
-            total_utterance_count += len(utterances)
-            total_sample_duration += duration
-
-        return UtteranceStats(
-            utterances=total_utterance_count,
-            sample_duration=total_sample_duration,
+        return TokenStats(
+            utterances=total_token_count,
             samples=len(self._manifest_data),
         )
 
-    def dump_manifest(self, outfile: str, make_dirs: bool = True):
+    def token_freq_analysis(self, normalize=False) -> Dict[str, Union[int, float]]:
+        """
+        Perform a token frequency analysis on the dataset (number of occurrences of each token throughout the dataset).
+
+        Arguments:
+        ----------
+        `normalize`: (optional)`bool`, whether to normalize values such that all frequencies add to 1.
+
+        Returns:
+        --------
+        `token_freqs` `dict` with tokens and number of occurrences of those tokens throughout the dataset.
+        """
+        if len(self._manifest_data) == 0:
+            self.parse_transcripts()
+
+        token_freqs = {}
+
+        for sample in self._manifest_data:
+            sample = sample["text"]
+            for token in sample.split():
+                if token in token_freqs.keys():
+                    token_freqs[token] += 1
+                else:
+                    token_freqs[token] = 1
+
+        if normalize:
+            num_tokens = len(token_freqs)
+            for token, freq in token_freqs.items():
+                token_freqs[token] = float(freq) / num_tokens
+
+        return token_freqs
+
+    def normalize_data(self):
+        pass
+
+    def dump_corpus(self, outfile: str, make_dirs: bool = True):
         """
         Dump input data paths, labels, and metadata to `outfile` in NeMo manifest format.
 
@@ -234,7 +206,7 @@ class Data:
         # manifest specification)
         with open(str(outfile), "w") as manifest:
             for entry in self._manifest_data:
-                manifest.write(json.dumps(entry))
+                manifest.write(entry["TEXT"])
                 manifest.write("\n")
 
     @property

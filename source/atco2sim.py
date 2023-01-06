@@ -1,5 +1,6 @@
 from data import Data
 
+
 class ATCO2SimData(Data):
     """
     This class defines the format for the Air Traffic Control 2 dataset and implements

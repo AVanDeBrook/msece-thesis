@@ -1,7 +1,9 @@
 from typing import *
-from hiwire import HIWIREData
-from data import Data, UtteranceStats
+from data import Data, TokenStats
 from atccomplete import ATCCompleteData
+from atcosim import ATCOSimData
+from atco2sim import ATCO2SimData
+from czechdataset import ZCUATCDataset
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
@@ -10,34 +12,24 @@ if __name__ == "__main__":
     RANDOM_SEED: int = 1
 
     # root dataset paths corresponding to data analysis classes
-    datasets: Dict[str, Data]  = {
-        "/data/s0293/S0293/speechdata": HIWIREData,
-        "/data/atc0_comp_ldc945s14a/atc0_comp_raw": ATCCompleteData,
+    datasets: Dict[str, Data] = {
+        "~/data/atc0_comp_LDC94S14A/atc0_comp": ATCCompleteData,
+        "~/data/ATCO": ATCOSimData,
+        "~/data/ATCO2": ATCO2SimData,
+        "~/data/ZCU_CZ_ATC": ZCUATCDataset,
     }
 
     for root_path, data_class in datasets.items():
-        data_analysis: Data = data_class(
-            data_root=root_path, random_seed=RANDOM_SEED
-        )
+        data_analysis: Data = data_class(data_root=root_path, random_seed=RANDOM_SEED)
 
         print(data_analysis.name)
         # parse transcripts in dataset
         data_analysis.parse_transcripts()
-        data_analysis.dump_manifest(f"{data_analysis.name}_all.json")
+        data_analysis.dump_corpus(f"{data_analysis.name}.txt")
         # utterance stats
-        # stats = data_analysis.calc_utterance_stats()
+        stats = data_analysis.calc_token_stats()
 
         # utterance distribution
-        # utterance_hist = data_analysis.create_utterance_hist()
-        # utterance_hist.plot(pyplot=True).show()
-
-        # spectrogram plots, randomly sampled (depending on the size of the dataset,
-        # this can take up a lot of time and memory)
-        spec = data_analysis.create_spectrograms(random_sample=False)
-        # reasoning for using plt.show() instead of spec.show() from matplotlib docs:
-        # "If you're running a pure python shell or executing a non-GUI python script,
-        #  you should use matplotlib.pyplot.show instead, which takes care of managing
-        #  the event loop for you."
+        utterance_hist = data_analysis.create_token_hist()
+        utterance_hist.plot(pyplot=True)
         plt.show()
-        # # spectrogram plots, in order
-        # data_analysis.create_spectrograms(random_sample=False)
