@@ -1,0 +1,91 @@
+\documentclass[12pt]{article}
+
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{newtxtext}
+\usepackage{setspace}
+\usepackage{sectsty}
+\usepackage[numbib]{tocbibind}
+\usepackage[lmargin=1.25in,rmargin=1.25in,tmargin=1.0in,bmargin=1.0in]{geometry}
+
+\settowidth{\parindent}{}
+
+\begin{document}
+    % Riddle thesis title page
+    \begin{center}
+        \LARGE
+        \textbf{
+            \textit{
+                Language Modeling of Aviation Communications\\
+            }
+        }
+
+        \vspace*{0.2in}
+
+        \normalsize
+        by\\
+        \textit{Aaron P.~Van De Brook}\\
+
+        \vspace*{0.25in}
+
+    \end{center}
+    This thesis was prepared under the direction of the candidate's thesis
+    committee chairman, \underline{Dr.~Jianhua Liu}, Department of \underline{Electrical Engineering \&
+    Computer Science}, and has been approved by the members of the thesis committee.
+    It was submitted to the Department of Electrical Engineering \& Computer Science
+    and was accepted in partial fulfillment of the requirements for the degree of
+    Masters of Electrical \& Computer Engineering.
+
+    % Signature lines/committee members
+    \begin{center}
+        \begin{minipage}{3in}
+            \vspace*{0.25in}
+            THESIS COMMITTEE:\\
+            \vspace*{0.25in}
+            \hrule
+            \vspace*{2pt}
+            Jianhua Liu, Ph.D.\\
+            Committee Chairman\\
+            \vspace*{0.75in}
+            \hrule
+            \vspace*{2pt}
+            Prashant Shekhar, Ph.D.\\
+            Committee Member\\
+            \vspace*{0.75in}
+            \hrule
+            \vspace*{2pt}
+            Andrew Schneider, Ph.D.\\
+            Committee Member\\
+            \vspace*{0.75in}
+            \hrule
+            \vspace*{2pt}
+            Farahzad Behi\\
+            Department Chair, Electrical Engineering \& Computer Science\\
+            \vspace*{0.75in}
+            \hrule
+            \vspace*{2pt}
+            Associate Vice President for Academics
+        \end{minipage}
+    \end{center}
+    \newpage
+    \tableofcontents
+    \newpage
+    \doublespacing
+
+    \section{Abstract}
+    \section{Introduction}
+    \section{Literature Review}
+    \section{Methodology}
+        \subsection{Data Source(s)}
+        \subsection{Data Analysis}
+        \subsection{Preprocessing}
+    \section{Results}
+    \section{Discussion}
+    \section{Conclusion}
+
+    \newpage
+    \bibliography{refs}
+    \bibliographystyle{plain}
+
+\end{document}

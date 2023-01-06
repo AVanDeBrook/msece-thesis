@@ -1,3 +1,6 @@
+# VSCode workspace settings
+.vscode
+
 # Latex/latexmk build artifacts
 **/*.aux
 **/*.bbl
@@ -7,6 +10,7 @@
 **/*.log
 **/*.synctex.gz
 **/*.out
+**/*.toc
 
 # Ignore PDFs as well; these will be uploaded to the releases section on GitHub
 # as the proposal and thesis drafts become more complete
