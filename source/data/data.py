@@ -45,7 +45,7 @@ class Data:
     `_normalized`: bool indicating whether samples in the dataset have been normalized/preprocessed
     """
 
-    _manifest_data: List[Dict[str, Union[float, str]]]
+    data: List[Dict[str, Union[float, str]]]
     _random: np.random.Generator
     _normalized: bool
 
@@ -62,7 +62,7 @@ class Data:
         # create random number generator sequence with specified seed, if applicable
         Data._random = np.random.default_rng(random_seed)
 
-    def parse_transcripts(self) -> Dict[str, Union[str, float]]:
+    def parse_transcripts(self) -> List[str]:
         """
         This method must be overridden and implemented for each implementation of this class
         for datasets.
@@ -104,13 +104,13 @@ class Data:
         """
         # check if manifest data has been generated, parse transcripts and generate
         # manifest data if not
-        if len(self._manifest_data) == 0:
+        if len(self.data) == 0:
             self.parse_transcripts()
 
         # check if utterance counts (optional arg) has been provided, calculate utterance
         # counts from transcriptions
         if len(utterance_counts) == 0:
-            for data in self._manifest_data:
+            for data in self.data:
                 words = data["text"].split(" ")
                 utterance_counts.append(len(words))
 
@@ -131,18 +131,18 @@ class Data:
         and total samples in the data
         """
         # check if manifest data has been generated
-        if len(self._manifest_data) == 0:
+        if len(self.data) == 0:
             self.parse_transcripts()
 
         total_token_count = 0
 
-        for data in self._manifest_data:
+        for data in self.data:
             utterances = data["text"].split(" ")
             total_token_count += len(utterances)
 
         return TokenStats(
             utterances=total_token_count,
-            samples=len(self._manifest_data),
+            samples=len(self.data),
         )
 
     def token_freq_analysis(self, normalize=False) -> Dict[str, Union[int, float]]:
@@ -157,12 +157,12 @@ class Data:
         --------
         `token_freqs` `dict` with tokens and number of occurrences of those tokens throughout the dataset.
         """
-        if len(self._manifest_data) == 0:
+        if len(self.data) == 0:
             self.parse_transcripts()
 
         token_freqs = {}
 
-        for sample in self._manifest_data:
+        for sample in self.data:
             sample = sample["text"]
             for token in sample.split():
                 if token in token_freqs.keys():
@@ -199,14 +199,14 @@ class Data:
         os.makedirs(str(outfile.parent), exist_ok=make_dirs)
 
         # check if manifest data has been generated
-        if len(self._manifest_data) == 0:
+        if len(self.data) == 0:
             self.parse_transcripts()
 
         # write each data point its own line in the file, in json format (conform to NeMo
         # manifest specification)
         with open(str(outfile), "w") as manifest:
-            for entry in self._manifest_data:
-                manifest.write(entry["TEXT"])
+            for entry in self.data:
+                manifest.write(entry)
                 manifest.write("\n")
 
     @property

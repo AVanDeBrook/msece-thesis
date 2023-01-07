@@ -96,7 +96,7 @@ class ATCCompleteData(Data):
         --------
         A list of dictionary objects.
         """
-        manifest_data = []
+        data = []
 
         for text, audio in zip(self._transcript_glob, self._audio_glob):
             # need absolute file path for compliance with NeMo manifest format
@@ -111,19 +111,11 @@ class ATCCompleteData(Data):
             # extraneous info that could cause KeyErrors)
             for datum in transcript_data:
                 if "TEXT" in datum.keys():
-                    audio_duration = datum["TIMES"]["end"] - datum["TIMES"]["start"]
-                    manifest_data.append(
-                        {
-                            "audio_filepath": str(audio),
-                            "text": datum["TEXT"],
-                            "duration": float(audio_duration),
-                            "offset": float(datum["TIMES"]["start"]),
-                        }
-                    )
+                    data.append(datum["TEXT"])
 
         # save manifest data to class attribute before returning
-        ATCCompleteData._manifest_data = manifest_data
-        return manifest_data
+        ATCCompleteData.data = data
+        return data
 
     @property
     def name(self):

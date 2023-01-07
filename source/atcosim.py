@@ -1,4 +1,9 @@
+import os
+import glob
+import re
 from data import Data
+from typing import *
+from tokenizers.normalizers import NFD
 
 
 class ATCOSimData(Data):
@@ -8,10 +13,49 @@ class ATCOSimData(Data):
 
     This dataset is described in more depth and can be obtained here:
         https://www.spsc.tugraz.at/databases-and-tools/atcosim-air-traffic-control-simulation-speech-corpus.html
+
+    The data is shipped in iso (disk) format. To extract, mount the disk onto the file system and copy the data
+    into another directory.
+    ```
+    mount -t iso9660 -o loop atcosim.iso atcosimmount
+    cp -r atcosimmount .
+    ```
     """
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCOSimData, self).__init__(data_root, **kwargs)
+        self.text_glob = glob.glob(os.path.join(data_root, "txtdata/**/*.txt"), recursive=True)
+        self.text_glob.remove(os.path.join(data_root, "txtdata/wordlist.txt"))
+
+    def parse_transcripts(self) -> List[str]:
+        data = []
+
+        # regular expressions for removing transcript annotations
+        xml_tag = re.compile(r"(<[A-Z]+>|</[A-Z]+>)")
+        annotation_tag = re.compile(r"(\[[A-Z]+\])")
+        special_chars = re.compile(r"[=~@]")
+        hesitation_tokens = re.compile(r"(ah|hm|ahm|yeah|aha|nah|ohh)")
+
+        for file in self.text_glob:
+            # read data from file
+            with open(file, "r") as f:
+                text = "".join([t.strip() for t in f.readlines()])
+
+            # remove transcript annotations
+            text = xml_tag.sub("", text)
+            text = annotation_tag.sub("", text)
+            text = special_chars.sub("", text)
+            text = hesitation_tokens.sub("", text)
+            # trim leading a trailing whitespace
+            text = text.strip()
+
+            # some transcripts are empty after removing transcriber
+            # annotations
+            if len(text) > 0:
+                data.append(text)
+
+        ATCOSimData.data = data
+        return data
 
     @property
     def name(self):

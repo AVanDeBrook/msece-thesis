@@ -13,10 +13,10 @@ if __name__ == "__main__":
 
     # root dataset paths corresponding to data analysis classes
     datasets: Dict[str, Data] = {
-        "~/data/atc0_comp_LDC94S14A/atc0_comp": ATCCompleteData,
-        "~/data/ATCO": ATCOSimData,
-        "~/data/ATCO2": ATCO2SimData,
-        "~/data/ZCU_CZ_ATC": ZCUATCDataset,
+        "/home/avandebrook/data/atc0_comp_LDC94S14A/atc0_comp": ATCCompleteData,
+        "/home/avandebrook/data/ATCO/": ATCOSimData,
+        "/home/avandebrook/data/ATCO2": ATCO2SimData,
+        # "~/data/ZCU_CZ_ATC": ZCUATCDataset,
     }
 
     for root_path, data_class in datasets.items():
@@ -27,9 +27,9 @@ if __name__ == "__main__":
         data_analysis.parse_transcripts()
         data_analysis.dump_corpus(f"{data_analysis.name}.txt")
         # utterance stats
-        stats = data_analysis.calc_token_stats()
+        # stats = data_analysis.calc_token_stats()
 
         # utterance distribution
-        utterance_hist = data_analysis.create_token_hist()
-        utterance_hist.plot(pyplot=True)
-        plt.show()
+        # utterance_hist = data_analysis.create_token_hist()
+        # utterance_hist.plot(pyplot=True)
+        # plt.show()
