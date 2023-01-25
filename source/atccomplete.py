@@ -52,41 +52,6 @@ class ATCCompleteData(Data):
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
         self._transcript_glob = glob.glob(transcript_glob_string, recursive=True)
 
-    def _convert_audio_files(self, audio_paths: List[str]):
-        """
-        Converts files from NIST Sphere format to Microsoft WAV format. **Requires ffmpeg to be installed**.
-
-        Arguments:
-        ----------
-        `audio_paths`: paths to audio files to convert.
-
-        Returns:
-        --------
-        None
-        """
-        # ffmpeg required to perform the conversion from sphere to wav
-        if os.system("command -v ffmpeg") != 0:
-            raise Exception(
-                "Cannot find ffmpeg. Please install ffmpeg (and add to the system path, if applicable) and rerun the script."
-            )
-
-        # convert each audio file in sphere format to wav format
-        for file in audio_paths:
-            if os.path.exists(file):
-                ffmpeg_command = [
-                    "ffmpeg",
-                    # force ffmpeg to assume yes to all y/n inputs
-                    "-y",
-                    "-i",
-                    file,
-                    # resample from input format to 16kHz where applicable
-                    "-ar",
-                    "16000",
-                    # output file with same name and wav extension
-                    file.replace("sph", "wav"),
-                ]
-                subprocess.run(ffmpeg_command)
-
     def parse_transcripts(self) -> List[Dict[str, Union[str, float]]]:
         """
         Parse data indices in transcript files into dictionary objects with required info

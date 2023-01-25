@@ -1,4 +1,10 @@
+import glob
+import os
+import re
 from data import Data
+from typing import *
+from xml.etree import ElementTree
+from pprint import pprint
 
 
 class ATCO2SimData(Data):
@@ -8,10 +14,70 @@ class ATCO2SimData(Data):
 
     This dataset is described in more depth and can be obtained here:
         https://www.atco2.org/data
+
+    See readme.txt in the root of the dataset for full description of data, including
+    audio and transcription formats. Notes on the transcript format can be found in
+    `~parse_transcripts`.
     """
 
-    def __init__(self, data_root: str):
-        super(ATCO2SimData, self).__init__(data_root)
+    def __init__(self, data_root: str, **kwargs):
+        super(ATCO2SimData, self).__init__(data_root, **kwargs)
+
+        self.transcripts = glob.glob(os.path.join(data_root, "DATA/*.xml"))
+        assert len(self.transcripts) != 0
+
+    def parse_transcripts(self) -> List[str]:
+        """
+        Data is labeled in an XML hierarchy. "<data>" is the root node which is made up
+        of "<segments>" which contain the following:
+        - start/end times -- "<start>" "<end>", respectively
+        - speaker ID -- "<speaker>"
+        - speaker label -- "<speaker_label>"
+        - transcription -- "<text>"
+        - tags:
+            - <correct_transcript> -- do not use data instance if set to 0
+            - <correct_tagging> -- "do not use word tagging if set to 0"
+            - <non_english> -- do not use data instance if set to 1
+
+        Transcription manual with full description here: https://www.spokendata.com/atco2/annotation-manual
+        """
+        data = []
+
+        annotation_tag = re.compile(
+            r"(\[#[A-Za-z]+\]|\[/#[A-Za-z]+\]|\[[A-Za-z]+\]|\[/[A-Za-z]+\])"
+        )
+
+        for transcript_path in self.transcripts:
+            # get the root data element
+            transcript_root = ElementTree.parse(transcript_path).getroot()
+            # iterate on child nodes (should be made up of <segment> tags only)
+            segment_nodes = transcript_root.findall("segment")
+            assert segment_nodes is not None
+
+            # iterate through all segments and extract "<text>" tags
+            for segment in segment_nodes:
+                tag_nodes = segment.find("tags")
+                assert tag_nodes is not None
+
+                # check for validity tags (correct_transcript, non_english)
+                correct_transcript = tag_nodes.find("correct_transcript")
+                non_english = tag_nodes.find("non_english")
+                if correct_transcript is not None and correct_transcript.text == "0":
+                    continue
+                if non_english is not None and non_english.text == "1":
+                    continue
+
+                # get and process text
+                for text_node in segment.iterfind("text"):
+                    assert text_node is not None
+                    # fetch text from the xml tag
+                    text = text_node.text
+                    # remove transcript annotations
+                    text = annotation_tag.sub("", text).strip()
+                    data.append(text)
+
+        ATCO2SimData.data = data
+        return data
 
     def name(self) -> str:
         return "ATCO2"

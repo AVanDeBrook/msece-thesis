@@ -24,7 +24,9 @@ class ATCOSimData(Data):
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCOSimData, self).__init__(data_root, **kwargs)
-        self.text_glob = glob.glob(os.path.join(data_root, "txtdata/**/*.txt"), recursive=True)
+        self.text_glob = glob.glob(
+            os.path.join(data_root, "txtdata/**/*.txt"), recursive=True
+        )
         self.text_glob.remove(os.path.join(data_root, "txtdata/wordlist.txt"))
 
     def parse_transcripts(self) -> List[str]:

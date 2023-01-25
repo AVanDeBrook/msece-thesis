@@ -57,7 +57,7 @@ class Data:
         audio and transcript data can be found. Varies by dataset and implementation.
         """
         assert isinstance(data_root, str)
-        assert os.path.exists(data_root)
+        assert os.path.exists(data_root), f"Path does not exist {data_root}"
 
         # create random number generator sequence with specified seed, if applicable
         Data._random = np.random.default_rng(random_seed)
