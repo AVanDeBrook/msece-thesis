@@ -1,4 +1,5 @@
 from typing import *
+from pprint import pprint
 from data import Data, TokenStats
 from atccomplete import ATCCompleteData
 from atcosim import ATCOSimData
@@ -26,12 +27,9 @@ if __name__ == "__main__":
         print(data_analysis.name)
         # parse transcripts in dataset
         data_analysis.parse_transcripts()
+        token_freq = data_analysis.token_freq_analysis(normalize=True)
+        pprint(token_freq)
         # data_analysis.dump_corpus(f"{data_analysis.name}.txt")
-        # utterance stats
-        # stats = data_analysis.calc_token_stats()
-
-        # utterance distribution
-        # utterance_hist = data_analysis.create_token_hist()
-        # utterance_hist.plot(pyplot=True)
-        # plt.show()
+        data_analysis.create_token_hist()
+        plt.show()
         print("Done")

@@ -16,11 +16,10 @@ class ZCUATCDataset(Data):
     def __init__(self, data_root: str, **kwargs):
         super(ZCUATCDataset, self).__init__(data_root, **kwargs)
 
-        self.transcript_paths = glob.glob(
-            os.path.join(data_root, "*.trs")
-        )
-        assert len(self.transcript_paths) != 0, f"Cannot find transcripts in data_root: {data_root}"
-
+        self.transcript_paths = glob.glob(os.path.join(data_root, "*.trs"))
+        assert (
+            len(self.transcript_paths) != 0
+        ), f"Cannot find transcripts in data_root: {data_root}"
 
     def parse_transcripts(self) -> List[str]:
         """
@@ -57,7 +56,9 @@ class ZCUATCDataset(Data):
                 document = ElementTree.parse(path).getroot()
 
             # find <Sync> tags, extract text, reformat/clean
-            for sync_node in document.iterfind(".//Sync"): # searches all subelements for Sync nodes
+            for sync_node in document.iterfind(
+                ".//Sync"
+            ):  # searches all subelements for Sync nodes
                 assert sync_node.tag == "Sync"
                 assert len(sync_node.tail) != 0
 

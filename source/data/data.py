@@ -111,7 +111,7 @@ class Data:
         # counts from transcriptions
         if len(utterance_counts) == 0:
             for data in self.data:
-                words = data["text"].split(" ")
+                words = data.split(" ")
                 utterance_counts.append(len(words))
 
         p = so.Plot(utterance_counts).add(so.Bar(), so.Hist())
@@ -145,7 +145,7 @@ class Data:
             samples=len(self.data),
         )
 
-    def token_freq_analysis(self, normalize=False) -> Dict[str, Union[int, float]]:
+    def token_freq_analysis(self, normalize=False) -> Dict[str, Union[int, List]]:
         """
         Perform a token frequency analysis on the dataset (number of occurrences of each token throughout the dataset).
 
@@ -155,25 +155,36 @@ class Data:
 
         Returns:
         --------
-        `token_freqs` `dict` with tokens and number of occurrences of those tokens throughout the dataset.
+        `token_freqs`: `dict` with tokens and number of occurrences of those tokens throughout the dataset.
+        If `normalize` is set to `True` a dictionary with tokens corresponding to a list is returned e.g.
+        ```
+        {
+            "token": [24, 0.0486] # token with corresponding occurences and frequencies
+        }
+        ```
+
         """
         if len(self.data) == 0:
             self.parse_transcripts()
 
+        # tokens corresponding to occurences/frequencies
         token_freqs = {}
 
         for sample in self.data:
-            sample = sample["text"]
+            # sample = sample["text"]
             for token in sample.split():
                 if token in token_freqs.keys():
+                    # increment occurences if there is already an entry
                     token_freqs[token] += 1
                 else:
+                    # add entry if one does not exist already
                     token_freqs[token] = 1
 
         if normalize:
+            # convert from token occureces to frequencies: (# of token occurences / # of tokens)
             num_tokens = len(token_freqs)
             for token, freq in token_freqs.items():
-                token_freqs[token] = float(freq) / num_tokens
+                token_freqs[token] = [freq, float(freq) / num_tokens]
 
         return token_freqs
 
