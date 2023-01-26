@@ -13,10 +13,11 @@ if __name__ == "__main__":
 
     # root dataset paths corresponding to data analysis classes
     datasets: Dict[str, Data] = {
-        "/home/avandebrook/data/atc0_comp_LDC94S14A/atc0_comp": ATCCompleteData,
-        "/home/avandebrook/data/ATCO/": ATCOSimData,
-        "/home/avandebrook/data/ATCO2": ATCO2SimData,
-        # "~/data/ZCU_CZ_ATC": ZCUATCDataset,
+        # TODO: find a way to sync file paths across computers (shell/env var, config file?)
+        "/home/students/vandebra/programming/thesis_data/atc0_comp": ATCCompleteData,
+        "/home/students/vandebra/programming/thesis_data/atcosim/": ATCOSimData,
+        "/home/students/vandebra/programming/thesis_data/ATCO2-ASRdataset-v1_beta": ATCO2SimData,
+        "/home/students/vandebra/programming/thesis_data/ZCU_CZ_ATC": ZCUATCDataset,
     }
 
     for root_path, data_class in datasets.items():
@@ -25,7 +26,7 @@ if __name__ == "__main__":
         print(data_analysis.name)
         # parse transcripts in dataset
         data_analysis.parse_transcripts()
-        data_analysis.dump_corpus(f"{data_analysis.name}.txt")
+        # data_analysis.dump_corpus(f"{data_analysis.name}.txt")
         # utterance stats
         # stats = data_analysis.calc_token_stats()
 
@@ -33,3 +34,4 @@ if __name__ == "__main__":
         # utterance_hist = data_analysis.create_token_hist()
         # utterance_hist.plot(pyplot=True)
         # plt.show()
+        print("Done")
