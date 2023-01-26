@@ -79,5 +79,6 @@ class ATCO2SimData(Data):
         ATCO2SimData.data = data
         return data
 
+    @property
     def name(self) -> str:
         return "ATCO2"
