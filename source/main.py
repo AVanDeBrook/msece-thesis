@@ -1,10 +1,6 @@
 from typing import *
 from pprint import pprint
-from data import Data, TokenStats
-from atccomplete import ATCCompleteData
-from atcosim import ATCOSimData
-from atco2sim import ATCO2SimData
-from czechdataset import ZCUATCDataset
+from data import Data, ATCCompleteData, ATCOSimData, ATCO2SimData, ZCUATCDataset
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
