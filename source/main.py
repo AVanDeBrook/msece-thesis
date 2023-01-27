@@ -20,7 +20,6 @@ if __name__ == "__main__":
     for root_path, data_class in datasets.items():
         data_analysis: Data = data_class(data_root=root_path, random_seed=RANDOM_SEED)
 
-        print(data_analysis.name)
         # parse transcripts in dataset
         data_analysis.parse_transcripts()
         token_freq = data_analysis.token_freq_analysis(normalize=True)

@@ -191,7 +191,7 @@ class Data:
     def normalize_data(self):
         pass
 
-    def dump_corpus(self, outfile: str, make_dirs: bool = True):
+    def dump_corpus(self, outfile: str, make_dirs: bool = True, return_list: bool = False) -> Union[None, List[str]]:
         """
         Dump input data paths, labels, and metadata to `outfile` in NeMo manifest format.
 
@@ -201,6 +201,8 @@ class Data:
 
         `make_dirs`: (optional) `bool`, whether to make nonexistent parent directories
         in `outfile`. Defaults to `True`.
+
+        `return_list`: Returns a list of strings instead of creating and dumping to a file.
 
         Returns:
         --------
@@ -219,6 +221,9 @@ class Data:
             for entry in self.data:
                 manifest.write(entry)
                 manifest.write("\n")
+
+        if return_list:
+            return self.data
 
     @property
     def name(self) -> str:
