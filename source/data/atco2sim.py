@@ -58,6 +58,8 @@ class ATCO2SimData(Data):
         prefixes = re.compile(r"(\([A-Za-z]+\-\))")
         suffixes = re.compile(r"(\(\-[A-Za-z]+\))")
 
+        non_english_tag = re.compile(r"(\[[#]NE\s\])")
+
         for transcript_path in self.transcripts:
             # get the root data element
             transcript_root = ElementTree.parse(transcript_path).getroot()
@@ -83,7 +85,10 @@ class ATCO2SimData(Data):
                 for text_node in segment.iterfind("text"):
                     assert text_node is not None
                     # fetch text from the xml tag
-                    text = text_node.text
+                    text = text_node.text.lower()
+                    # skip unlabeled non-english transcripts
+                    if non_english_tag.match(text) is not None:
+                        continue
                     # remove transcript annotations
                     text = annotation_tag.sub("", text)
 

@@ -33,7 +33,8 @@ class ATCCompleteData(Data):
         ("0h", "oh"),
         ("0r", "or"),
         ("8'll", "i'll"),
-        ("[sounds", "sounds"),
+        ("kil0", "kilo"),
+        ("altimeter;;;'s", "altimeter's"),
         ("bye]", "bye"),
         (" -", ""),
         (" 3 ", "three"),
@@ -44,6 +45,8 @@ class ATCCompleteData(Data):
         ("aal891", ""),
         # repeated words/hesitations
         ("ai", ""),
+        ("cir-", ""),
+        ("cli-", "")
     ]
 
     # _audio_glob: List[str]
@@ -65,6 +68,7 @@ class ATCCompleteData(Data):
         """
         data = []
 
+        sounds_like_tag = re.compile(r"(\[sounds like(?P<guess>[A-Za-z\s\d]+)\]*)")
         annotation = re.compile(r"(\[[A-Za-z\s]+\])")
 
         for text in self._transcript_glob:
@@ -81,6 +85,11 @@ class ATCCompleteData(Data):
                     # line breaks
                     text = "\n".join([t.strip() for t in text.split("//")])
                     text = "\n".join([t.strip() for t in text.split("/")])
+
+                    # transcriber guesses
+                    sounds_like_match = sounds_like_tag.match(text)
+                    if sounds_like_match is not None:
+                        text = sounds_like_match["guess"].strip()
 
                     # typos in transcripts
                     for typo, correction in self.transcript_corrections:

@@ -3,7 +3,6 @@ import glob
 import re
 from data import Data
 from typing import *
-from tokenizers.normalizers import NFD
 
 
 class ATCOSimData(Data):
@@ -21,6 +20,11 @@ class ATCOSimData(Data):
     cp -r atcosimmount .
     ```
     """
+
+    transcription_corrections = [
+        ("kil0", "kilo"),
+        ("ai", "air"),
+    ]
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCOSimData, self).__init__(data_root, **kwargs)
@@ -43,24 +47,36 @@ class ATCOSimData(Data):
         annotation_tag = re.compile(r"(\[[A-Z]+\])")
         special_chars = re.compile(r"[=~@]")
         hesitation_tokens = re.compile(r"(ah|hm|ahm|yeah|aha|nah|ohh)")
+        non_english_tags = re.compile(r"(<FL>.</FL>)")
 
         for file in self.text_glob:
             # read data from file
             with open(file, "r") as f:
                 text = "".join([t.strip() for t in f.readlines()])
 
+            # skip non-english samples
+            if non_english_tags.match(text):
+                continue
+
             # remove transcript annotations
             text = xml_tag.sub("", text)
             text = annotation_tag.sub("", text)
             text = special_chars.sub("", text)
             text = hesitation_tokens.sub("", text)
-            # trim leading a trailing whitespace
-            text = text.strip()
+
+            # lower case, remove whitespace
+            text = text.lower().strip()
+
+            for typo, correction in self.transcription_corrections:
+                if typo in text:
+                    print(text)
+                    text = text.replace(typo, correction)
 
             # some transcripts are empty after removing transcriber
             # annotations
             if len(text) > 0:
                 data.append(text)
+
 
         ATCOSimData.data = data
         return data
