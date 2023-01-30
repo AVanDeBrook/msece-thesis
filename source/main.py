@@ -10,6 +10,8 @@ if __name__ == "__main__":
     # in results
     RANDOM_SEED: int = 1
 
+    plt.style.use("ggplot")
+
     # root dataset paths corresponding to data analysis classes
     datasets: Dict[str, Data] = {
         # TODO: find a way to sync file paths across computers (shell/env var, config file?)
@@ -38,8 +40,7 @@ if __name__ == "__main__":
         pprint(token_freq)
         # data_analysis.dump_corpus(f"{data_analysis.name}.txt")
         figure = data_analysis.create_token_hist()
-        # matplotlib show if matplotlib, otherwise use show method from seaborn plot
-        plt.show() if isinstance(figure, Figure) else figure.show()
+        plt.show()
         print("Done")
 
     print(f"Total unique tokens (across all datasets analyzed: {num_unique_tokens}")

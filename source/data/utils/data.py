@@ -2,8 +2,6 @@ import os
 import matplotlib
 import matplotlib.collections
 import matplotlib.figure
-import seaborn.objects
-import seaborn.objects as so
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import namedtuple
@@ -80,9 +78,8 @@ class Data:
 
     def create_token_hist(
         self,
-        utterance_counts: List[int] = [],
-        plot_type: Literal["matplotlib", "seaborn"] = "seaborn",
-    ) -> Union[seaborn.objects.Plot, matplotlib.figure.Figure]:
+        token_counts: List[int] = [],
+    ) -> matplotlib.figure.Figure:
         """
         Calculates the number of utterances in each sample and generates a histogram.
 
@@ -103,6 +100,8 @@ class Data:
         --------
         Either a `matplotlib.pyplot.Figure` or `seaborn.object.Plot` instance, depending on the value of `plot_type`.
         """
+        # Clear figure and axes
+        plt.clf(), plt.cla()
         # check if manifest data has been generated, parse transcripts and generate
         # manifest data if not
         if len(self.data) == 0:
@@ -110,13 +109,17 @@ class Data:
 
         # check if utterance counts (optional arg) has been provided, calculate utterance
         # counts from transcriptions
-        if len(utterance_counts) == 0:
+        if len(token_counts) == 0:
             for data in self.data:
                 words = data.split(" ")
-                utterance_counts.append(len(words))
+                token_counts.append(len(words))
 
-        p = so.Plot(utterance_counts).add(so.Bar(), so.Hist())
-        return p.label(x="Bins", y="Counts", title=f"Tokens per Sample in {self.name}")
+        histogram = plt.hist(token_counts)
+        plt.xlabel("Bins")
+        plt.ylabel("Token Counts")
+        plt.title(f"Tokens per Sample in {self.name}")
+
+        return histogram
 
     def calc_token_stats(self) -> TokenStats:
         """
