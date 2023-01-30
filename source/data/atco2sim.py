@@ -43,9 +43,20 @@ class ATCO2SimData(Data):
         """
         data = []
 
+        # two main groups of open/closing pairs
+        # TODO: cut this down; this pattern does not need to be this long
         annotation_tag = re.compile(
-            r"(\[#[A-Za-z]+\]|\[/#[A-Za-z]+\]|\[[A-Za-z]+\]|\[/[A-Za-z]+\])"
+            # begins with '#'
+            r"(\[#[A-Za-z\-\\]+\]|"
+            r"\[/#[A-Za-z\-\\]+\]|"
+            # does not begin with '#'
+            r"\[[A-Za-z\-\\]+\]|"
+            r"\[/[A-Za-z\-\\]+\])|"
         )
+
+        # each pattern has two closures for substitution operation later
+        prefixes = re.compile(r"(\((?P<word>[A-Za-z]+)\-\))")
+        suffixes = re.compile(r"(\(\-(?P<word>[A-Za-z]+))")
 
         for transcript_path in self.transcripts:
             # get the root data element
@@ -62,6 +73,7 @@ class ATCO2SimData(Data):
                 # check for validity tags (correct_transcript, non_english)
                 correct_transcript = tag_nodes.find("correct_transcript")
                 non_english = tag_nodes.find("non_english")
+                # skip/exclude the sample is the transcript metadata tells us to
                 if correct_transcript is not None and correct_transcript.text == "0":
                     continue
                 if non_english is not None and non_english.text == "1":
@@ -73,8 +85,27 @@ class ATCO2SimData(Data):
                     # fetch text from the xml tag
                     text = text_node.text
                     # remove transcript annotations
-                    text = annotation_tag.sub("", text).strip()
-                    data.append(text)
+                    text = annotation_tag.sub("", text)
+
+                    # this is annoying just bear with me:
+                    # -----------------------------------
+                    # match the pattern to the text (find the pattern in the
+                    # string that matches the named closure, if it exists)
+                    suffix_match = suffixes.match(text)
+                    # substitute the matched word for the match pattern
+                    # i.e. replace change(-ed) with changed
+                    if suffix_match is not None:
+                        text = suffixes.sub(suffix_match["word"], text)
+
+                    # same as above just with prefixes instead of suffixes
+                    # TODO: still a bug present for replacing prefixes
+                    prefix_match = prefixes.match(text)
+                    if prefix_match is not None:
+                        text = prefixes.sub(prefix_match["word"], text)
+                    # -----------------------------------
+                    # /annoyance
+
+                    data.append(text.strip())
 
         ATCO2SimData.data = data
         return data

@@ -90,6 +90,7 @@ class Data:
         calculating the length of the resulting list.
 
         TODO: add flexibility for plot types.
+        TODO: issue with figures (figures/axes need to be cleared between runs)
 
         Arguments:
         ----------
@@ -115,8 +116,7 @@ class Data:
                 utterance_counts.append(len(words))
 
         p = so.Plot(utterance_counts).add(so.Bar(), so.Hist())
-        p.label()
-        return p
+        return p.label(x="Bins", y="Counts", title=f"Tokens per Sample in {self.name}")
 
     def calc_token_stats(self) -> TokenStats:
         """

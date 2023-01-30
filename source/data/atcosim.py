@@ -24,10 +24,16 @@ class ATCOSimData(Data):
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCOSimData, self).__init__(data_root, **kwargs)
+        # TODO: update regex
         self.text_glob = glob.glob(
             os.path.join(data_root, "txtdata/**/*.txt"), recursive=True
         )
-        self.text_glob.remove(os.path.join(data_root, "txtdata/wordlist.txt"))
+
+        # at the moment this is easier than updating the regex to exclude this specific file
+        # TODO: update regex
+        wordlist_path = os.path.join(data_root, "txtdata/wordlist.txt")
+        if os.path.exists(wordlist_path):
+            self.text_glob.remove(wordlist_path)
 
     def parse_transcripts(self) -> List[str]:
         data = []
