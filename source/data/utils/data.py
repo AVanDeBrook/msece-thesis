@@ -194,7 +194,9 @@ class Data:
     def normalize_data(self):
         pass
 
-    def dump_corpus(self, outfile: str, make_dirs: bool = True, return_list: bool = False) -> Union[None, List[str]]:
+    def dump_corpus(
+        self, outfile: str, make_dirs: bool = True, return_list: bool = False
+    ) -> Union[None, List[str]]:
         """
         Dump input data paths, labels, and metadata to `outfile` in NeMo manifest format.
 

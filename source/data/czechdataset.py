@@ -11,6 +11,18 @@ class ZCUATCDataset(Data):
     Data is organized into `trs` files (follows an XML standard). Details in `~parse_transcripts` function.
 
     Dataset can be obtained here: https://lindat.mff.cuni.cz/repository/xmlui/handle/11858/00-097C-0000-0001-CCA1-0
+
+    Notes:
+        - As useful as this dataset may be, the transcriptions and their format are so convoluted and different from
+          the other datasets that it may not be worth using
+        - There are a lot of non-english tokens in this data that I am not sure how to filter out
+        - All number readouts are space separated
+        - **I'll keep working on this script to normalize the data, but I'm exluding it from the training data for now**
+        - Examples of problematic lines:
+            * Austrian 1 2 8 X contact (Vienna(vín)) 1 3 1 . 3 5 0 servus
+            * Air Malta (9(najn)) 6 9 1 contact Praha 1 2 7 . 1 2 5 go+
+            * (Praha(Prague)) 1 3 5 1 3 5  7 9
+            * +el 3 8 0 plea+
     """
 
     def __init__(self, data_root: str, **kwargs):

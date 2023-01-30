@@ -18,3 +18,7 @@ source/**/*.pyc
 
 # VS Code workspace settings
 .vscode
+
+# Corpora and debugging files
+source/*.txt
+source/*.out

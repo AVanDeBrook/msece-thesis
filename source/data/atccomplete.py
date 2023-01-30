@@ -1,11 +1,9 @@
 import os
 import glob
-import subprocess
+import re
 from typing import *
 from data import Data
 from data import atccutils
-from pathlib import Path
-from pprint import pprint
 
 
 class ATCCompleteData(Data):
@@ -29,26 +27,30 @@ class ATCCompleteData(Data):
     to one sample in the data i.e. one transmission.
     """
 
+    # there are a lot of typos in this dataset; this is the running list with corrections
+    # list of (typo, correction) pairs (tuples)
+    transcript_corrections = [
+        ("0h", "oh"),
+        ("0r", "or"),
+        ("8'll", "i'll"),
+        ("[sounds", "sounds"),
+        ("bye]", "bye"),
+        (" -", ""),
+        (" 3 ", "three"),
+        ("1347.85706", "one three four seven dot eight five seven zero six"),
+        ("four]", "four"),
+        # flight number metadata somehow made it into some of the transcripts
+        ("swift61", ""),
+        ("aal891", ""),
+        # repeated words/hesitations
+        ("ai", ""),
+    ]
+
     # _audio_glob: List[str]
     # _transcript_glob: List[str]
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCCompleteData, self).__init__(data_root, **kwargs)
-
-        # search strings for sphere and wav audio files
-        sphere_glob_string = os.path.join(data_root, "**/data/audio/*.sph")
-        wav_glob_string = os.path.join(data_root, "**/data/audio/*.wav")
-
-        # file path globs for sphere and wav files
-        sphere_glob = glob.glob(sphere_glob_string, recursive=True)
-        self._audio_glob = glob.glob(wav_glob_string, recursive=True)
-
-        # if there are only sphere files present, convert to wav
-        if len(sphere_glob) > 0 and len(self._audio_glob) == 0:
-            self._convert_audio_files(sphere_glob)
-            self._audio_glob = glob.glob(wav_glob_string, recursive=True)
-
-        # paths to transcript files
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
         self._transcript_glob = glob.glob(transcript_glob_string, recursive=True)
 
@@ -63,10 +65,9 @@ class ATCCompleteData(Data):
         """
         data = []
 
-        for text, audio in zip(self._transcript_glob, self._audio_glob):
-            # need absolute file path for compliance with NeMo manifest format
-            audio = Path(audio).absolute()
+        annotation = re.compile(r"(\[[A-Za-z\s]+\])")
 
+        for text in self._transcript_glob:
             # parse transcript file (returns a list of dictionary objects where each
             # object corresponds to each Lisp list in the transcript file)
             with open(text, "r", encoding="utf-8") as f:
@@ -76,7 +77,21 @@ class ATCCompleteData(Data):
             # extraneous info that could cause KeyErrors)
             for datum in transcript_data:
                 if "TEXT" in datum.keys():
-                    data.append(datum["TEXT"])
+                    text: str = datum["TEXT"].lower()
+                    # line breaks
+                    text = "\n".join([t.strip() for t in text.split("//")])
+                    text = "\n".join([t.strip() for t in text.split("/")])
+
+                    # typos in transcripts
+                    for typo, correction in self.transcript_corrections:
+                        if typo in text:
+                            text = text.replace(typo, correction)
+
+                    # remove transcriber annotations
+                    text = annotation.sub("", text)
+
+                    if text.strip() != "":
+                        data.append(text.strip())
 
         # save manifest data to class attribute before returning
         ATCCompleteData.data = data
