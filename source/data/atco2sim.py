@@ -47,16 +47,16 @@ class ATCO2SimData(Data):
         # TODO: cut this down; this pattern does not need to be this long
         annotation_tag = re.compile(
             # begins with '#'
-            r"(\[#[A-Za-z\-\\]+\]|"
-            r"\[/#[A-Za-z\-\\]+\]|"
+            r"(\[#[A-Za-z\-\\\s]+\]|"
+            r"\[/#[A-Za-z\-\\\s]+\]|"
             # does not begin with '#'
-            r"\[[A-Za-z\-\\]+\]|"
-            r"\[/[A-Za-z\-\\]+\])|"
+            r"\[[A-Za-z\-\\\s]+\]|"
+            r"\[/[A-Za-z\-\\\s]+\])|"
         )
 
         # each pattern has two closures for substitution operation later
-        prefixes = re.compile(r"(\((?P<word>[A-Za-z]+)\-\))")
-        suffixes = re.compile(r"(\(\-(?P<word>[A-Za-z]+))")
+        prefixes = re.compile(r"(\([A-Za-z]+\-\))")
+        suffixes = re.compile(r"(\(\-[A-Za-z]+\))")
 
         for transcript_path in self.transcripts:
             # get the root data element
@@ -91,17 +91,14 @@ class ATCO2SimData(Data):
                     # -----------------------------------
                     # match the pattern to the text (find the pattern in the
                     # string that matches the named closure, if it exists)
-                    suffix_match = suffixes.match(text)
                     # substitute the matched word for the match pattern
                     # i.e. replace change(-ed) with changed
-                    if suffix_match is not None:
-                        text = suffixes.sub(suffix_match["word"], text)
+                    for match in suffixes.finditer(text):
+                        text = suffixes.sub("", text)
 
                     # same as above just with prefixes instead of suffixes
-                    # TODO: still a bug present for replacing prefixes
-                    prefix_match = prefixes.match(text)
-                    if prefix_match is not None:
-                        text = prefixes.sub(prefix_match["word"], text)
+                    for match in prefixes.finditer(text):
+                        text = prefixes.sub("", text)
                     # -----------------------------------
                     # /annoyance
 
