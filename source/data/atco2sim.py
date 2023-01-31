@@ -20,6 +20,12 @@ class ATCO2SimData(Data):
     `~parse_transcripts`.
     """
 
+    transcription_corrections = [
+        ("your're", "you're"),
+        ("affirmatif", "affirmative"),
+        ("zurrich", "zurich")
+    ]
+
     def __init__(self, data_root: str, **kwargs):
         super(ATCO2SimData, self).__init__(data_root, **kwargs)
 
@@ -107,7 +113,11 @@ class ATCO2SimData(Data):
                     # -----------------------------------
                     # /annoyance
 
-                    data.append(text.strip())
+                    for typo, correction in self.transcription_corrections:
+                        text = text.replace(typo, correction)
+
+                    if text != "":
+                        data.append(text.strip())
 
         ATCO2SimData.data = data
         return data

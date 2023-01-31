@@ -24,6 +24,7 @@ class ATCOSimData(Data):
     transcription_corrections = [
         ("kil0", "kilo"),
         ("ai", "air"),
+        ("airr", "air")
     ]
 
     def __init__(self, data_root: str, **kwargs):
@@ -67,9 +68,10 @@ class ATCOSimData(Data):
             # lower case, remove whitespace
             text = text.lower().strip()
 
+            # correct identified typos, see `transcription_crrections` for
+            # the full list
             for typo, correction in self.transcription_corrections:
                 if typo in text:
-                    print(text)
                     text = text.replace(typo, correction)
 
             # some transcripts are empty after removing transcriber
