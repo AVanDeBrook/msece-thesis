@@ -23,7 +23,7 @@ class ATCO2SimData(Data):
     transcription_corrections = [
         ("your're", "you're"),
         ("affirmatif", "affirmative"),
-        ("zurrich", "zurich")
+        ("zurrich", "zurich"),
     ]
 
     def __init__(self, data_root: str, **kwargs):

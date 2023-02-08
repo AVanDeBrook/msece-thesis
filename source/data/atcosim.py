@@ -21,11 +21,7 @@ class ATCOSimData(Data):
     ```
     """
 
-    transcription_corrections = [
-        ("kil0", "kilo"),
-        ("ai", "air"),
-        ("airr", "air")
-    ]
+    transcription_corrections = [("kil0", "kilo"), ("ai", "air"), ("airr", "air")]
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCOSimData, self).__init__(data_root, **kwargs)
@@ -78,7 +74,6 @@ class ATCOSimData(Data):
             # annotations
             if len(text) > 0:
                 data.append(text)
-
 
         ATCOSimData.data = data
         return data

@@ -46,7 +46,7 @@ class ATCCompleteData(Data):
         # repeated words/hesitations
         ("ai", ""),
         ("cir-", ""),
-        ("cli-", "")
+        ("cli-", ""),
     ]
 
     # _audio_glob: List[str]

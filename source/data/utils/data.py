@@ -43,7 +43,7 @@ class Data:
     `_normalized`: bool indicating whether samples in the dataset have been normalized/preprocessed
     """
 
-    data: List[Dict[str, Union[float, str]]]
+    data: List[str]
     _random: np.random.Generator
     _normalized: bool
 
@@ -76,50 +76,52 @@ class Data:
             "is an issue with the class that extended the Data class."
         )
 
-    def create_token_hist(
-        self,
-        token_counts: List[int] = [],
-    ) -> matplotlib.figure.Figure:
+    def create_token_hist(self) -> matplotlib.figure.Figure:
         """
-        Calculates the number of utterances in each sample and generates a histogram.
+        Calculates the number of Tokens in each sample and generates a histogram.
 
-        Utterance counts are determined by splitting each transcript on whitespace and
+        Token counts are determined by splitting each transcript on whitespace and
         calculating the length of the resulting list.
 
-        TODO: add flexibility for plot types.
-        TODO: issue with figures (figures/axes need to be cleared between runs)
+        TODO: bug with histogram plot: seems to be showing the same (identical) distribution
+        for all datasets
 
         Arguments:
         ----------
-        `utterance_counts`: (Optional) `list` of `ints` for precalculated utterance counts.
-
-        `plot_type`: (Optional) `str` type of plot tool to use to create the histogram.
-        Can be either `"seaborn"` or `"matplotlib"`. Defaults to `"seaborn"`.
+        `token_counts`: (Optional) `list` of `ints` for precalculated utterance counts.
 
         Returns:
         --------
-        Either a `matplotlib.pyplot.Figure` or `seaborn.object.Plot` instance, depending on the value of `plot_type`.
+        A `matplotlib.pyplot.Figure` (use `plt.show()` to render the figure(s))
         """
-        # Clear figure and axes
-        plt.clf(), plt.cla()
         # check if manifest data has been generated, parse transcripts and generate
         # manifest data if not
+        token_counts = []
         if len(self.data) == 0:
             self.parse_transcripts()
 
         # check if utterance counts (optional arg) has been provided, calculate utterance
         # counts from transcriptions
+        print(f"List length before processing: {len(token_counts)}")
         if len(token_counts) == 0:
             for data in self.data:
                 words = data.split(" ")
                 token_counts.append(len(words))
 
-        histogram = plt.hist(token_counts)
-        plt.xlabel("Bins")
-        plt.ylabel("Token Counts")
-        plt.title(f"Tokens per Sample in {self.name}")
+        print(f"List length after processing: {len(token_counts)}")
 
-        return histogram
+        fig, ax = plt.subplots()
+
+        ax.hist(token_counts, bins=30, linewidth=0.5, edgecolor="white")
+        ax.set_xlabel("Tokens in Sample")
+        ax.set_ylabel("Samples with Token Length")
+        ax.set(
+            title=f"Tokens per Sample in {self.name}",
+            xlim=(0, 15),
+            xticks=np.arange(1, 30),
+        )
+
+        return fig
 
     def calc_token_stats(self) -> TokenStats:
         """
