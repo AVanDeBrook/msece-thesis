@@ -1,13 +1,13 @@
 import os
+from collections import namedtuple
+from pathlib import Path
+from typing import *
+
 import matplotlib
 import matplotlib.collections
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
-from collections import namedtuple
-from typing import *
-from pathlib import Path
-
 
 TokenStats = namedtuple("TokenStats", ["tokens", "samples"])
 """
@@ -164,7 +164,7 @@ class Data:
         If `normalize` is set to `True` a dictionary with tokens corresponding to a list is returned e.g.
         ```
         {
-            "token": [24, 0.0486] # token with corresponding occurences and frequencies
+            "token": [24, 0.0486] # token with corresponding occurrences and frequencies
         }
         ```
 
@@ -172,7 +172,7 @@ class Data:
         if len(self.data) == 0:
             self.parse_transcripts()
 
-        # tokens corresponding to occurences/frequencies
+        # tokens corresponding to occurrences/frequencies
         token_freqs = {}
 
         for sample in self.data:
@@ -186,7 +186,7 @@ class Data:
                     token_freqs[token] = 1
 
         if normalize:
-            # convert from token occureces to frequencies: (# of token occurences / # of tokens)
+            # convert from token occurrences to frequencies: (# of token occurrences / # of tokens)
             num_tokens = len(token_freqs)
             for token, freq in token_freqs.items():
                 token_freqs[token] = [freq, float(freq) / num_tokens]
@@ -237,3 +237,35 @@ class Data:
         raise NotImplementedError(
             "This property should be implemented by the extending class"
         )
+
+    @property
+    def num_samples(self) -> int:
+        """
+        Number of samples in the dataset
+        """
+        return len(self.data)
+
+    @property
+    def total_tokens(self) -> int:
+        """
+        Total number of tokens in the transcripts of the dataset (labels)
+        """
+        num_tokens = 0
+        for item in self.data:
+            tokens = item.split(" ")
+            num_tokens += len(tokens)
+        return num_tokens
+
+    @property
+    def unique_tokens(self) -> int:
+        """
+        Number of unique tokens in the dataset. Repeating tokens are removed
+        from this total
+        """
+        unique_tokens = []
+        for item in self.data:
+            tokens = item.split(" ")
+            for token in tokens:
+                if token not in unique_tokens:
+                    unique_tokens.append(token)
+        return unique_tokens

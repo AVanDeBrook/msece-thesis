@@ -24,5 +24,6 @@ source/**/*.pyc
 .vscode
 
 # Corpora and debugging files
+source/corpora
 source/**/*.txt
 source/**/*.out

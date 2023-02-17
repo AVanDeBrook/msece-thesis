@@ -29,7 +29,7 @@ class ATCCompleteData(Data):
 
     # there are a lot of typos in this dataset; this is the running list with corrections
     # list of (typo, correction) pairs (tuples)
-    transcript_corrections = [
+    _transcript_corrections = [
         ("0h", "oh"),
         ("0r", "or"),
         ("8'll", "i'll"),
@@ -92,7 +92,7 @@ class ATCCompleteData(Data):
                         text = sounds_like_match["guess"].strip()
 
                     # typos in transcripts
-                    for typo, correction in self.transcript_corrections:
+                    for typo, correction in self._transcript_corrections:
                         if typo in text:
                             text = text.replace(typo, correction)
 
