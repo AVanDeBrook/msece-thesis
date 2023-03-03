@@ -26,7 +26,7 @@ class ZCUATCDataset(Data):
     """
 
     def __init__(self, data_root: str, **kwargs):
-        super(ZCUATCDataset, self).__init__(data_root, **kwargs)
+        super(ZCUATCDataset, self).__init__(**kwargs)
 
         self.transcript_paths = glob.glob(os.path.join(data_root, "*.trs"))
         assert (
@@ -80,7 +80,7 @@ class ZCUATCDataset(Data):
                 if text != ".." and text != "":
                     data.append(text)
 
-        ZCUATCDataset.data = data
+        self.data = data
         return data
 
     @property

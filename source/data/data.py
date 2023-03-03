@@ -9,15 +9,6 @@ import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 
-TokenStats = namedtuple("TokenStats", ["tokens", "samples"])
-"""
-Named tuple for ease of access and return for utterance statistics for the dataset.
-
-`tokens` corresponds to the total number of tokens found in the dataset
-
-`samples` corresponds to the number of samples in the dataset
-"""
-
 
 class Data:
     """
@@ -43,22 +34,20 @@ class Data:
     `_normalized`: bool indicating whether samples in the dataset have been normalized/preprocessed
     """
 
-    data: List[str]
     _random: np.random.Generator
-    _normalized: bool
 
-    def __init__(self, data_root: str, random_seed: int = None):
+    def __init__(self, random_seed: int = 1, dataset_name: str = "data"):
         """
         Arguments:
         ----------
         `data_root`: path to the base of the dataset, basically just a path from which the
         audio and transcript data can be found. Varies by dataset and implementation.
         """
-        assert isinstance(data_root, str)
-        assert os.path.exists(data_root), f"Path does not exist {data_root}"
-
+        self.dataset_name: str = dataset_name
+        self.data: List[str] = []
         # create random number generator sequence with specified seed, if applicable
-        Data._random = np.random.default_rng(random_seed)
+        Data._random: np.random.Generator = np.random.default_rng(random_seed)
+        self.normalized: bool = False
 
     def parse_transcripts(self) -> List[str]:
         """
@@ -76,79 +65,50 @@ class Data:
             "is an issue with the class that extended the Data class."
         )
 
-    def create_token_hist(self) -> matplotlib.figure.Figure:
+    def create_token_hist(
+        self,
+        token_counts: List[int] = [],
+    ) -> matplotlib.figure.Figure:
         """
-        Calculates the number of Tokens in each sample and generates a histogram.
+        Calculates the number of utterances in each sample and generates a histogram.
 
-        Token counts are determined by splitting each transcript on whitespace and
+        Utterance counts are determined by splitting each transcript on whitespace and
         calculating the length of the resulting list.
 
-        TODO: bug with histogram plot: seems to be showing the same (identical) distribution
-        for all datasets
+        TODO: add flexibility for plot types.
+        TODO: issue with figures (figures/axes need to be cleared between runs)
 
         Arguments:
         ----------
-        `token_counts`: (Optional) `list` of `ints` for precalculated utterance counts.
+        `utterance_counts`: (Optional) `list` of `ints` for precalculated utterance counts.
+
+        `plot_type`: (Optional) `str` type of plot tool to use to create the histogram.
+        Can be either `"seaborn"` or `"matplotlib"`. Defaults to `"seaborn"`.
 
         Returns:
         --------
-        A `matplotlib.pyplot.Figure` (use `plt.show()` to render the figure(s))
+        Either a `matplotlib.pyplot.Figure` or `seaborn.object.Plot` instance, depending on the value of `plot_type`.
         """
+        # Clear figure and axes
+        plt.clf(), plt.cla()
         # check if manifest data has been generated, parse transcripts and generate
         # manifest data if not
-        token_counts = []
         if len(self.data) == 0:
             self.parse_transcripts()
 
         # check if utterance counts (optional arg) has been provided, calculate utterance
         # counts from transcriptions
-        print(f"List length before processing: {len(token_counts)}")
         if len(token_counts) == 0:
             for data in self.data:
                 words = data.split(" ")
                 token_counts.append(len(words))
 
-        print(f"List length after processing: {len(token_counts)}")
+        histogram = plt.hist(token_counts)
+        plt.xlabel("Bins")
+        plt.ylabel("Token Counts")
+        plt.title(f"Tokens per Sample in {self.name}")
 
-        fig, ax = plt.subplots()
-
-        ax.hist(token_counts, bins=30, linewidth=0.5, edgecolor="white")
-        ax.set_xlabel("Tokens in Sample")
-        ax.set_ylabel("Samples with Token Length")
-        ax.set(
-            title=f"Tokens per Sample in {self.name}",
-            xlim=(0, 15),
-            xticks=np.arange(1, 30),
-        )
-
-        return fig
-
-    def calc_token_stats(self) -> TokenStats:
-        """
-        Calculate the following:
-        * Total number of utterances in the data
-        * Total number of samples in the data
-        * Cumulative duration of samples
-
-        Returns:
-        --------
-        an `TokenStats` named tuple with `tokens` and `samples` field corresponding to total utterance counts, total sample duration,
-        and total samples in the data
-        """
-        # check if manifest data has been generated
-        if len(self.data) == 0:
-            self.parse_transcripts()
-
-        total_token_count = 0
-
-        for data in self.data:
-            utterances = data["text"].split(" ")
-            total_token_count += len(utterances)
-
-        return TokenStats(
-            utterances=total_token_count,
-            samples=len(self.data),
-        )
+        return histogram
 
     def token_freq_analysis(self, normalize=False) -> Dict[str, Union[int, List]]:
         """
@@ -164,7 +124,7 @@ class Data:
         If `normalize` is set to `True` a dictionary with tokens corresponding to a list is returned e.g.
         ```
         {
-            "token": [24, 0.0486] # token with corresponding occurrences and frequencies
+            "token": [24, 0.0486] # token with corresponding occurences and frequencies
         }
         ```
 
@@ -172,11 +132,11 @@ class Data:
         if len(self.data) == 0:
             self.parse_transcripts()
 
-        # tokens corresponding to occurrences/frequencies
+        # tokens corresponding to occurences/frequencies
         token_freqs = {}
 
         for sample in self.data:
-            # sample = sample["text"]
+            sample = sample["text"]
             for token in sample.split():
                 if token in token_freqs.keys():
                     # increment occurences if there is already an entry
@@ -186,7 +146,7 @@ class Data:
                     token_freqs[token] = 1
 
         if normalize:
-            # convert from token occurrences to frequencies: (# of token occurrences / # of tokens)
+            # convert from token occureces to frequencies: (# of token occurences / # of tokens)
             num_tokens = len(token_freqs)
             for token, freq in token_freqs.items():
                 token_freqs[token] = [freq, float(freq) / num_tokens]
@@ -232,11 +192,65 @@ class Data:
         if return_list:
             return self.data
 
+    def concat(self, child_dataset: "Data"):
+        """
+        Concatenates data classes/sets. Extends the data array of parent object to
+        include data from child object. Also updates any relevant common metadata
+        fields.
+        """
+        self.data.extend(child_dataset.data)
+        self.dataset_name = f"{self.name} + {child_dataset.name}"
+
+    def dump_info(self) -> Dict[str, Union[str, int, float]]:
+        """
+        Returns all relevant dataset statistics in a dictionary.
+
+        The following fields are populated:
+        `'dataset_name'` - Name of the dataset, `str`
+        `'samples'` - Numher of samples in the dataset, `int`
+        `'total_tokens'` - Total number of tokens present in the dataset, found across all samples, `int`
+        `'unique_tokens'` - Number of unique tokens in the dataset, `int`
+        """
+        return {
+            "dataset_name": self.name,
+            "samples": self.num_samples,
+            "total_tokens": self.total_tokens,
+            "unique_tokens": self.unique_tokens,
+        }
+
+    @classmethod
+    def from_corpus(cls: "Data", corpus_path: str, random_seed: int = 1) -> "Data":
+        """
+        Loads a dataset from a standard corpus file e.g. `corpus.txt`. These are typically
+        text files where each line in the file corresponds to a single sample i.e. samples
+        separated by newlines.
+
+        Arguments:
+        ----------
+        `corpus_path`: `str`, path to the corpus file
+
+        `random_seed`: `int`, random seed to initialize the class with (default to `1`)
+
+        Returns:
+        --------
+        An instance of this class (`Data`) initialized with data from `corpus_path`
+        """
+        if not os.path.exists(corpus_path):
+            raise FileNotFoundError(f"Corpus path not found: '{corpus_path}'")
+
+        # initialize object from class
+        data = cls(random_seed=random_seed)
+
+        # read corpus and add data to object
+        with open(corpus_path, "r", encoding="utf-8") as f:
+            for line in f.readlines():
+                data.data.append(line)
+
+        return data
+
     @property
     def name(self) -> str:
-        raise NotImplementedError(
-            "This property should be implemented by the extending class"
-        )
+        return self.dataset_name
 
     @property
     def num_samples(self) -> int:
@@ -251,9 +265,12 @@ class Data:
         Total number of tokens in the transcripts of the dataset (labels)
         """
         num_tokens = 0
+
         for item in self.data:
+            # very simple way to do this, should use a tokenizer passed to this class
             tokens = item.split(" ")
             num_tokens += len(tokens)
+
         return num_tokens
 
     @property
@@ -263,9 +280,13 @@ class Data:
         from this total
         """
         unique_tokens = []
+
+        # simplest way to do this again; should consider more sophisticated approach
         for item in self.data:
             tokens = item.split(" ")
+
             for token in tokens:
                 if token not in unique_tokens:
                     unique_tokens.append(token)
-        return unique_tokens
+
+        return len(unique_tokens)

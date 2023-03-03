@@ -53,7 +53,7 @@ class ATCCompleteData(Data):
     # _transcript_glob: List[str]
 
     def __init__(self, data_root: str, **kwargs):
-        super(ATCCompleteData, self).__init__(data_root, **kwargs)
+        super(ATCCompleteData, self).__init__(**kwargs)
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
         self._transcript_glob = glob.glob(transcript_glob_string, recursive=True)
 
@@ -103,7 +103,7 @@ class ATCCompleteData(Data):
                         data.append(text.strip())
 
         # save manifest data to class attribute before returning
-        ATCCompleteData.data = data
+        self.data = data
         return data
 
     @property

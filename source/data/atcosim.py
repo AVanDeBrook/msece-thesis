@@ -24,7 +24,7 @@ class ATCOSimData(Data):
     transcription_corrections = [("kil0", "kilo"), ("ai", "air"), ("airr", "air")]
 
     def __init__(self, data_root: str, **kwargs):
-        super(ATCOSimData, self).__init__(data_root, **kwargs)
+        super(ATCOSimData, self).__init__(**kwargs)
         # TODO: update regex
         self.text_glob = glob.glob(
             os.path.join(data_root, "txtdata/**/*.txt"), recursive=True
@@ -75,7 +75,7 @@ class ATCOSimData(Data):
             if len(text) > 0:
                 data.append(text)
 
-        ATCOSimData.data = data
+        self.data = data
         return data
 
     @property

@@ -1,4 +1,4 @@
-from .utils.data import Data, TokenStats
+from .data import Data
 from .utils import atccutils
 from .atccomplete import ATCCompleteData
 from .atco2sim import ATCO2SimData
@@ -10,6 +10,7 @@ __all__ = [
     "UtteranceStats",
     "atccutils",
     "ATCCompleteData",
+    "ATCO2SimData",
     "ATCOSimData",
     "ZCUATCDataset",
 ]

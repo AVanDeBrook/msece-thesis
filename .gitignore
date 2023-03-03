@@ -25,5 +25,6 @@ source/**/*.pyc
 
 # Corpora and debugging files
 source/corpora
+source/manifests
 source/**/*.txt
 source/**/*.out

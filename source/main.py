@@ -1,57 +1,64 @@
 import json
 import os
+import logging
 from typing import *
 
 import matplotlib.pyplot as plt
 import numpy as np
 from data import ATCCompleteData, ATCO2SimData, ATCOSimData, Data, ZCUATCDataset
 
-RANDOM_SEED: int = 1
-
 # root dataset paths corresponding to data analysis classes
 datasets: Dict[str, Data] = {
     # TODO: find a way to sync file paths across computers (shell/env var, config file?)
-    "/home/avandebrook/thesis_data/atc0_comp": ATCCompleteData,
-    "/home/avandebrook/thesis_data/atcosim/": ATCOSimData,
-    "/home/avandebrook/thesis_data/ATCO2-ASRdataset-v1_beta": ATCO2SimData,
-    "/home/avandebrook/thesis_data/ZCU_CZ_ATC": ZCUATCDataset,
+    "/home/students/vandebra/programming/thesis_data/atc0_comp": ATCCompleteData,
+    "/home/students/vandebra/programming/thesis_data/atcosim/": ATCOSimData,
+    "/home/students/vandebra/programming/thesis_data/ATCO2-ASRdataset-v1_beta": ATCO2SimData,
+    # TODO: this dataset has strange formats for transcriptions, need to do a lot of
+    # work to clean and reformat them. Disabling this dataset for now
+    # "/home/students/vandebra/programming/thesis_data/ZCU_CZ_ATC": ZCUATCDataset,
 }
 
 if __name__ == "__main__":
+    RANDOM_SEED: int = 1
+    # collection of dataset stats. using a dictionary so it's easier to dump to JSON or YAML later
+    dataset_info = {"dataset_info": []}
+    # collection of initialized `Data` classes so they don't get gc'd and for concatenating everything
+    # after all data has been parsed/collected
+    data_objects: List[Data] = []
+
     plt.style.use("ggplot")
 
-    os.makedirs("corpora", exist_ok=True)
-    with open("corpora/all_corpora.json", "w", encoding="utf-8") as all_corpus:
-        with open("corpora/dataset_stats.json", "w", encoding="utf-8") as dataset_stats:
-            for root_path, data_class in datasets.items():
-                # create and initialize dataset
-                dataset: Data = data_class(data_root=root_path, random_seed=RANDOM_SEED)
-                print(f"Parsing data in {dataset.name}", end="...")
-                dataset.parse_transcripts()
-                print("Done")
+    # initializes each implementing class with its data which is specified by `root_path`
+    # see `datasets` and implementing classes for more details
+    for root_path, data_class in datasets.items():
+        # initialize class with root path and random seed
+        data_analysis: Data = data_class(data_root=root_path, random_seed=RANDOM_SEED)
 
-                # dump data to txt file (one sample per line; see function docstring)
-                outfile_path = f"corpora/{dataset.name.replace(' ', '_')}.txt"
-                print(f"Dumping dataset to '{outfile_path}'", end="...")
-                data = dataset.dump_corpus(outfile_path, return_list=True)
-                print("Done")
+        # parse dataset info, along with some printout so the user has some idea of what's
+        # happening
+        print(f"Parsing transcripts for '{data_analysis.name}'", end="...")
+        data_analysis.parse_transcripts()
+        print("Done")
 
-                # combine all samples from all dataset into one file
-                for sample in data:
-                    all_corpus.write(
-                        json.dumps({"dataset_name": dataset.name, "text": sample})
-                    )
-                    all_corpus.write("\n")
+        # printing some stats to stdout just to confirm things worked correctly
+        print(
+            f"Found {data_analysis.num_samples} samples with {data_analysis.unique_tokens} "
+            f"unique tokens and {data_analysis.total_tokens} tokens in total for '{data_analysis.name}'"
+        )
+        # dump corpora to a standard corpus.txt style file, we'll have one for each dataset and
+        # one for everything combined together
+        data_analysis.dump_corpus(f"corpora/{data_analysis.name.replace(' ', '_')}")
 
-                # collect dataset statistics, store them in one file
-                dataset_stats.write(
-                    json.dumps(
-                        {
-                            "name": dataset.name,
-                            "num_samples": dataset.num_samples,
-                            "total_tokens": dataset.total_tokens,
-                            "unique_tokens": dataset.total_tokens,
-                        }
-                    )
-                )
-                dataset_stats.write("\n")
+        dataset_info["dataset_info"].append(data_analysis.dump_info())
+        data_objects.append(data_analysis)
+
+    # write stats to a json file
+    with open("manifests/dataset_stats.json", "w", encoding="utf-8") as f:
+        f.write(json.dumps(dataset_info, indent=1))
+
+    # concatenate everything to first object
+    for o in data_objects[1:]:
+        data_objects[0].concat(o)
+
+    # combined corpus/corpora
+    data_objects[0].dump_corpus(f"corpora/all_copus.txt")
