@@ -1,16 +1,24 @@
 import os
-from collections import namedtuple
 from pathlib import Path
 from typing import *
+from copy import deepcopy
 
 import matplotlib
 import matplotlib.collections
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.random import default_rng
+from torch.utils.data import IterableDataset
+from transformers import (
+    AutoTokenizer,
+    PreTrainedTokenizer,
+    BatchEncoding,
+    DataCollatorForLanguageModeling,
+)
 
 
-class Data:
+class Data(IterableDataset):
     """
     Top-level Data class that provides several methods for processing and analyzing text datasets for NLP processes.
 
@@ -49,6 +57,15 @@ class Data:
         Data._random: np.random.Generator = np.random.default_rng(random_seed)
         self.normalized: bool = False
 
+    def __iter__(self):
+        assert len(self.data) != 0
+        assert self.tokenized_data is not None
+
+        return iter(self.tokenized_data)
+
+    def __len__(self):
+        return len(self.tokenized_data)
+
     def parse_transcripts(self) -> List[str]:
         """
         This method must be overridden and implemented for each implementation of this class
@@ -62,8 +79,50 @@ class Data:
         raise NotImplementedError(
             "This is an abstract method that should be implemented and overridden for "
             "all classes that implement this one. If this method has been called, there "
-            "is an issue with the class that extended the Data class."
+            "is an issue with the implementing class."
         )
+
+    def preprocess(
+        self, tokenizer: PreTrainedTokenizer, collator: DataCollatorForLanguageModeling
+    ) -> List[List[int]]:
+        """
+        Preprocesses the data using the given tokenizer (`tokenizer`). Pads the sequence to a
+        maximum length (if the sequence is below the required length) or truncates
+        (`padding="max_length"` and `truncation=True` parameters).
+
+        Arguments:
+        ----------
+        `tokenizer`: a ~`transformers.PreTrainedTokenizer` that will be used to tokenize the data
+        in the dataset.
+
+        Return:
+        -------
+        list of tokenized data (list of integers corresponding to each sample).
+        """
+        # copy of the data in tokenized format
+        self.tokenized_data: List[List[int]] = []
+
+        for raw_text in self.data:
+            # tokenize sample
+            tokenizer_output = tokenizer(
+                text=raw_text,
+                padding="max_length",
+                truncation=True,
+                return_token_type_ids=True,
+                return_attention_mask=True,
+                return_tensors="pt",
+            )
+
+            tokenizer_output.input_ids, labels = collator.torch_mask_tokens(
+                tokenizer_output.input_ids
+            )
+
+            self.tokenized_data.append(dict(**tokenizer_output, labels=labels))
+
+        for i, item in enumerate(self.tokenized_data):
+            self.tokenized_data[i] = {k: v.squeeze() for k, v in item.items()}
+
+        return self.tokenized_data
 
     def create_token_hist(
         self,
@@ -152,9 +211,6 @@ class Data:
                 token_freqs[token] = [freq, float(freq) / num_tokens]
 
         return token_freqs
-
-    def normalize_data(self):
-        pass
 
     def dump_corpus(
         self, outfile: str, make_dirs: bool = True, return_list: bool = False
@@ -290,3 +346,59 @@ class Data:
                     unique_tokens.append(token)
 
         return len(unique_tokens)
+
+
+def get_train_test_split(
+    data: Data, split_ratio: float = 0.7, shuffle: bool = False, random_seed: int = 1
+) -> Tuple[Data, Data]:
+    """
+    Utility function to split a dataset, `Data` into train and test subsets.
+
+    TODO: add functionality for validation set
+
+    Arguments:
+    ----------
+    `data`: (required) the dataset to split. Expected type: `Data`.
+
+    `split_ratio`: (optional) ratio of train data to test data. Defaults to `0.7`.
+
+    `shuffle`: (optional) whether to shuffle the data before splitting into subsets. Defaults to `False`.
+
+    `random_seed`: (optional)Set the seed of the random function. Use this when the results need to be
+    reproducable. Only has an effect on the output when `shuffle` is `True`.
+
+    Returns:
+    --------
+    A tuple of train and test subsets i.e. (train, test)
+
+    """
+    if split_ratio >= 1.0 or split_ratio <= 0.0:
+        raise ValueError(
+            f"The train/test split ratio needs to be between 0 and 1 (exclusive) got: '{split_ratio}' instead"
+        )
+
+    data_length = len(data.data)
+    train_size = int(split_ratio * data_length)
+
+    # getting a copy of the data before any modification happens
+    # shuffle happens 'in-place', we don't want to unintentionally
+    # modify any data
+    data = deepcopy(data.data)
+
+    if shuffle:
+        # numpy rng instance (w/ random seed set)
+        random = default_rng(random_seed)
+        # shuffle the data
+        random.shuffle(data)
+
+    # just using slicing to split up train and test sets
+    train_set = data[:train_size]
+    test_set = data[train_size:]
+
+    train = Data(random_seed=random_seed)
+    test = Data(random_seed=random_seed)
+
+    train.data = train_set
+    test.data = test_set
+
+    return train, test

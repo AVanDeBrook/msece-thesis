@@ -1,4 +1,4 @@
-from .data import Data
+from .data import Data, get_train_test_split
 from .utils import atccutils
 from .atccomplete import ATCCompleteData
 from .atco2sim import ATCO2SimData
@@ -13,4 +13,5 @@ __all__ = [
     "ATCO2SimData",
     "ATCOSimData",
     "ZCUATCDataset",
+    "get_train_test_split",
 ]
