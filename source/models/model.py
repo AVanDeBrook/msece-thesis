@@ -1,10 +1,9 @@
 from typing import *
 
 import pytorch_lightning as pl
-from torch import nn
-from torch import optim
-from torch.utils.data import DataLoader
 from data import Data
+from torch import nn, optim
+from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, DataCollatorForLanguageModeling
 
 
@@ -21,6 +20,9 @@ class Model(pl.LightningModule):
     def configure_optimizers(self):
         return self.optimizer
 
+    def fit(self):
+        raise NotImplementedError()
+
 
 class HuggingFaceModel:
     def __init__(self):
@@ -32,4 +34,4 @@ class HuggingFaceModel:
 
         dataset.preprocess(tokenizer=tokenizer, collator=collator)
 
-        return DataLoader(dataset, batch_size=8, shuffle=shuffle)
+        return DataLoader(dataset, batch_size=8)

@@ -1,4 +1,4 @@
-from model import Model
-from transformers import PreTrainedBERTModel
+from .model import HuggingFaceModel, Model
+from .transformers import PreTrainedBERTModel
 
-__all__ = ["Model", "PreTrainedBERTModel"]
+__all__ = ["Model", "PreTrainedBERTModel", "HuggingFaceModel"]
