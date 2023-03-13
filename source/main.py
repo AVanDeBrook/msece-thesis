@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     # split data into train and test
     print("Generating train/test split", end="...")
-    train, test = get_train_test_split(
+    train, valid, test = get_train_test_split(
         data_objects[0], shuffle=True, random_seed=RANDOM_SEED
     )
     print("Done")
@@ -83,15 +83,13 @@ if __name__ == "__main__":
     train.dump_corpus("corpora/train_corpus.txt")
     print("Done")
 
+    print("Dumping validation corpus to validation_corpus.txt", end="...")
+    valid.dump_corpus("corpora/validation_corpus.txt")
+    print("Done")
+
     print("Dumping testing corpus to test_corpus.txt", end="...")
     test.dump_corpus("corpora/test_corpus.txt")
     print("Done")
 
-    # TODO: this should be done in the pytorch lightning module
-    # aka learning rate scheduling
-    # lr_scheduler = get_scheduler(
-    #     name="linear",
-    #     optimizer=optimizer,
-    #     num_warmup_steps=0,
-    #     num_training_steps=num_training_steps,
-    # )
+    model = PreTrainedBERTModel(train_dataset=train, valid_dataset=valid)
+    model.fit()

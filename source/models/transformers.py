@@ -7,16 +7,26 @@ from transformers import AutoModelForMaskedLM
 
 
 class PreTrainedBERTModel(Model, HuggingFaceModel):
-    def __init__(self, dataset: Data) -> "Model":
+    def __init__(self, train_dataset: Data, valid_dataset: Data) -> "Model":
         self.pretrained_model_name = "bert-base-uncased"
         model = AutoModelForMaskedLM.from_pretrained(self.pretrained_model_name)
         optimizer = AdamW(model.parameters(), lr=5e-5)
 
         super().__init__(model, optimizer)
 
-        self.dataset = dataset
+        self.train_dataset = train_dataset
+        self.valid_dataset = valid_dataset
 
     def fit(self):
-        trainer = pl.Trainer(max_epochs=10)
-        train_dataloader = self.preprocess_data(dataset=self.dataset, shuffle=True)
-        trainer.fit(self, train_dataloaders=train_dataloader)
+        trainer = pl.Trainer(max_epochs=10, accelerator="gpu")
+        train_dataloader = self.preprocess_data(
+            dataset=self.train_dataset, shuffle=True
+        )
+        validation_dataloader = self.preprocess_data(
+            dataset=self.valid_dataset, shuffle=True
+        )
+        trainer.fit(
+            self,
+            train_dataloaders=train_dataloader,
+            val_dataloaders=validation_dataloader,
+        )

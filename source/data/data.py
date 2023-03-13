@@ -349,7 +349,11 @@ class Data(IterableDataset):
 
 
 def get_train_test_split(
-    data: Data, split_ratio: float = 0.7, shuffle: bool = False, random_seed: int = 1
+    data: Data,
+    split_ratio: float = 0.7,
+    valid_split_ratio: float = 0.1,
+    shuffle: bool = False,
+    random_seed: int = 1,
 ) -> Tuple[Data, Data]:
     """
     Utility function to split a dataset, `Data` into train and test subsets.
@@ -377,8 +381,14 @@ def get_train_test_split(
             f"The train/test split ratio needs to be between 0 and 1 (exclusive) got: '{split_ratio}' instead"
         )
 
+    if valid_split_ratio >= 1.0 or valid_split_ratio <= 0.0:
+        raise ValueError(
+            f"The validation split ratio needs to be between 0 and 1 (exclusive) got: '{valid_split_ratio}' instead"
+        )
+
     data_length = len(data.data)
     train_size = int(split_ratio * data_length)
+    valid_size = int(valid_split_ratio * train_size)
 
     # getting a copy of the data before any modification happens
     # shuffle happens 'in-place', we don't want to unintentionally
@@ -392,13 +402,16 @@ def get_train_test_split(
         random.shuffle(data)
 
     # just using slicing to split up train and test sets
-    train_set = data[:train_size]
+    train_set = data[: train_size - valid_size]
+    valid_set = data[train_size - valid_size : train_size]
     test_set = data[train_size:]
 
     train = Data(random_seed=random_seed)
+    valid = Data(random_seed=random_seed)
     test = Data(random_seed=random_seed)
 
     train.data = train_set
+    valid.data = valid_set
     test.data = test_set
 
-    return train, test
+    return train, valid, test
