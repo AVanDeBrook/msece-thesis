@@ -32,7 +32,7 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
             self.valid_dataset = valid_dataset
 
     def fit(self):
-        trainer = pl.Trainer(max_epochs=10, accelerator="gpu")
+        trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
             val_dataset=self.valid_dataset,
@@ -46,7 +46,8 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
 
         os.makedirs(path, exist_ok=True)
         torch.save(
-            self.model.state_dict(), os.path.join(path, f"{str(self.__class__)}.pt")
+            self.model.state_dict(),
+            os.path.join(path, f"{str(self.__class__.__name__)}.pt"),
         )
 
     @classmethod
@@ -59,7 +60,7 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
         model = cls(train_dataset=train_dataset, valid_dataset=valid_dataset)
 
         model.model.load_state_dict(
-            torch.load(os.path.join(path, f"{str(model.__class__)}.pt"))
+            torch.load(os.path.join(path, f"{str(model.__class__.__name__)}.pt"))
         )
 
         return model

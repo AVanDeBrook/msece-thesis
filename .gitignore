@@ -28,3 +28,8 @@ source/corpora
 source/manifests
 source/**/*.txt
 source/**/*.out
+source/lightning_logs
+
+# Pytorch models
+source/**/*.pt
+source/**/*.pth
