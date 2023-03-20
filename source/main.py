@@ -94,7 +94,10 @@ if __name__ == "__main__":
 
     if os.path.exists("pretrained_finetuned_bert"):
         model = PreTrainedBERTModel.load_from(
-            "pretrained_finetuned_bert", train_dataset=train, valid_dataset=valid
+            "pretrained_finetuned_bert",
+            train_dataset=train,
+            valid_dataset=valid,
+            checkpoint_name="bert_finetuned",
         )
     else:
         model = PreTrainedBERTModel(train_dataset=train, valid_dataset=valid)
