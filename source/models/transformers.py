@@ -24,7 +24,9 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
 
         optimizer = AdamW(model.parameters(), lr=5e-5)
 
-        super().__init__(model, optimizer)
+        super().__init__(
+            model=model, optimizer=optimizer, checkpoint_name="bert_finetuned"
+        )
 
         if train_dataset is not None:
             self.train_dataset = train_dataset
@@ -39,28 +41,3 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
             preprocess_fn=self.preprocess_data,
         )
         trainer.fit(self, datamodule=datamodule)
-
-    def save_to(self, path: str):
-        if self.model is None:
-            raise ValueError("model has not been initialized, nothing to save")
-
-        os.makedirs(path, exist_ok=True)
-        torch.save(
-            self.model.state_dict(),
-            os.path.join(path, f"{str(self.__class__.__name__)}.pt"),
-        )
-
-    @classmethod
-    def load_from(
-        cls, path: str, train_dataset: Data = None, valid_dataset: Data = None
-    ):
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"Could not find path specified: '{path}'")
-
-        model = cls(train_dataset=train_dataset, valid_dataset=valid_dataset)
-
-        model.model.load_state_dict(
-            torch.load(os.path.join(path, f"{str(model.__class__.__name__)}.pt"))
-        )
-
-        return model
