@@ -1,3 +1,4 @@
+import os
 from typing import *
 
 import pytorch_lightning as pl
@@ -5,7 +6,7 @@ import torchmetrics
 from data import Data
 from torch import nn, optim
 from torch.utils.data import DataLoader
-from transformers import AutoTokenizer, DataCollatorForLanguageModeling
+from transformers import AutoTokenizer, AutoModel, DataCollatorForLanguageModeling
 
 
 class Model(pl.LightningModule):
@@ -13,11 +14,13 @@ class Model(pl.LightningModule):
         super().__init__()
 
         self.model = model
-
         self.optimizer = optimizer
 
         self.train_perplexity = torchmetrics.Perplexity()
         self.valid_perplexity = torchmetrics.Perplexity()
+
+    def forward(self, batch):
+        return self.model(**batch)
 
     def training_step(self, batch, batch_idx):
         outputs = self.model(**batch)
@@ -27,16 +30,16 @@ class Model(pl.LightningModule):
 
         return outputs.loss
 
-    def training_epoch_end(self, outputs):
-        self.log("train_epoch_ppl", self.train_perplexity)
+    # def on_train_epoch_end(self):
+    #     self.log("train_epoch_ppl", self.train_perplexity)
 
     def validation_step(self, batch, batch_idx):
         outputs = self.model(**batch)
         self.valid_perplexity.update(outputs.logits, batch["labels"])
         return outputs.loss
 
-    def validation_epoch_end(self, outputs):
-        self.log("val_ppl", self.valid_perplexity)
+    # def on_validation_epoch_end(self):
+    #     self.log("val_ppl", self.valid_perplexity)
 
     def configure_optimizers(self):
         return {
@@ -61,4 +64,6 @@ class HuggingFaceModel:
 
         dataset.preprocess(tokenizer=tokenizer, collator=collator)
 
-        return DataLoader(dataset, batch_size=8)
+        return DataLoader(
+            dataset, batch_size=16, drop_last=True, num_workers=os.cpu_count()
+        )

@@ -16,6 +16,8 @@ from transformers import (
     BatchEncoding,
     DataCollatorForLanguageModeling,
 )
+from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader
 
 
 class Data(IterableDataset):
@@ -415,3 +417,26 @@ def get_train_test_split(
     test.data = test_set
 
     return train, valid, test
+
+
+class PLDataLoader(LightningDataModule):
+    def __init__(self, train_dataset, val_dataset, preprocess_fn: Callable = None):
+        super().__init__()
+
+        self.train_dataset = train_dataset
+        self.val_dataset = val_dataset
+
+        if preprocess_fn is not None:
+            self.preprocess = preprocess_fn
+
+    def train_dataloader(self):
+        if self.preprocess:
+            return self.preprocess(self.train_dataset, shuffle=True)
+        else:
+            return DataLoader(self.train_dataset)
+
+    def val_dataloader(self):
+        if self.preprocess:
+            return self.preprocess(self.val_dataset, shuffle=True)
+        else:
+            return DataLoader(self.val_dataset)

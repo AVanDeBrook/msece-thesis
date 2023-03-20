@@ -1,4 +1,5 @@
 import json
+import os
 from typing import *
 
 import matplotlib.pyplot as plt
@@ -91,5 +92,12 @@ if __name__ == "__main__":
     test.dump_corpus("corpora/test_corpus.txt")
     print("Done")
 
-    model = PreTrainedBERTModel(train_dataset=train, valid_dataset=valid)
+    if os.path.exists("pretrained_finetuned_bert"):
+        model = PreTrainedBERTModel.load_from(
+            "pretrained_finetuned_bert", train_dataset=train, valid_dataset=valid
+        )
+    else:
+        model = PreTrainedBERTModel(train_dataset=train, valid_dataset=valid)
+
     model.fit()
+    model.save_to("pretrained_finetuned_bert")
