@@ -11,9 +11,7 @@ import numpy as np
 from numpy.random import default_rng
 from torch.utils.data import IterableDataset
 from transformers import (
-    AutoTokenizer,
     PreTrainedTokenizer,
-    BatchEncoding,
     DataCollatorForLanguageModeling,
 )
 from pytorch_lightning import LightningDataModule

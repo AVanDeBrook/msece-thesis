@@ -1,12 +1,8 @@
-import os
-
 import pytorch_lightning as pl
-import torch
 from data import Data, PLDataLoader
 from models import HuggingFaceModel, Model
 from torch import nn
 from torch.optim import AdamW
-from torch.utils.data import DataLoader
 from transformers import AutoModelForMaskedLM
 
 
