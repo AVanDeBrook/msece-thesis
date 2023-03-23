@@ -108,5 +108,9 @@ class HuggingFaceModel:
         dataset.preprocess(tokenizer=tokenizer, collator=collator)
 
         return DataLoader(
-            dataset, batch_size=16, drop_last=True, num_workers=os.cpu_count()
+            dataset,
+            batch_size=16,
+            drop_last=True,
+            shuffle=shuffle,
+            num_workers=os.cpu_count(),
         )

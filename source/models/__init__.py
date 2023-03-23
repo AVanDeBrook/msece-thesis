@@ -2,9 +2,21 @@ import os
 import torch
 
 from .model import HuggingFaceModel, Model
-from .transformers import PreTrainedBERTModel
+from .transformers import (
+    PreTrainedBERTModel,
+    PreTrainedRoBERTaModel,
+    RandomInitBERTModel,
+    RandomInitRoBERTaModel,
+)
 
-__all__ = ["Model", "PreTrainedBERTModel", "HuggingFaceModel"]
+__all__ = [
+    "Model",
+    "PreTrainedBERTModel",
+    "PreTrainedRoBERTaModel",
+    "HuggingFaceModel",
+    "RandomInitBERTModel",
+    "RandomInitRoBERTaModel",
+]
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
