@@ -12,6 +12,7 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
         train_dataset: Data = None,
         valid_dataset: Data = None,
         model: nn.Module = None,
+        **kwargs
     ) -> "Model":
         self.pretrained_model_name = "bert-base-uncased"
 
