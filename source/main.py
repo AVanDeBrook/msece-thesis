@@ -3,13 +3,7 @@ import os
 from typing import *
 
 import matplotlib.pyplot as plt
-from data import (
-    ATCCompleteData,
-    ATCO2SimData,
-    ATCOSimData,
-    Data,
-    get_train_test_split,
-)
+from data import ATCCompleteData, ATCO2SimData, ATCOSimData, Data, get_train_test_split
 from models import PreTrainedBERTModel
 
 # root dataset paths corresponding to data analysis classes
@@ -61,6 +55,7 @@ if __name__ == "__main__":
         data_objects.append(data_analysis)
 
     # write stats to a json file
+    os.makedirs("manifests", exist_ok=True)
     with open("manifests/dataset_stats.json", "w", encoding="utf-8") as f:
         f.write(json.dumps(dataset_info, indent=1))
 
