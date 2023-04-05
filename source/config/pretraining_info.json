@@ -1,0 +1,28 @@
+{
+    "pretraining_config": [
+        {
+            "checkpoint_folder_path": "scratch_bert",
+            "checkpoint_name": "bert_randominit",
+            "max_epochs": 25,
+            "model_class": "models.RandomInitBERTModel"
+        },
+        {
+            "checkpoint_folder_path": "scratch_roberta",
+            "checkpoint_name": "roberta_randominit",
+            "max_epochs": 25,
+            "model_class": "models.RandomInitRoBERTaModel"
+        },
+        {
+            "checkpoint_folder_path": "finetuned_bert",
+            "checkpoint_name": "bert_finetuned",
+            "max_epochs": 15,
+            "model_class": "models.PreTrainedBERTModel"
+        },
+        {
+            "checkpoint_folder_path": "finetuned_roberta",
+            "checkpoint_name": "roberta_finetuned",
+            "max_epochs": 15,
+            "model_class": "models.PreTrainedRoBERTaModel"
+        }
+    ]
+}
