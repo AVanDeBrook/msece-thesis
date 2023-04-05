@@ -93,7 +93,7 @@ class Model(pl.LightningModule):
 
         return model
 
-    def fit(self):
+    def fit(self, max_epochs: int = 1):
         raise NotImplementedError()
 
 
@@ -101,16 +101,15 @@ class HuggingFaceModel:
     def __init__(self):
         pass
 
-    def preprocess_data(self, dataset: Data, shuffle: bool = True):
-        tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
-        collator = DataCollatorForLanguageModeling(tokenizer, mlm_probability=0.2)
+    def preprocess_data(self, dataset: Data):
+        assert self.tokenizer is not None
+        collator = DataCollatorForLanguageModeling(self.tokenizer, mlm_probability=0.2)
 
-        dataset.preprocess(tokenizer=tokenizer, collator=collator)
+        dataset.preprocess(tokenizer=self.tokenizer, collator=collator)
 
         return DataLoader(
             dataset,
             batch_size=16,
             drop_last=True,
-            shuffle=shuffle,
             num_workers=os.cpu_count(),
         )

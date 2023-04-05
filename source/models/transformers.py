@@ -3,14 +3,7 @@ from data import Data, PLDataLoader
 from models import HuggingFaceModel, Model
 from torch import nn
 from torch.optim import AdamW
-from transformers import (
-    AutoModelForMaskedLM,
-    AutoTokenizer,
-    BertConfig,
-    BertForMaskedLM,
-    RobertaConfig,
-    RobertaForMaskedLM,
-)
+from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoConfig
 
 
 class PreTrainedBERTModel(Model, HuggingFaceModel):
@@ -26,6 +19,8 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
         if model is None:
             model = AutoModelForMaskedLM.from_pretrained(self.pretrained_model_name)
 
+        self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
+
         optimizer = AdamW(model.parameters(), lr=4e-5)
 
         super().__init__(
@@ -37,7 +32,7 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
         if valid_dataset is not None:
             self.valid_dataset = valid_dataset
 
-    def fit(self):
+    def fit(self, max_epochs: int = 1):
         trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
@@ -60,6 +55,8 @@ class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
         if model is None:
             model = AutoModelForMaskedLM.from_pretrained(self.pretrained_model_name)
 
+        self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
+
         optimizer = AdamW(model.parameters(), lr=4e-5)
 
         super().__init__(
@@ -71,7 +68,7 @@ class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
         if valid_dataset is not None:
             self.valid_dataset = valid_dataset
 
-    def fit(self):
+    def fit(self, max_epochs: int = 1):
         trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
@@ -90,8 +87,13 @@ class RandomInitBERTModel(Model, HuggingFaceModel):
         **kwargs
     ) -> "Model":
         self.pretrained_model_name = "bert-base-uncased"
+
         if model is None:
-            model = BertForMaskedLM(BertConfig())
+            self.tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+            self.config = AutoConfig.from_pretrained(
+                "bert-base-uncased", vocab_size=len(self.tokenizer)
+            )
+            model = AutoModelForMaskedLM.from_config(self.config)
 
         optimizer = AdamW(model.parameters(), lr=4e-5)
 
@@ -101,16 +103,22 @@ class RandomInitBERTModel(Model, HuggingFaceModel):
 
         if train_dataset is not None:
             self.train_dataset = train_dataset
+
+            self.tokenizer.train_new_from_iterator(
+                self.train_dataset.data, vocab_size=self.config.vocab_size
+            )
+
         if valid_dataset is not None:
             self.valid_dataset = valid_dataset
 
-    def fit(self):
+    def fit(self, max_epochs: int = 1):
         trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
             val_dataset=self.valid_dataset,
             preprocess_fn=self.preprocess_data,
         )
+
         trainer.fit(self, datamodule=datamodule)
 
 
@@ -125,7 +133,9 @@ class RandomInitRoBERTaModel(Model, HuggingFaceModel):
         self.pretrained_model_name = "roberta-base"
 
         if model is None:
-            model = RobertaForMaskedLM(RobertaConfig(vocab_size=50265))
+            self.tokenizer = AutoTokenizer.from_pretrained("roberta-base")
+            self.config = AutoConfig.from_pretrained("roberta-base")
+            model = AutoModelForMaskedLM.from_config(self.config)
 
         optimizer = AdamW(model.parameters(), lr=4e-5)
 
@@ -135,11 +145,16 @@ class RandomInitRoBERTaModel(Model, HuggingFaceModel):
 
         if train_dataset is not None:
             self.train_dataset = train_dataset
+
+            self.tokenizer.train_new_from_iterator(
+                self.train_dataset.data, vocab_size=self.config.vocab_size
+            )
+
         if valid_dataset is not None:
             self.valid_dataset = valid_dataset
 
-    def fit(self):
-        trainer = pl.Trainer(max_epochs=1, accelerator="cpu")
+    def fit(self, max_epochs: int = 1):
+        trainer = pl.Trainer(max_epochs=max_epochs, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
             val_dataset=self.valid_dataset,

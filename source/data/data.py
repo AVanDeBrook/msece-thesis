@@ -354,7 +354,7 @@ def get_train_test_split(
     valid_split_ratio: float = 0.1,
     shuffle: bool = False,
     random_seed: int = 1,
-) -> Tuple[Data, Data]:
+) -> Tuple[Data, Data, Data]:
     """
     Utility function to split a dataset, `Data` into train and test subsets.
 
@@ -373,7 +373,7 @@ def get_train_test_split(
 
     Returns:
     --------
-    A tuple of train and test subsets i.e. (train, test)
+    A tuple of train, validation, and test subsets i.e. (train, valid, test)
 
     """
     if split_ratio >= 1.0 or split_ratio <= 0.0:
@@ -429,12 +429,12 @@ class PLDataLoader(LightningDataModule):
 
     def train_dataloader(self):
         if self.preprocess:
-            return self.preprocess(self.train_dataset, shuffle=True)
+            return self.preprocess(self.train_dataset)
         else:
             return DataLoader(self.train_dataset)
 
     def val_dataloader(self):
         if self.preprocess:
-            return self.preprocess(self.val_dataset, shuffle=True)
+            return self.preprocess(self.val_dataset)
         else:
             return DataLoader(self.val_dataset)

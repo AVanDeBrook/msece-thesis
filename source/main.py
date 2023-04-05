@@ -1,10 +1,11 @@
 import json
 import os
+import importlib
 from typing import *
 
 import matplotlib.pyplot as plt
 from data import ATCCompleteData, ATCO2SimData, ATCOSimData, Data, get_train_test_split
-from models import PreTrainedBERTModel
+from models import Model
 
 # root dataset paths corresponding to data analysis classes
 datasets: Dict[str, Data] = {
@@ -17,16 +18,8 @@ datasets: Dict[str, Data] = {
     # "/home/students/vandebra/programming/thesis_data/ZCU_CZ_ATC": ZCUATCDataset,
 }
 
-if __name__ == "__main__":
-    RANDOM_SEED: int = 1
-    # collection of dataset stats. using a dictionary so it's easier to dump to JSON or YAML later
-    dataset_info = {"dataset_info": []}
-    # collection of initialized `Data` classes so they don't get gc'd and for concatenating everything
-    # after all data has been parsed/collected
-    data_objects: List[Data] = []
 
-    plt.style.use("ggplot")
-
+def parse_datasets():
     # initializes each implementing class with its data which is specified by `root_path`
     # see `datasets` and implementing classes for more details
     for root_path, data_class in datasets.items():
@@ -55,7 +48,7 @@ if __name__ == "__main__":
         data_objects.append(data_analysis)
 
     # write stats to a json file
-    os.makedirs("manifests", exist_ok=True)
+    os.makedirs("corpora", exist_ok=True)
     with open("manifests/dataset_stats.json", "w", encoding="utf-8") as f:
         f.write(json.dumps(dataset_info, indent=1))
 
@@ -87,15 +80,51 @@ if __name__ == "__main__":
     test.dump_corpus("corpora/test_corpus.txt")
     print("Done")
 
-    if os.path.exists("pretrained_finetuned_bert"):
-        model = PreTrainedBERTModel.load_from(
-            "pretrained_finetuned_bert",
-            train_dataset=train,
-            valid_dataset=valid,
-            checkpoint_name="bert_finetuned",
-        )
-    else:
-        model = PreTrainedBERTModel(train_dataset=train, valid_dataset=valid)
+    return train, valid, test
 
-    model.fit()
-    model.save_to("pretrained_finetuned_bert")
+
+if __name__ == "__main__":
+    plt.style.use("ggplot")
+    RANDOM_SEED: int = 1
+
+    # collection of dataset stats. using a dictionary so it's easier to dump to JSON or YAML later
+    dataset_info = {"dataset_info": []}
+
+    # collection of initialized `Data` classes so they don't get gc'd and for concatenating everything
+    # after all data has been parsed/collected
+    data_objects: List[Data] = []
+
+    # python representation of pretraining_info.json
+    pretraining_info = None
+
+    if os.path.exists("corpora/all_corpus.txt"):
+        data = Data.from_corpus("corpora/all_corpus.txt")
+        train, valid, test = get_train_test_split(data)
+    else:
+        train, valid, test = parse_datasets()
+
+    # load entries from pretraining_info.json
+    with open("config/pretraining_info.json", "r", encoding="utf-8") as f:
+        pretraining_info = json.load(f)
+
+    for model_config in pretraining_info["pretraining_config"]:
+        """dynamically import class specified in "model_class"""
+        # split class from module since the mechanics of importing the two differ
+        module_name = model_config["model_class"].rsplit(".")
+        # import module name and specify the class in the from list e.g. from module_name import class
+        module = __import__(".".join(module_name[:-1]), fromlist=[module_name[-1]])
+        # get the class from the imported module
+        model_class: Model = getattr(module, module_name[1])
+
+        if os.path.exists(model_config["checkpoint_folder_path"]):
+            model = model_class.load_from(
+                path=model_config["checkpoint_folder_path"],
+                train_dataset=train,
+                valid_dataset=valid,
+                checkpoint_name=model_config["checkpoint_name"],
+            )
+        else:
+            model = model_class(train_dataset=train, valid_dataset=valid)
+
+        model.fit(max_epochs=model_config["max_epochs"])
+        model.save_to(model_config["checkpoint_folder_path"])
