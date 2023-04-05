@@ -3,7 +3,7 @@ from data import Data, PLDataLoader
 from models import HuggingFaceModel, Model
 from torch import nn
 from torch.optim import AdamW
-from transformers import AutoModelForMaskedLM, AutoTokenizer, AutoConfig
+from transformers import AutoConfig, AutoModelForMaskedLM, AutoTokenizer
 
 
 class PreTrainedBERTModel(Model, HuggingFaceModel):
@@ -33,7 +33,7 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
             self.valid_dataset = valid_dataset
 
     def fit(self, max_epochs: int = 1):
-        trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
+        trainer = pl.Trainer(max_epochs=max_epochs, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
             val_dataset=self.valid_dataset,
@@ -69,7 +69,7 @@ class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
             self.valid_dataset = valid_dataset
 
     def fit(self, max_epochs: int = 1):
-        trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
+        trainer = pl.Trainer(max_epochs=max_epochs, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
             val_dataset=self.valid_dataset,
@@ -112,7 +112,7 @@ class RandomInitBERTModel(Model, HuggingFaceModel):
             self.valid_dataset = valid_dataset
 
     def fit(self, max_epochs: int = 1):
-        trainer = pl.Trainer(max_epochs=1, accelerator="gpu")
+        trainer = pl.Trainer(max_epochs=max_epochs, accelerator="gpu")
         datamodule = PLDataLoader(
             train_dataset=self.train_dataset,
             val_dataset=self.valid_dataset,

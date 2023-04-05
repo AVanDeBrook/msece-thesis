@@ -1,6 +1,6 @@
+import importlib
 import json
 import os
-import importlib
 from typing import *
 
 import matplotlib.pyplot as plt
@@ -108,6 +108,9 @@ if __name__ == "__main__":
         pretraining_info = json.load(f)
 
     for model_config in pretraining_info["pretraining_config"]:
+        print(
+            f"{model_config['checkpoint_name']} training for {model_config['max_epochs']} epochs"
+        )
         """dynamically import class specified in "model_class"""
         # split class from module since the mechanics of importing the two differ
         module_name = model_config["model_class"].rsplit(".")
