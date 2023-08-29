@@ -3,7 +3,7 @@ from .utils import atccutils
 from .atccomplete import ATCCompleteData
 from .atco2sim import ATCO2SimData
 from .atcosim import ATCOSimData
-from .czechdataset import ZCUATCDataset
+from .czechdataset import ZCUCZATCDataset
 
 __all__ = [
     "Data",
@@ -13,6 +13,6 @@ __all__ = [
     "ATCCompleteData",
     "ATCO2SimData",
     "ATCOSimData",
-    "ZCUATCDataset",
+    "ZCUCZATCDataset",
     "get_train_test_split",
 ]

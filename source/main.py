@@ -4,7 +4,14 @@ import os
 from typing import *
 
 import matplotlib.pyplot as plt
-from data import ATCCompleteData, ATCO2SimData, ATCOSimData, Data, get_train_test_split
+from data import (
+    ATCCompleteData,
+    ATCO2SimData,
+    ATCOSimData,
+    ZCUCZATCDataset,
+    Data,
+    get_train_test_split,
+)
 from models import Model
 
 # root dataset paths corresponding to data analysis classes
@@ -15,11 +22,15 @@ datasets: Dict[str, Data] = {
     "/home/students/vandebra/programming/thesis_data/ATCO2-ASRdataset-v1_beta": ATCO2SimData,
     # TODO: this dataset has strange formats for transcriptions, need to do a lot of
     # work to clean and reformat them. Disabling this dataset for now
-    # "/home/students/vandebra/programming/thesis_data/ZCU_CZ_ATC": ZCUATCDataset,
+    "/home/students/vandebra/programming/thesis_data/ZCU_CZ_ATC": ZCUCZATCDataset,
 }
 
 
 def parse_datasets():
+    # collection of dataset stats. using a dictionary so it's easier to dump to JSON or YAML later
+    dataset_info = {"dataset_info": []}
+    data_objects: List[Data] = []
+
     # initializes each implementing class with its data which is specified by `root_path`
     # see `datasets` and implementing classes for more details
     for root_path, data_class in datasets.items():
@@ -32,11 +43,7 @@ def parse_datasets():
         data_analysis.parse_transcripts()
         print("Done")
 
-        # printing some stats to stdout just to confirm things worked correctly
-        print(
-            f"Found {data_analysis.num_samples} samples with {data_analysis.unique_tokens} "
-            f"unique tokens and {data_analysis.total_tokens} tokens in total for '{data_analysis.name}'"
-        )
+        data_analysis.summary()
         # dump corpora to a standard corpus.txt style file, we'll have one for each dataset and
         # one for everything combined together
         corpus_filename = f"{data_analysis.name.replace(' ', '_')}.txt"
@@ -55,6 +62,9 @@ def parse_datasets():
     # concatenate everything to first object
     for o in data_objects[1:]:
         data_objects[0].concat(o)
+
+    data_objects[0].dataset_name = "All"
+    data_objects[0].summary()
 
     # split data into train and test
     print("Generating train/test split", end="...")
@@ -87,47 +97,39 @@ if __name__ == "__main__":
     plt.style.use("ggplot")
     RANDOM_SEED: int = 1
 
-    # collection of dataset stats. using a dictionary so it's easier to dump to JSON or YAML later
-    dataset_info = {"dataset_info": []}
-
-    # collection of initialized `Data` classes so they don't get gc'd and for concatenating everything
-    # after all data has been parsed/collected
-    data_objects: List[Data] = []
+    parse_datasets()
 
     # python representation of pretraining_info.json
-    pretraining_info = None
+    # pretraining_info = None
 
-    if os.path.exists("corpora/all_corpus.txt"):
-        data = Data.from_corpus("corpora/all_corpus.txt")
-        train, valid, test = get_train_test_split(data)
-    else:
-        train, valid, test = parse_datasets()
+    # if os.path.exists("corpora/all_corpus.txt"):
+    #     data = Data.from_corpus("corpora/all_corpus.txt")
+    #     train, valid, test = get_train_test_split(data)
+    # else:
+    #     train, valid, test = parse_datasets(dataset_info)
 
-    # load entries from pretraining_info.json
-    with open("config/pretraining_info.json", "r", encoding="utf-8") as f:
-        pretraining_info = json.load(f)
+    # # load entries from pretraining_info.json
+    # with open("config/pretraining_info.json", "r", encoding="utf-8") as f:
+    #     pretraining_info = json.load(f)
 
-    for model_config in pretraining_info["pretraining_config"]:
-        print(
-            f"{model_config['checkpoint_name']} training for {model_config['max_epochs']} epochs"
-        )
-        """dynamically import class specified in "model_class"""
-        # split class from module since the mechanics of importing the two differ
-        module_name = model_config["model_class"].rsplit(".")
-        # import module name and specify the class in the from list e.g. from module_name import class
-        module = __import__(".".join(module_name[:-1]), fromlist=[module_name[-1]])
-        # get the class from the imported module
-        model_class: Model = getattr(module, module_name[1])
+    # for model_config in pretraining_info["pretraining_config"]:
+    #     """dynamically import class specified in "model_class"""
+    #     # split class from module since the mechanics of importing the two differ
+    #     module_name = model_config["model_class"].rsplit(".")
+    #     # import module name and specify the class in the from list e.g. from module_name import class
+    #     module = __import__(".".join(module_name[:-1]), fromlist=[module_name[-1]])
+    #     # get the class from the imported module
+    #     model_class: Model = getattr(module, module_name[1])
 
-        if os.path.exists(model_config["checkpoint_folder_path"]):
-            model = model_class.load_from(
-                path=model_config["checkpoint_folder_path"],
-                train_dataset=train,
-                valid_dataset=valid,
-                checkpoint_name=model_config["checkpoint_name"],
-            )
-        else:
-            model = model_class(train_dataset=train, valid_dataset=valid)
+    #     if os.path.exists(model_config["checkpoint_folder_path"]):
+    #         model = model_class.load_from(
+    #             path=model_config["checkpoint_folder_path"],
+    #             train_dataset=train,
+    #             valid_dataset=valid,
+    #             checkpoint_name=model_config["checkpoint_name"],
+    #         )
+    #     else:
+    #         model = model_class(train_dataset=train, valid_dataset=valid)
 
-        model.fit(max_epochs=model_config["max_epochs"])
-        model.save_to(model_config["checkpoint_folder_path"])
+    #     model.fit(max_epochs=model_config["max_epochs"])
+    #     model.save_to(model_config["checkpoint_folder_path"])

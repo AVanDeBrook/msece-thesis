@@ -6,7 +6,7 @@ from data import Data
 from xml.etree import ElementTree
 
 
-class ZCUATCDataset(Data):
+class ZCUCZATCDataset(Data):
     """
     Data is organized into `trs` files (follows an XML standard). Details in `~parse_transcripts` function.
 
@@ -26,9 +26,9 @@ class ZCUATCDataset(Data):
     """
 
     def __init__(self, data_root: str, **kwargs):
-        super(ZCUATCDataset, self).__init__(**kwargs)
-
+        super(ZCUCZATCDataset, self).__init__(dataset_name="ZCU CZ ATC", **kwargs)
         self.transcript_paths = glob.glob(os.path.join(data_root, "*.trs"))
+
         assert (
             len(self.transcript_paths) != 0
         ), f"Cannot find transcripts in data_root: {data_root}"
@@ -53,36 +53,44 @@ class ZCUATCDataset(Data):
         data = []
 
         annotation_tag = re.compile(r"(\[[A-Za-z_\|\?]+\])")
+        nonstandard_pronunciation = re.compile(
+            r"\((?P<effective_transcript>[\w\d\s\+]+)\((?P<phonetic_transcript>[\w\d\s]+)\)\)"
+        )
 
-        for path in self.transcript_paths:
+        for transcript_path in self.transcript_paths:
+            doc_data = []
             try:
                 # root node: <Trans>
-                document = ElementTree.parse(path).getroot()
+                document = ElementTree.parse(transcript_path).getroot()
             except ElementTree.ParseError as e:
                 # because not all transcripts conform to the given format
-                with open(path, "a") as dumb_path:
+                with open(transcript_path, "a") as dumb_path:
                     # there is a single file that is missing the closing tags on all nodes
                     # hard-coding the fix here, so I can forget about it
                     dumb_path.write("</Turn>\n</Section>\n</Episode>\n</Trans>\n")
                 # parse the document again
-                document = ElementTree.parse(path).getroot()
+                document = ElementTree.parse(transcript_path).getroot()
 
             # find <Sync> tags, extract text, reformat/clean
             for sync_node in document.iterfind(
                 ".//Sync"
             ):  # searches all subelements for Sync nodes
-                assert sync_node.tag == "Sync"
-                assert len(sync_node.tail) != 0
-
                 text = annotation_tag.sub("", sync_node.tail).strip()
+
+                for nonstandard_match in nonstandard_pronunciation.finditer(text):
+                    if nonstandard_match is not None:
+                        text = text.replace(
+                            nonstandard_match.group(0), nonstandard_match.group(1)
+                        )
+
                 # ".." corresponds to silent segments, "" can occur when the transcript is made up
                 # of only transcriber annotations
                 if text != ".." and text != "":
-                    data.append(text)
+                    doc_data.append(text.strip())
+
+            # check to make sure useful samples were found in the document
+            if len(doc_data) != 0:
+                data.extend(doc_data)
 
         self.data = data
         return data
-
-    @property
-    def name(self) -> str:
-        return "ZCU ATC"

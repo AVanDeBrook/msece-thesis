@@ -53,7 +53,9 @@ class ATCCompleteData(Data):
     # _transcript_glob: List[str]
 
     def __init__(self, data_root: str, **kwargs):
-        super(ATCCompleteData, self).__init__(**kwargs)
+        super(ATCCompleteData, self).__init__(
+            dataset_name="Air Traffic Control Complete", **kwargs
+        )
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
         self._transcript_glob = glob.glob(transcript_glob_string, recursive=True)
 
@@ -105,7 +107,3 @@ class ATCCompleteData(Data):
         # save manifest data to class attribute before returning
         self.data = data
         return data
-
-    @property
-    def name(self):
-        return "Air Traffic Control Complete"

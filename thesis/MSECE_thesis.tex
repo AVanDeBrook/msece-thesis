@@ -6,6 +6,7 @@
 \usepackage{newtxtext}
 \usepackage{setspace}
 \usepackage{sectsty}
+\usepackage{booktabs}
 \usepackage[numbib]{tocbibind}
 \usepackage[lmargin=1.25in,rmargin=1.25in,tmargin=1.0in,bmargin=1.0in]{geometry}
 
@@ -71,101 +72,109 @@ Masters of Electrical \& Computer Engineering.
 \newpage
 \tableofcontents
 \newpage
-\doublespacing
+\doublespacing{}
 
-\section{Abstract}
-\section{Introduction}
+% \section{Abstract}
+
 \section{Literature Review}
 % from proposal; revise and add to this as more references are used
 % transformer history
 The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved
-state-of-the-art (28.4 BLEU on WMT 2014 English-to-German; 41.8 BLEU on WMT English-to-French datasets)
-\cite{vaswani_attention_2017}. Transformer architectures have been found to be extremely effective at learning representations
-and understandings of languages to predict token probabilities as opposed to transforming one language into another
-\cite{devlin_bert_2019,liu_roberta_2019}. Transformers have also been found to be very effective at
-other NLP-related tasks such as prompt completion and sentiment analysis among others (i.e.~auto-regressive and sequence
-classification tasks, respectively) \cite{lewis_bart_2019,radford_improving_2018}.
+state-of-the-art (28.4 BLEU on WMT 2014 English-to-German; 41.8 BLEU on WMT English-to-French datasets)\cite{vaswani_attention_2017}. Transformer
+architectures have been found to be extremely effective at learning representations and understandings of languages to predict token probabilities as
+opposed to transforming one language into another\cite{devlin_bert_2019,liu_roberta_2019}. Transformers have also been found to be very effective at
+other NLP-related tasks such as prompt completion and sentiment analysis among others (i.e.~auto-regressive and sequence classification tasks,
+respectively)\cite{lewis_bart_2019,radford_improving_2018}.
 
 
 % ASR context (suggest some need for semi-supervised approaches and therefore LMs)
-End-to-end generative models for automatic speech recognition models have made significant progress in recent years with
-current state-of-the-art models achieving WERs as low as 2\% on LibriSpeech test sets
-\cite{han_contextnet_2020,kriman_quartznet_2020,baevski_wav2vec_2020,li_jasper_2019}. This has led to the development of ASR
-models for the aviation domain, specifically, in air traffic control communications
-\cite{badrinath_automatic_2022,smidl_air_2019,zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017}.
-However, due to the lack of transcribed data in the aviation domain
-\cite{zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017,badrinath_automatic_2022,smidl_air_2019}
-ASR models maintain relatively high WERs compared to their counterparts in the more generalized ASR domain
-\cite{zuluaga-gomez_automatic_2020,badrinath_automatic_2022}. Transfer learning has even yielded limited results
-in this domain (depending on model architecture and dataset quality)
-\cite{badrinath_automatic_2022,zuluaga-gomez_automatic_2020}.
+End-to-end generative models for automatic speech recognition models have made significant progress in recent years with current state-of-the-art
+models achieving WERs as low as 2\% on LibriSpeech test sets\cite{han_contextnet_2020,kriman_quartznet_2020,baevski_wav2vec_2020,li_jasper_2019}.
+This has led to the development of ASR models for the aviation domain, specifically, in air traffic control communications\cite{badrinath_automatic_2022,smidl_air_2019,zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017}. However, due to the lack of
+transcribed data in the aviation domain\cite{zuluaga-gomez_automatic_2020,srinivasamurthy_semi-supervised_2017,badrinath_automatic_2022,smidl_air_2019}
+ASR models maintain relatively high WERs compared to their counterparts in the more generalized ASR domain\cite{zuluaga-gomez_automatic_2020,badrinath_automatic_2022}. Transfer learning has even yielded limited results in this domain (depending on model
+architecture and dataset quality)\cite{badrinath_automatic_2022,zuluaga-gomez_automatic_2020}.
 
 
 % Unsupervised/semi-supervised in general and LMs commonly used with them
 Unsupervised and semi-supervised methodologies have become popular recently in attempts to address limited data availability
 and develop new approaches towards modeling human speech (notably, wav2vec has achieved state-of-the-art performance with
-very little training data)
-\cite{baevski_wav2vec_2020,badrinath_automatic_2022,srinivasamurthy_semi-supervised_2017,zuluaga-gomez_contextual_2021}.
+very little training data)\cite{baevski_wav2vec_2020,badrinath_automatic_2022,srinivasamurthy_semi-supervised_2017,zuluaga-gomez_contextual_2021}.
 Language models are an integral part semi-supervised learning. They are used to obtain a certainty score (or uncertainty
-score, as the case may be) for the predicted text, these are usually either word lattices or N-gram models
-\cite{badrinath_automatic_2022,srinivasamurthy_semi-supervised_2017,zuluaga-gomez_contextual_2021}.
+score, as the case may be) for the predicted text, these are usually either word lattices or N-gram models\cite{badrinath_automatic_2022,srinivasamurthy_semi-supervised_2017,zuluaga-gomez_contextual_2021}.
 While these have proven to be adequate for most self-supervised learning tasks, they are hardly state-of-the-art.
 Wav2vec, the current state-of-the-art unsupervised model (and possibly top performing overall), uses a contrastive process
-between convolutional feature extraction and transformer context representations \cite{baevski_wav2vec_2020}.
+between convolutional feature extraction and transformer context representations\cite{baevski_wav2vec_2020}.
 
 
 % LMs and NLP in aero. domain
 Various natural language processing methods have been applied to the aviation domain to help deal with miscommunications
-and try to mitigate safety incidents \cite{ragnarsdottir_language_2003,tanguy_natural_2016,madeira_machine_2021}.
+and try to mitigate safety incidents\cite{ragnarsdottir_language_2003,tanguy_natural_2016,madeira_machine_2021}.
 Some machine learning approaches have been implemented to analyze the text in aviation incident and safety reports to predict
-contributing factors and topic models \cite{tanguy_natural_2016,madeira_machine_2021}. An ASR system with NLP post-processing
+contributing factors and topic models\cite{tanguy_natural_2016,madeira_machine_2021}. An ASR system with NLP post-processing
 has also been proposed to analyze Air-Traffic communications and condense significant features (e.g.~weather, runway, and
-heading info) into an XML language structure \cite{ragnarsdottir_language_2003}. Transformer language models such as BERT,
+heading info) into an XML language structure\cite{ragnarsdottir_language_2003}. Transformer language models such as BERT,
 RoBERTa, and DeBERTa have been applied to notice to airmen (NOTAM) messages to perform named entity recognition (NER) tasks,
 translation tasks (between notations; e.g.~NOTAM notation to Airlang to make parsing tasks easier) and reduce the workload
-for pilots during long-haul flights \cite{arnold_knowledge_2022}. Transformer models have also been used for speaker role
+for pilots during long-haul flights\cite{arnold_knowledge_2022}. Transformer models have also been used for speaker role
 identification tasks in the aviation domain (e.g.~identifying pilot versus controller in communications), specifically,
 a pretrained BERT model was used and fine-tuned on problem specific data and compared to other models that performed
-well at speaker and role identification tasks in general \cite{guo_comparative_2022}.
-\section{Methodology}
-\subsection{Data Source(s)}
-There are four datasets used in this work. All are described in detail below. All data samples are text-based and are mined
-from transcripts intended for Automatic Speech Recognition (ASR) tasks.
+well at speaker and role identification tasks in general\cite{guo_comparative_2022}.
 
-\textbf{Air Traffic Control Complete}. Hereafter this dataset will be referred to as ATCC. This data was collected from three major
-airports in the United States, specifically, Boston Logan, Washington National, and Dallas-Fort Worth airports. The data is intended
-to be used primarily for Automatic Speech Recognition tasks, therefore the data in this work was mined from the transcripts of those
-data samples \cite{godfrey_air_1994}.
+\section{Data Source(s)}
+There are four datasets used in this work. The datasets are primarily speech corpora intended either for automatic speech recognition
+research in the domain of aviation communications, linguistics research in aviation english, or both. As a result, the text-based data
+samples that are used to train the language models in this work are transcripts of aural speech. The datasets used are described in more
+detail below. All recordings and transcripts are in english, although there are multiple instances of foreign words occuring
 
-\textbf{Air Traffic Control 2}. This dataset is referred to as ATCO2 throughout the rest of this work. This data was collected as part
-of an open source initiative to collect and label audio data from airports around the world. The data was originally used for
-acoustic-based NLP tasks, such as ASR, in the aviation/aerospace domain(s). Similarly to ATCC, the data used in this work from ATCO2
-is mined from the transcripts of the samples in the dataset \cite{szoke_detecting_2021}.
+\subsection{Air Traffic Control Complete}
+The Air Traffic Control Complete (ATCC) corpus is a speech corpus consisting of audio recordings with corresponding transcriptions.
+ATCC is a collection of three smaller corpora recorded at Dallas-Fort Worth, Logan International, and Washington National airports and
+transcribed by subject matter experts (usually controllers and/or pilots) familiar with the terminology specific to their respective
+areas\cite{godfrey_air_1994}.
 
-\textbf{Air Traffic Control Simulation}. This dataset is referred to as ATCOSIM throughout the rest of this thesis. The data in this
-corpus was collected at an air-traffic control training and simulation center used for teaching and evaluating air-traffic control
-and air-traffic management concepts. As with the other datasets in this work, this dataset was created for acoustic and audio-based
-analysis and machine learning tasks such as ASR among others. Likewise, the data used in this work is mined from the transcripts
-of the samples in the dataset \cite{hofbauer_atcosim_2008}.
+\subsection{ATCO2}
+The ATCO2 dataset is a speech corpus that consists of audio communications at Prague and Brno airports, in Czechia, along with corresponding
+transcriptions. The speech recordings and transcripts are crowd sourced from volunteers\cite{szoke_detecting_2021}.
 
-\textbf{Czech ATC Corpus}. This dataset is referred to throughout the rest of this work as the ZCUATC corpus/dataset. The data in this
-corpus was recorded at an airport in the Czech Republic and subsequently transcribed. This dataset differs the most from the other
-datasets used in this work due to the location in which it was collected and transcribed, however a majority of the samples, if not all
-of them, should conform the the ICAO standards of aviation communications, which is why it remains in this work. As with the other
-audio-based corpora, the data used in this thesis was derived from the transcripts that correspond to the audio data in the ZCUATC
-corpus \cite{smidl_air_2019}.
 
+\subsection{Air Traffic Control Simulation}
+The Air Traffic Control Simulation (ATCOSIM) corpus is a speech corpus consisting of audio recordings and corresponding transcriptions.
+The data was recorded at a air traffic control simulation center in Bretigny-sur-Orge, France, specifically the EUROCONTROL Experimental Centre.
+In this data, only the controllers' voices are included and therefore the transcripts only include the controller's side of each interaction.
+The audio data was transcribed by one person, trained according to the guidelines and formatting requirements of the corpus. After all data was
+transcribed, it was reviewed and corrected and any remaining problems were reviewed by an operational air traffic controller and
+resolved\cite{hofbauer_atcosim_2008}.
+
+\subsection{ZCU CZ ATC Corpus}
+The ZCU CZ ATC corpus consists of audio recordings and corresponding transcripts in the Czech airspace. Both controller and pilot sides of the
+communications are included in this data. Annotations were created by experienced transcribers/annotators and labeled samples were randomly selected
+for review during the annoation process. After the dataset was completely labeled, all samples were checked, corrected, and
+unified\cite{smidl_air_2019}.
 
 \subsection{Data Analysis}
 % sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
+\begin{table}
+    \centering
+    \begin{tabular}{l c c c c}
+        Corpus                         & Samples & Mean Sequence Length & Tokens  & Unique Tokens \\
+        \toprule
+        Air Traffic Control Complete   & 29,862  & 11.90                & 355,476 & 2,210         \\
+        ATCO2                          & 874     & 12.46                & 10,886  & 855           \\
+        Air Traffic Control Simulation & 9,544   & 11.29                & 107,759 & 824           \\
+        ZCU CZ ATC Corpus              & 14,435  & 10.32                & 149,031 & 3106          \\
+        \bottomrule
+        Total                          & 54,715  & 11.39                & 623,152 & 5343          \\
+    \end{tabular}
+    \caption[short]{title}
+\end{table}
+
 \subsection{Preprocessing}
 % explain and justify what is removed from the text, how, and why
 % present and explain any relevant algorithms where necessary
+
 \subsection{Tokenization}
 % present and explain the tokenization algorithms used (possibly which models they correspond to)
-\section{Discussion}
-\section{Results}
-\section{Conclusion}
 
 \newpage
 \bibliography{refs}

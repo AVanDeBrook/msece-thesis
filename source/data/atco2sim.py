@@ -27,7 +27,7 @@ class ATCO2SimData(Data):
     ]
 
     def __init__(self, data_root: str, **kwargs):
-        super(ATCO2SimData, self).__init__(**kwargs)
+        super(ATCO2SimData, self).__init__(dataset_name="ATCO2", **kwargs)
 
         self.transcripts = glob.glob(os.path.join(data_root, "DATA/*.xml"))
         assert len(self.transcripts) != 0
@@ -121,7 +121,3 @@ class ATCO2SimData(Data):
 
         self.data = data
         return data
-
-    @property
-    def name(self) -> str:
-        return "ATCO2"

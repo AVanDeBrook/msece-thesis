@@ -347,6 +347,33 @@ class Data(IterableDataset):
 
         return len(unique_tokens)
 
+    @property
+    def average_sequence_length(self) -> int:
+        """
+        Average number of tokens per sequence in the dataset. Calculated as
+        the sum of the sequence lengths divided by the number of samples.
+        """
+        sum_of_seq_lens = 0
+
+        for item in self.data:
+            sum_of_seq_lens += len(item.split(" "))
+
+        return sum_of_seq_lens / self.num_samples
+
+    def summary(self, printout=True):
+        """ """
+        dataset_summary = f"""
+Name: {self.name}
+Samples: {self.num_samples}
+Mean Sequence Length: {self.average_sequence_length}
+Number of Tokens: {self.total_tokens}
+Number of Unique Tokens: {self.unique_tokens}
+"""
+        if printout:
+            print(dataset_summary)
+        else:
+            return dataset_summary
+
 
 def get_train_test_split(
     data: Data,
