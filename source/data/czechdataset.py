@@ -4,6 +4,7 @@ import re
 from typing import *
 from data import Data
 from xml.etree import ElementTree
+from tokenizers.normalizers import NFD
 
 
 class ZCUCZATCDataset(Data):
@@ -56,6 +57,7 @@ class ZCUCZATCDataset(Data):
         nonstandard_pronunciation = re.compile(
             r"\((?P<effective_transcript>[\w\d\s\+]+)\((?P<phonetic_transcript>[\w\d\s]+)\)\)"
         )
+        normalizer = NFD()
 
         for transcript_path in self.transcript_paths:
             doc_data = []
@@ -75,7 +77,7 @@ class ZCUCZATCDataset(Data):
             for sync_node in document.iterfind(
                 ".//Sync"
             ):  # searches all subelements for Sync nodes
-                text = annotation_tag.sub("", sync_node.tail).strip()
+                text: str = annotation_tag.sub("", sync_node.tail).strip()
 
                 for nonstandard_match in nonstandard_pronunciation.finditer(text):
                     if nonstandard_match is not None:
@@ -83,9 +85,36 @@ class ZCUCZATCDataset(Data):
                             nonstandard_match.group(0), nonstandard_match.group(1)
                         )
 
+                words = text.split()
+
+                # for word in words:
+                # if "+" in word:
+                #     words.remove(word)
+
+                text = " ".join(words).lower()
+
                 # ".." corresponds to silent segments, "" can occur when the transcript is made up
                 # of only transcriber annotations
                 if text != ".." and text != "":
+                    text = text.translate(
+                        str.maketrans(
+                            {
+                                "0": "zero",
+                                "1": "one",
+                                "2": "two",
+                                "3": "tree",
+                                "4": "four",
+                                "5": "fife",
+                                "6": "six",
+                                "7": "seven",
+                                "8": "eight",
+                                "9": "niner",
+                                ".": "dot",
+                            }
+                        )
+                    )
+
+                    text = normalizer.normalize_str(text)
                     doc_data.append(text.strip())
 
             # check to make sure useful samples were found in the document

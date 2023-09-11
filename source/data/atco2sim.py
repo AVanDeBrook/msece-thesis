@@ -4,7 +4,6 @@ import re
 from data import Data
 from typing import *
 from xml.etree import ElementTree
-from pprint import pprint
 
 
 class ATCO2SimData(Data):

@@ -2,8 +2,7 @@ import os
 import glob
 import re
 from typing import *
-from data import Data
-from data import atccutils
+from data import Data, atccutils
 
 
 class ATCCompleteData(Data):

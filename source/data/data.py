@@ -24,22 +24,10 @@ class Data(IterableDataset):
 
     This class should be extended and the following methods/properties implemented for each dataset:
     * `parse_transcripts`
-    * `name`
 
     Attributes:
     -----------
-    `_manifest_data`: list of dictionary objects. Each object corresponds to one data sample
-    and typically contains the following metadata:
-    * `audio_filepath` (required) - path to the audio data (input data). Type: `str`,
-    absolute file path, conforms to `os.PathLike`
-    * `duration` (required) - duration, in seconds, of the audio data. Type: `float`
-    * `text` (required) - transcript of the audio data (label/ground truth). Type: `str`
-    * `offset` - if more than one sample is present in a single audio file, this field
-    specifies its offset i.e. start time in the audio file. Type: `float`
-
     `_random`: numpy seeded RNG instance
-
-    `_normalized`: bool indicating whether samples in the dataset have been normalized/preprocessed
     """
 
     _random: np.random.Generator
@@ -55,7 +43,6 @@ class Data(IterableDataset):
         self.data: List[str] = []
         # create random number generator sequence with specified seed, if applicable
         Data._random: np.random.Generator = np.random.default_rng(random_seed)
-        self.normalized: bool = False
 
     def __iter__(self):
         assert len(self.data) != 0
@@ -195,7 +182,6 @@ class Data(IterableDataset):
         token_freqs = {}
 
         for sample in self.data:
-            sample = sample["text"]
             for token in sample.split():
                 if token in token_freqs.keys():
                     # increment occurences if there is already an entry
@@ -273,6 +259,41 @@ class Data(IterableDataset):
             "total_tokens": self.total_tokens,
             "unique_tokens": self.unique_tokens,
         }
+
+    def token_ratio(self, as_tuple=False) -> Union[float, Tuple[int, int]]:
+        """
+        The ratio of unique tokens to the total number of tokens.
+
+        :param as_tuple: Defaults to False. If True, returns a tuple
+        of the ratio of unique tokens to total tokens in the order [unique, total].
+        """
+        unique_tokens = self.unique_tokens
+        total_tokens = self.total_tokens
+
+        if as_tuple:
+            return tuple([unique_tokens, total_tokens])
+        else:
+            return unique_tokens / total_tokens
+
+    def summary(self, printout=True):
+        """
+        Print out (or return a formatted string) with available statistics about this dataset.
+
+        :param printout: Defaults to True. If False, returns the formatting string that would
+        have been printed to the terminal.
+        """
+        dataset_summary = f"""
+Name: {self.name}
+Samples: {self.num_samples}
+Mean Sequence Length: {self.average_sequence_length}
+Number of Tokens: {self.total_tokens}
+Number of Unique Tokens: {self.unique_tokens}
+Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {self.token_ratio(as_tuple=True)}
+"""
+        if printout:
+            print(dataset_summary)
+        else:
+            return dataset_summary
 
     @classmethod
     def from_corpus(cls: "Data", corpus_path: str, random_seed: int = 1) -> "Data":
@@ -359,20 +380,6 @@ class Data(IterableDataset):
             sum_of_seq_lens += len(item.split(" "))
 
         return sum_of_seq_lens / self.num_samples
-
-    def summary(self, printout=True):
-        """ """
-        dataset_summary = f"""
-Name: {self.name}
-Samples: {self.num_samples}
-Mean Sequence Length: {self.average_sequence_length}
-Number of Tokens: {self.total_tokens}
-Number of Unique Tokens: {self.unique_tokens}
-"""
-        if printout:
-            print(dataset_summary)
-        else:
-            return dataset_summary
 
 
 def get_train_test_split(

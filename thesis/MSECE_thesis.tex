@@ -121,7 +121,7 @@ identification tasks in the aviation domain (e.g.~identifying pilot versus contr
 a pretrained BERT model was used and fine-tuned on problem specific data and compared to other models that performed
 well at speaker and role identification tasks in general\cite{guo_comparative_2022}.
 
-\section{Data Source(s)}
+\section{Data Source(s)}\label{sec:data_source}
 There are four datasets used in this work. The datasets are primarily speech corpora intended either for automatic speech recognition
 research in the domain of aviation communications, linguistics research in aviation english, or both. As a result, the text-based data
 samples that are used to train the language models in this work are transcripts of aural speech. The datasets used are described in more
@@ -152,26 +152,38 @@ communications are included in this data. Annotations were created by experience
 for review during the annoation process. After the dataset was completely labeled, all samples were checked, corrected, and
 unified\cite{smidl_air_2019}.
 
-\subsection{Data Analysis}
+\section{Data Analysis}
 % sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
 \begin{table}
     \centering
-    \begin{tabular}{l c c c c}
-        Corpus                         & Samples & Mean Sequence Length & Tokens  & Unique Tokens \\
+    \begin{tabular}{l r r r r}
+        Corpus                         & Samples & Mean Sequence Length & Unique Tokens & Tokens  \\
         \toprule
-        Air Traffic Control Complete   & 29,862  & 11.90                & 355,476 & 2,210         \\
-        ATCO2                          & 874     & 12.46                & 10,886  & 855           \\
-        Air Traffic Control Simulation & 9,544   & 11.29                & 107,759 & 824           \\
-        ZCU CZ ATC Corpus              & 14,435  & 10.32                & 149,031 & 3106          \\
+        Air Traffic Control Complete   & 29,862  & 11.90                & 2,210         & 355,476 \\
+        ATCO2                          & 874     & 12.46                & 855           & 10,886  \\
+        Air Traffic Control Simulation & 9,544   & 11.29                & 824           & 107,759 \\
+        ZCU CZ ATC Corpus              & 14,435  & 10.32                & 3,106         & 149,031 \\
         \bottomrule
-        Total                          & 54,715  & 11.39                & 623,152 & 5343          \\
+        Total                          & 54,715  & 11.39                & 5,343         & 623,152 \\
     \end{tabular}
-    \caption[short]{title}
+    \caption{Data statistics by corpus, including statistics across all corpora.}
 \end{table}
 
-\subsection{Preprocessing}
+\section{Data Processing}
+All of the corpora listed above (see~\ref{sec:data_source}) are created at different times, for different purposes, and by different authors.
+As a result, the data in these corpora all have different formats and need to be processed into a common format to be used together, with the goal
+being to essentially create a super-corpus that includes all the corpora listed above.
+
+All data was processed in Python using primarily built-in functions/modules\footnote{The \lstinline|re| and \lstinline|xml| modules were also used although
+    these are built into most Python distributions by default.}. The text data is extracted from the corpus transcripts i.e.~Lisp in ATCC, XML in
+ATCO2 and ZCU CZ ATC, and plain text in ATCOSIM, the transcriber annotations are removed where necessary\footnote{A copy of the original data is
+    made, then the annotations are removed from the copy.}, and the resulting text is written in the standard corpus format (an ASCII text file with
+one line in the file corresponding to one sample from the corpus) to a file.
+
+\subsection{Data Preprocessing}
 % explain and justify what is removed from the text, how, and why
 % present and explain any relevant algorithms where necessary
+
 
 \subsection{Tokenization}
 % present and explain the tokenization algorithms used (possibly which models they correspond to)
