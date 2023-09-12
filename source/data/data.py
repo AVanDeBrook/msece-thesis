@@ -41,6 +41,7 @@ class Data(IterableDataset):
         """
         self.dataset_name: str = dataset_name
         self.data: List[str] = []
+        self.seq_lens = []
         # create random number generator sequence with specified seed, if applicable
         Data._random: np.random.Generator = np.random.default_rng(random_seed)
 
@@ -156,48 +157,6 @@ class Data(IterableDataset):
 
         return histogram
 
-    def token_freq_analysis(self, normalize=False) -> Dict[str, Union[int, List]]:
-        """
-        Perform a token frequency analysis on the dataset (number of occurrences of each token throughout the dataset).
-
-        Arguments:
-        ----------
-        `normalize`: (optional)`bool`, whether to normalize values such that all frequencies add to 1.
-
-        Returns:
-        --------
-        `token_freqs`: `dict` with tokens and number of occurrences of those tokens throughout the dataset.
-        If `normalize` is set to `True` a dictionary with tokens corresponding to a list is returned e.g.
-        ```
-        {
-            "token": [24, 0.0486] # token with corresponding occurences and frequencies
-        }
-        ```
-
-        """
-        if len(self.data) == 0:
-            self.parse_transcripts()
-
-        # tokens corresponding to occurences/frequencies
-        token_freqs = {}
-
-        for sample in self.data:
-            for token in sample.split():
-                if token in token_freqs.keys():
-                    # increment occurences if there is already an entry
-                    token_freqs[token] += 1
-                else:
-                    # add entry if one does not exist already
-                    token_freqs[token] = 1
-
-        if normalize:
-            # convert from token occureces to frequencies: (# of token occurences / # of tokens)
-            num_tokens = len(token_freqs)
-            for token, freq in token_freqs.items():
-                token_freqs[token] = [freq, float(freq) / num_tokens]
-
-        return token_freqs
-
     def dump_corpus(
         self, outfile: str, make_dirs: bool = True, return_list: bool = False
     ) -> Union[None, List[str]]:
@@ -286,6 +245,7 @@ class Data(IterableDataset):
 Name: {self.name}
 Samples: {self.num_samples}
 Mean Sequence Length: {self.average_sequence_length}
+Std of Sequence Length: {self.std_sequence_length}
 Number of Tokens: {self.total_tokens}
 Number of Unique Tokens: {self.unique_tokens}
 Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {self.token_ratio(as_tuple=True)}
@@ -294,6 +254,13 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
             print(dataset_summary)
         else:
             return dataset_summary
+
+    def _get_sequence_lengths(self) -> None:
+        """
+        Iterates over samples, calculates, and stores the sequence length for each sample (in `seq_lens` instance variable).
+        """
+        for item in self.data:
+            self.seq_lens.append(len(item.split(" ")))
 
     @classmethod
     def from_corpus(cls: "Data", corpus_path: str, random_seed: int = 1) -> "Data":
@@ -369,17 +336,24 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         return len(unique_tokens)
 
     @property
-    def average_sequence_length(self) -> int:
+    def average_sequence_length(self) -> float:
         """
-        Average number of tokens per sequence in the dataset. Calculated as
-        the sum of the sequence lengths divided by the number of samples.
+        The average number of tokens per sequence across the corpus.
         """
-        sum_of_seq_lens = 0
+        if len(self.seq_lens) == 0:
+            self._get_sequence_lengths()
 
-        for item in self.data:
-            sum_of_seq_lens += len(item.split(" "))
+        return np.mean(self.seq_lens)
 
-        return sum_of_seq_lens / self.num_samples
+    @property
+    def std_sequence_length(self) -> float:
+        """
+        The standard deviation of tokens per sequence across the corpus.
+        """
+        if len(self.seq_lens) == 0:
+            self._get_sequence_lengths()
+
+        return np.std(self.seq_lens)
 
 
 def get_train_test_split(

@@ -86,11 +86,6 @@ class ZCUCZATCDataset(Data):
                         )
 
                 words = text.split()
-
-                # for word in words:
-                # if "+" in word:
-                #     words.remove(word)
-
                 text = " ".join(words).lower()
 
                 # ".." corresponds to silent segments, "" can occur when the transcript is made up
@@ -114,6 +109,7 @@ class ZCUCZATCDataset(Data):
                         )
                     )
 
+                    # unicode string normalization, gets rid of some but not all foreign and uncommon characters
                     text = normalizer.normalize_str(text)
                     doc_data.append(text.strip())
 
