@@ -65,6 +65,7 @@ def parse_datasets():
 
     data_objects[0].dataset_name = "All"
     data_objects[0].summary()
+    data_objects[0].remove_outliers()
 
     # split data into train and test
     print("Generating train/test split", end="...")

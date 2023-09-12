@@ -74,9 +74,11 @@ Masters of Electrical \& Computer Engineering.
 \newpage
 \doublespacing{}
 
-% \section{Abstract}
+\section{Abstract}\label{sec:abstract}
 
-\section{Literature Review}
+\section{Introduction}\label{sec:introduction}
+
+\section{Literature Review}\label{sec:lit_review}
 % from proposal; revise and add to this as more references are used
 % transformer history
 The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved
@@ -121,24 +123,24 @@ identification tasks in the aviation domain (e.g.~identifying pilot versus contr
 a pretrained BERT model was used and fine-tuned on problem specific data and compared to other models that performed
 well at speaker and role identification tasks in general\cite{guo_comparative_2022}.
 
-\section{Data Source(s)}\label{sec:data_source}
+\section{Data Sources}\label{sec:data_source}
 There are four datasets used in this work. The datasets are primarily speech corpora intended either for automatic speech recognition
 research in the domain of aviation communications, linguistics research in aviation english, or both. As a result, the text-based data
 samples that are used to train the language models in this work are transcripts of aural speech. The datasets used are described in more
 detail below. All recordings and transcripts are in english, although there are multiple instances of foreign words occuring
 
-\subsection{Air Traffic Control Complete}
+\subsection{Air Traffic Control Complete}\label{sec:atcc}
 The Air Traffic Control Complete (ATCC) corpus is a speech corpus consisting of audio recordings with corresponding transcriptions.
 ATCC is a collection of three smaller corpora recorded at Dallas-Fort Worth, Logan International, and Washington National airports and
 transcribed by subject matter experts (usually controllers and/or pilots) familiar with the terminology specific to their respective
 areas\cite{godfrey_air_1994}.
 
-\subsection{ATCO2}
+\subsection{ATCO2}\label{sec:atco2}
 The ATCO2 dataset is a speech corpus that consists of audio communications at Prague and Brno airports, in Czechia, along with corresponding
 transcriptions. The speech recordings and transcripts are crowd sourced from volunteers\cite{szoke_detecting_2021}.
 
 
-\subsection{Air Traffic Control Simulation}
+\subsection{Air Traffic Control Simulation}\label{sec:atcosim}
 The Air Traffic Control Simulation (ATCOSIM) corpus is a speech corpus consisting of audio recordings and corresponding transcriptions.
 The data was recorded at a air traffic control simulation center in Bretigny-sur-Orge, France, specifically the EUROCONTROL Experimental Centre.
 In this data, only the controllers' voices are included and therefore the transcripts only include the controller's side of each interaction.
@@ -146,30 +148,13 @@ The audio data was transcribed by one person, trained according to the guideline
 transcribed, it was reviewed and corrected and any remaining problems were reviewed by an operational air traffic controller and
 resolved\cite{hofbauer_atcosim_2008}.
 
-\subsection{ZCU CZ ATC Corpus}
+\subsection{ZCU CZ ATC Corpus}\label{sec:zcu_atc}
 The ZCU CZ ATC corpus consists of audio recordings and corresponding transcripts in the Czech airspace. Both controller and pilot sides of the
 communications are included in this data. Annotations were created by experienced transcribers/annotators and labeled samples were randomly selected
 for review during the annoation process. After the dataset was completely labeled, all samples were checked, corrected, and
 unified\cite{smidl_air_2019}.
 
-\section{Data Analysis}
-% sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
-\begin{table}
-    \centering
-    \begin{tabular}{l r r r r}
-        Corpus                         & Samples & Mean Sequence Length & Unique Tokens & Tokens  \\
-        \toprule
-        Air Traffic Control Complete   & 29,862  & 11.90                & 2,210         & 355,476 \\
-        ATCO2                          & 874     & 12.46                & 855           & 10,886  \\
-        Air Traffic Control Simulation & 9,544   & 11.29                & 824           & 107,759 \\
-        ZCU CZ ATC Corpus              & 14,435  & 10.32                & 3,106         & 149,031 \\
-        \bottomrule
-        Total                          & 54,715  & 11.39                & 5,343         & 623,152 \\
-    \end{tabular}
-    \caption{Data statistics by corpus, including statistics across all corpora.}
-\end{table}
-
-\section{Data Processing}
+\section{Data Processing}\label{sec:data_processing}
 All of the corpora listed above (see~\ref{sec:data_source}) are created at different times, for different purposes, and by different authors.
 As a result, the data in these corpora all have different formats and need to be processed into a common format to be used together, with the goal
 being to essentially create a super-corpus that includes all the corpora listed above.
@@ -179,6 +164,47 @@ All data was processed in Python using primarily built-in functions/modules\foot
 ATCO2 and ZCU CZ ATC, and plain text in ATCOSIM, the transcriber annotations are removed where necessary\footnote{A copy of the original data is
     made, then the annotations are removed from the copy.}, and the resulting text is written in the standard corpus format (an ASCII text file with
 one line in the file corresponding to one sample from the corpus) to a file.
+
+\section{Data Analysis}\label{sec:data_analysis}
+% sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
+Relevant corpora statistics were observed or calculated are are presented in Table~\ref{table:corpora_stats}. This includes the number of samples in
+the corpus, mean sequence length per sample in the corpus, the number of unique tokens in the corpus, and the total number of tokens in the corpus.
+The same statistics were also calculated across corpora, since all four corpora will be combined for training and testing the language and speech
+recognition models. Note that this is based on the raw data after loading and unifying the corpora, prior to preprocessing for model training/testing
+and outlier removal.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l r r r r}
+        \toprule
+        \textbf{Corpus} & \textbf{Samples} & \textbf{Mean Sequence Length (\(\pm \sigma\))} & \textbf{Unique Tokens} & \textbf{Tokens} \\
+        \midrule
+        ATCC            & 29,862           & \(11.90 \pm 7.22\)                             & 2,210                  & 355,476         \\
+        ATCO2           & 874              & \(12.46 \pm 5.93\)                             & 855                    & 10,886          \\
+        ATCOSIM         & 9,544            & \(11.29 \pm 4.18\)                             & 824                    & 107,759         \\
+        ZCU CZ ATC      & 14,435           & \(10.32 \pm 5.50\)                             & 3,106                  & 149,031         \\
+        \midrule
+        Total           & 54,715           & \(11.39 \pm 7.22\)                             & 5,343                  & 623,152         \\
+        \bottomrule
+    \end{tabular}
+    \label{table:corpora_stats}
+    \caption{The number of samples, mean sequence length, number of unique tokens, and total number of tokens by corpus, including the cumulative
+        total across all corpora.}
+\end{table}
+
+The ATCC and ZCU CZ ATC corpora make up a significant portion of the data, ATCC alone makes up more than half (approximately 54\%) of the combined
+data, and ATCC and ZCU CZ ATC together make up aprroximately 81\% of the data. The sequence lengths of the samples are fairly consistent across
+corpora with at most about an 18\% percent difference between sequence lengths. The number of unique tokens does not scale additively to the
+combined corpora, which is as expected. Considering that aviation English generally conforms to and follows ICAO phraseology standards we would expect
+that many terms would be shared across corpora with the exception of geographic/location specific terms, such as city, landmark, airport, and airline
+names, etc.~that typically vary across regions.
+
+\subsection{Outlier Removal}\label{sec:outlier_removal}
+This section analyzes the same corpora as above after outliers in the data have been removed, if any are present. Outlier removal was performed using
+the interquartile range (IQR) outlier removal method. IQR is defined as the difference between the medians of the third and first quartiles of the
+distribution: \(\mathbf{IQR} = \mathbf{Q3} - \mathbf{Q1}\), where \(\mathbf{Q3}\) and \(\mathbf{Q1}\) are the medians of the third and first quartiles,
+respectively. Outliers are then calculated as samples whose sequence lengths lie below \(\mathbf{Q1} - 1.5\mathbf{IQR}\) and above
+\(\mathbf{Q3} + 1.5\mathbf{IQR}\).
 
 \subsection{Data Preprocessing}
 % explain and justify what is removed from the text, how, and why

@@ -8,14 +8,14 @@ import matplotlib.collections
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from numpy.random import default_rng
-from torch.utils.data import IterableDataset
+from torch.utils.data import IterableDataset, DataLoader
 from transformers import (
     PreTrainedTokenizer,
     DataCollatorForLanguageModeling,
 )
 from pytorch_lightning import LightningDataModule
-from torch.utils.data import DataLoader
 
 
 class Data(IterableDataset):
@@ -199,6 +199,10 @@ class Data(IterableDataset):
         include data from child object. Also updates any relevant common metadata
         fields.
         """
+        if len(child_dataset.seq_lens) == 0:
+            child_dataset._get_sequence_lengths()
+
+        self.seq_lens.extend(child_dataset.seq_lens)
         self.data.extend(child_dataset.data)
         self.dataset_name = f"{self.name} + {child_dataset.name}"
 
@@ -254,6 +258,39 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
             print(dataset_summary)
         else:
             return dataset_summary
+
+    def remove_outliers(self) -> None:
+        """
+        Perform IQR-based outlier removal based on sequence lengths of the data.
+        Samples with sequence lengths less than Q1 - 1.5 * IQR and greater than Q3 + 1.5 * IQR
+        will be removed from the data.
+
+        The data and seq_len instance variables are updated as a result of this.
+        """
+        # using a pandas data frame because it keeps everything aligned and provides easy-to-use and verified helper functions
+        data_frame = pd.DataFrame({"seq_len": self.seq_lens, "text": self.data})
+        # divide data into quartiles
+        categories = pd.qcut(data_frame["seq_len"], 4, labels=["q1", "q2", "q3", "q4"])
+
+        q1 = float(data_frame[categories == "q1"].median())
+        q3 = float(data_frame[categories == "q3"].median())
+        iqr = q3 - q1
+
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+
+        # select regions below and above the upper and lower bounds, respectively
+        # take inverse to select region in-between
+        trimmed_data = data_frame[
+            ~(
+                (data_frame["seq_len"] < lower_bound)
+                | (data_frame["seq_len"] > upper_bound)
+            )
+        ]
+
+        # update data and sequence length variables
+        self.data = trimmed_data["text"].tolist()
+        self.seq_lens = trimmed_data["seq_len"].tolist()
 
     def _get_sequence_lengths(self) -> None:
         """
