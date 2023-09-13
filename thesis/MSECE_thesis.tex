@@ -206,6 +206,26 @@ distribution: \(\mathbf{IQR} = \mathbf{Q3} - \mathbf{Q1}\), where \(\mathbf{Q3}\
 respectively. Outliers are then calculated as samples whose sequence lengths lie below \(\mathbf{Q1} - 1.5\mathbf{IQR}\) and above
 \(\mathbf{Q3} + 1.5\mathbf{IQR}\).
 
+The corpora statistics after outlier removal are presented in Table \ref{tab:corpora_stats_outlier_removed}, below.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l r r r r}
+        \toprule
+        \textbf{Corpus} & \textbf{Samples} & \textbf{Mean Sequence Length (\(\pm \sigma\))} & \textbf{Unique Tokens} & \textbf{Tokens} \\
+        \midrule
+        ATCC            & 28,335           & \(10.81 \pm 5.43\)                             & 2,006                  & 306,382         \\
+        ATCO2           & 848              & \(11.91 \pm 5.07\)                             & 812                    & 10,103          \\
+        ATCOSIM         & 9,438            & \(11.13 \pm 3.86\)                             & 787                    & 105,017         \\
+        ZCU CZ ATC      & 14,275           & \(9.87 \pm 5.24\)                              & 2,967                  & 140,855         \\
+        \midrule
+        Total           & 52,896           & \(10.63 \pm 5.15\)                             & 4,884                  & 562,357         \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:corpora_stats_outlier_removed}
+    \caption{Individual and cumulative corpora statistics after outlier removal.}
+\end{table}
+
 \subsection{Data Preprocessing}
 % explain and justify what is removed from the text, how, and why
 % present and explain any relevant algorithms where necessary

@@ -219,8 +219,11 @@ class Data(IterableDataset):
         return {
             "dataset_name": self.name,
             "samples": self.num_samples,
+            "mean_sequence_length": self.average_sequence_length,
+            "std_sequence_length": self.std_sequence_length,
             "total_tokens": self.total_tokens,
             "unique_tokens": self.unique_tokens,
+            "token_ratio": self.token_ratio()
         }
 
     def token_ratio(self, as_tuple=False) -> Union[float, Tuple[int, int]]:
@@ -259,7 +262,7 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         else:
             return dataset_summary
 
-    def remove_outliers(self) -> None:
+    def remove_outliers(self) -> pd.DataFrame:
         """
         Perform IQR-based outlier removal based on sequence lengths of the data.
         Samples with sequence lengths less than Q1 - 1.5 * IQR and greater than Q3 + 1.5 * IQR
@@ -270,16 +273,21 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         # using a pandas data frame because it keeps everything aligned and provides easy-to-use and verified helper functions
         data_frame = pd.DataFrame({"seq_len": self.seq_lens, "text": self.data})
         # divide data into quartiles
-        categories = pd.qcut(data_frame["seq_len"], 4, labels=["q1", "q2", "q3", "q4"])
+        quartiles = pd.qcut(data_frame["seq_len"], 4, labels=["q1", "q2", "q3", "q4"])
 
-        q1 = float(data_frame[categories == "q1"].median())
-        q3 = float(data_frame[categories == "q3"].median())
+        q1 = data_frame[quartiles == "q1"]
+        q3 = data_frame[quartiles == "q3"]
+
+        q1 = q1["seq_len"].median()
+        q3 = q3["seq_len"].median()
         iqr = q3 - q1
 
         lower_bound = q1 - 1.5 * iqr
         upper_bound = q3 + 1.5 * iqr
 
-        # select regions below and above the upper and lower bounds, respectively
+        print(lower_bound, upper_bound)
+
+        # select regions below and above the lower and upper bounds, respectively
         # take inverse to select region in-between
         trimmed_data = data_frame[
             ~(
@@ -291,6 +299,9 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         # update data and sequence length variables
         self.data = trimmed_data["text"].tolist()
         self.seq_lens = trimmed_data["seq_len"].tolist()
+
+        # TODO: return the outlying data that was trimmed, but I'm not convinced this works or is the best approach yet
+        return data_frame[(data_frame["seq_len"] < lower_bound) | (data_frame["seq_len"] > upper_bound)]
 
     def _get_sequence_lengths(self) -> None:
         """

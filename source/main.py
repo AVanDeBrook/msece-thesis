@@ -20,15 +20,13 @@ datasets: Dict[str, Data] = {
     "/home/students/vandebra/programming/thesis_data/atc0_comp": ATCCompleteData,
     "/home/students/vandebra/programming/thesis_data/atcosim/": ATCOSimData,
     "/home/students/vandebra/programming/thesis_data/ATCO2-ASRdataset-v1_beta": ATCO2SimData,
-    # TODO: this dataset has strange formats for transcriptions, need to do a lot of
-    # work to clean and reformat them. Disabling this dataset for now
     "/home/students/vandebra/programming/thesis_data/ZCU_CZ_ATC": ZCUCZATCDataset,
 }
 
 
 def parse_datasets():
     # collection of dataset stats. using a dictionary so it's easier to dump to JSON or YAML later
-    dataset_info = {"dataset_info": []}
+    dataset_info = {"dataset_info": [], "trimmed_dataset_info": []}
     data_objects: List[Data] = []
 
     # initializes each implementing class with its data which is specified by `root_path`
@@ -52,11 +50,17 @@ def parse_datasets():
         print("Done")
 
         dataset_info["dataset_info"].append(data_analysis.dump_info())
+
+        data_analysis.remove_outliers()
+        data_analysis.summary()
+
+        dataset_info["trimmed_dataset_info"].append(data_analysis.dump_info())
+
         data_objects.append(data_analysis)
 
     # write stats to a json file
     os.makedirs("corpora", exist_ok=True)
-    with open("manifests/dataset_stats.json", "w", encoding="utf-8") as f:
+    with open("corpora/dataset_stats.json", "w", encoding="utf-8") as f:
         f.write(json.dumps(dataset_info, indent=1))
 
     # concatenate everything to first object
@@ -65,7 +69,6 @@ def parse_datasets():
 
     data_objects[0].dataset_name = "All"
     data_objects[0].summary()
-    data_objects[0].remove_outliers()
 
     # split data into train and test
     print("Generating train/test split", end="...")
