@@ -3,9 +3,6 @@ from pathlib import Path
 from typing import *
 from copy import deepcopy
 
-import matplotlib
-import matplotlib.collections
-import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -112,51 +109,6 @@ class Data(IterableDataset):
 
         return self.tokenized_data
 
-    def create_token_hist(
-        self,
-        token_counts: List[int] = [],
-    ) -> matplotlib.figure.Figure:
-        """
-        Calculates the number of utterances in each sample and generates a histogram.
-
-        Utterance counts are determined by splitting each transcript on whitespace and
-        calculating the length of the resulting list.
-
-        TODO: add flexibility for plot types.
-        TODO: issue with figures (figures/axes need to be cleared between runs)
-
-        Arguments:
-        ----------
-        `utterance_counts`: (Optional) `list` of `ints` for precalculated utterance counts.
-
-        `plot_type`: (Optional) `str` type of plot tool to use to create the histogram.
-        Can be either `"seaborn"` or `"matplotlib"`. Defaults to `"seaborn"`.
-
-        Returns:
-        --------
-        Either a `matplotlib.pyplot.Figure` or `seaborn.object.Plot` instance, depending on the value of `plot_type`.
-        """
-        # Clear figure and axes
-        plt.clf(), plt.cla()
-        # check if manifest data has been generated, parse transcripts and generate
-        # manifest data if not
-        if len(self.data) == 0:
-            self.parse_transcripts()
-
-        # check if utterance counts (optional arg) has been provided, calculate utterance
-        # counts from transcriptions
-        if len(token_counts) == 0:
-            for data in self.data:
-                words = data.split(" ")
-                token_counts.append(len(words))
-
-        histogram = plt.hist(token_counts)
-        plt.xlabel("Bins")
-        plt.ylabel("Token Counts")
-        plt.title(f"Tokens per Sample in {self.name}")
-
-        return histogram
-
     def dump_corpus(
         self, outfile: str, make_dirs: bool = True, return_list: bool = False
     ) -> Union[None, List[str]]:
@@ -223,7 +175,7 @@ class Data(IterableDataset):
             "std_sequence_length": self.std_sequence_length,
             "total_tokens": self.total_tokens,
             "unique_tokens": self.unique_tokens,
-            "token_ratio": self.token_ratio()
+            "token_ratio": self.token_ratio(),
         }
 
     def token_ratio(self, as_tuple=False) -> Union[float, Tuple[int, int]]:
@@ -272,14 +224,9 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         """
         # using a pandas data frame because it keeps everything aligned and provides easy-to-use and verified helper functions
         data_frame = pd.DataFrame({"seq_len": self.seq_lens, "text": self.data})
-        # divide data into quartiles
-        quartiles = pd.qcut(data_frame["seq_len"], 4, labels=["q1", "q2", "q3", "q4"])
 
-        q1 = data_frame[quartiles == "q1"]
-        q3 = data_frame[quartiles == "q3"]
-
-        q1 = q1["seq_len"].median()
-        q3 = q3["seq_len"].median()
+        q1 = data_frame["seq_len"].quantile(0.25)
+        q3 = data_frame["seq_len"].quantile(0.75)
         iqr = q3 - q1
 
         lower_bound = q1 - 1.5 * iqr
@@ -301,7 +248,29 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         self.seq_lens = trimmed_data["seq_len"].tolist()
 
         # TODO: return the outlying data that was trimmed, but I'm not convinced this works or is the best approach yet
-        return data_frame[(data_frame["seq_len"] < lower_bound) | (data_frame["seq_len"] > upper_bound)]
+        return data_frame[
+            (data_frame["seq_len"] < lower_bound)
+            | (data_frame["seq_len"] > upper_bound)
+        ]
+
+    def plot_histogram(self, savefig=False) -> None:
+        # Clear figure and axes
+        plt.clf(), plt.cla()
+        # check if manifest data has been generated, parse transcripts and generate
+        # manifest data if not
+        if len(self.data) == 0:
+            self.parse_transcripts()
+
+        plt.hist(self.seq_lens)
+        plt.xlabel("Sequence Length")
+        plt.ylabel("Samples")
+        plt.title(f"Tokens per Sample in {self.name}")
+
+        if savefig:
+            os.makedirs("plots", exist_ok=True)
+            plt.savefig(f"plots/{self.name}_histogram.png", format="png")
+
+        plt.show()
 
     def _get_sequence_lengths(self) -> None:
         """

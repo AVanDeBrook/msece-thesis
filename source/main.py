@@ -50,6 +50,7 @@ def parse_datasets():
         print("Done")
 
         dataset_info["dataset_info"].append(data_analysis.dump_info())
+        data_analysis.plot_histogram()
 
         data_analysis.remove_outliers()
         data_analysis.summary()
