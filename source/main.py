@@ -50,10 +50,7 @@ def parse_datasets():
         print("Done")
 
         dataset_info["dataset_info"].append(data_analysis.dump_info())
-        data_analysis.plot_histogram()
-
-        data_analysis.remove_outliers()
-        data_analysis.summary()
+        # data_analysis.plot_histogram()
 
         dataset_info["trimmed_dataset_info"].append(data_analysis.dump_info())
 
@@ -70,6 +67,15 @@ def parse_datasets():
 
     data_objects[0].dataset_name = "All"
     data_objects[0].summary()
+
+    outliers = data_objects[0].remove_outliers()
+    data_objects[0].summary()
+    with open("outliers.txt", "a") as f:
+        for item, length in zip(
+            outliers["text"].tolist(), outliers["seq_len"].tolist()
+        ):
+            f.write(f"{int(length)}\n")
+            f.write(item + "\n")
 
     # split data into train and test
     print("Generating train/test split", end="...")
@@ -101,6 +107,9 @@ def parse_datasets():
 if __name__ == "__main__":
     plt.style.use("ggplot")
     RANDOM_SEED: int = 1
+
+    with open("outliers.txt", "w") as f:
+        f.write("")
 
     parse_datasets()
 

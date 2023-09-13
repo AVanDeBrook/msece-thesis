@@ -101,6 +101,7 @@ class ATCCompleteData(Data):
                     text = annotation.sub("", text)
 
                     if text.strip() != "":
+                        text = re.sub(r"\s{2,}", " ", text)
                         data.append(text.strip())
 
         # save manifest data to class attribute before returning

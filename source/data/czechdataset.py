@@ -111,6 +111,7 @@ class ZCUCZATCDataset(Data):
 
                     # unicode string normalization, gets rid of some but not all foreign and uncommon characters
                     text = normalizer.normalize_str(text)
+                    text = re.sub(r"\s{2,}", " ", text)
                     doc_data.append(text.strip())
 
             # check to make sure useful samples were found in the document

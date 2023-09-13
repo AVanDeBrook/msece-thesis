@@ -73,6 +73,7 @@ class ATCOSimData(Data):
             # some transcripts are empty after removing transcriber
             # annotations
             if len(text) > 0:
+                text = re.sub(r"\s{2,}", " ", text)
                 data.append(text)
 
         self.data = data

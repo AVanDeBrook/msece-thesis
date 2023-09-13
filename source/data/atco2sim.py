@@ -116,6 +116,7 @@ class ATCO2SimData(Data):
                         text = text.replace(typo, correction)
 
                     if text != "":
+                        text = re.sub(r"\s{2,}", " ", text)
                         data.append(text.strip())
 
         self.data = data

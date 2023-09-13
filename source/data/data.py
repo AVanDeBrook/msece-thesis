@@ -13,6 +13,7 @@ from transformers import (
     DataCollatorForLanguageModeling,
 )
 from pytorch_lightning import LightningDataModule
+from sklearn.neighbors import LocalOutlierFactor
 
 
 class Data(IterableDataset):
@@ -223,35 +224,24 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         The data and seq_len instance variables are updated as a result of this.
         """
         # using a pandas data frame because it keeps everything aligned and provides easy-to-use and verified helper functions
+        lof = LocalOutlierFactor(n_neighbors=35)
         data_frame = pd.DataFrame({"seq_len": self.seq_lens, "text": self.data})
 
-        q1 = data_frame["seq_len"].quantile(0.25)
-        q3 = data_frame["seq_len"].quantile(0.75)
-        iqr = q3 - q1
+        # fit to data and label outliers/inliers outlier = -1, inlier = 1
+        data_frame["outlier_label"] = lof.fit_predict(
+            # nxm matrix for API compatibility
+            data_frame["seq_len"]
+            .to_numpy()
+            .reshape(-1, 1)
+        )
 
-        lower_bound = q1 - 1.5 * iqr
-        upper_bound = q3 + 1.5 * iqr
-
-        print(lower_bound, upper_bound)
-
-        # select regions below and above the lower and upper bounds, respectively
-        # take inverse to select region in-between
-        trimmed_data = data_frame[
-            ~(
-                (data_frame["seq_len"] < lower_bound)
-                | (data_frame["seq_len"] > upper_bound)
-            )
-        ]
-
-        # update data and sequence length variables
+        # data with outliers trimmed
+        trimmed_data = data_frame[data_frame["outlier_label"] == 1].dropna()
+        # update instance variables to reflect removed outliers
         self.data = trimmed_data["text"].tolist()
         self.seq_lens = trimmed_data["seq_len"].tolist()
 
-        # TODO: return the outlying data that was trimmed, but I'm not convinced this works or is the best approach yet
-        return data_frame[
-            (data_frame["seq_len"] < lower_bound)
-            | (data_frame["seq_len"] > upper_bound)
-        ]
+        return data_frame[data_frame["outlier_label"] == -1].dropna()
 
     def plot_histogram(self, savefig=False) -> None:
         # Clear figure and axes
