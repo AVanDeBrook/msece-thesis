@@ -69,13 +69,21 @@ def parse_datasets():
     data_objects[0].summary()
 
     outliers = data_objects[0].remove_outliers()
+    print(f"Mean outlier sequence length: {outliers['seq_len'].mean()}")
+    print(f"Min outlier sequence length: {outliers['seq_len'].min()}")
+    print(f"Max outlier sequence length: {outliers['seq_len'].max()}")
+    print(f"Std outlier sequence length: {outliers['seq_len'].std()}")
+
     data_objects[0].summary()
+
     with open("outliers.txt", "a") as f:
         for item, length in zip(
             outliers["text"].tolist(), outliers["seq_len"].tolist()
         ):
             f.write(f"{int(length)}\n")
             f.write(item + "\n")
+
+    data_objects[0].plot_histogram()
 
     # split data into train and test
     print("Generating train/test split", end="...")

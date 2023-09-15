@@ -179,12 +179,12 @@ and outlier removal.
         \toprule
         \textbf{Corpus} & \textbf{Samples} & \textbf{Mean Sequence Length (\(\pm \sigma\))} & \textbf{Unique Tokens} & \textbf{Tokens} \\
         \midrule
-        ATCC            & 29,862           & \(11.90 \pm 7.22\)                             & 2,210                  & 355,476         \\
-        ATCO2           & 874              & \(12.46 \pm 5.93\)                             & 855                    & 10,886          \\
-        ATCOSIM         & 9,544            & \(11.29 \pm 4.18\)                             & 824                    & 107,759         \\
-        ZCU CZ ATC      & 14,435           & \(10.32 \pm 5.50\)                             & 3,106                  & 149,031         \\
+        ATCC            & 29,862           & \(11.90 \pm 7.22\)                             & 2,209                  & 355,473         \\
+        ATCO2           & 874              & \(12.28 \pm 4.12\)                             & 786                    & 10,733          \\
+        ATCOSIM         & 9,544            & \(11.23 \pm 4.12\)                             & 823                    & 107,153         \\
+        ZCU CZ ATC      & 14,435           & \(10.05 \pm 5.50\)                             & 2,983                  & 145,107         \\
         \midrule
-        Total           & 54,715           & \(11.39 \pm 7.22\)                             & 5,343                  & 623,152         \\
+        Total           & 54,715           & \(11.30 \pm 6.36\)                             & 5,040                  & 618,466         \\
         \bottomrule
     \end{tabular}
     \label{table:corpora_stats}
@@ -199,32 +199,34 @@ combined corpora, which is as expected. Considering that aviation English genera
 that many terms would be shared across corpora with the exception of geographic/location specific terms, such as city, landmark, airport, and airline
 names, etc.~that typically vary across regions.
 
-\subsection{Outlier Removal}\label{sec:outlier_removal}
-This section analyzes the same corpora as above after outliers in the data have been removed, if any are present. Outlier removal was performed using
-the interquartile range (IQR) outlier removal method. IQR is defined as the difference between the medians of the third and first quartiles of the
-distribution: \(\mathbf{IQR} = \mathbf{Q3} - \mathbf{Q1}\), where \(\mathbf{Q3}\) and \(\mathbf{Q1}\) are the medians of the third and first quartiles,
-respectively. Outliers are then calculated as samples whose sequence lengths lie below \(\mathbf{Q1} - 1.5\mathbf{IQR}\) and above
-\(\mathbf{Q3} + 1.5\mathbf{IQR}\).
+\subsection{Outlier Detection and Analysis}\label{sec:outliers}
+The Local Outlier Factor (LOF) algorithm~\cite{breunig_lof_2000} was used to detect and remove outliers in the corpora for further analysis. The
+sequence lengths of the data samples were used to determine outliers. Since all four corpora are aggregated, LOF analysis was performed on the
+aggregated data instead of on the individual corpora.
 
-The corpora statistics after outlier removal are presented in Table \ref{tab:corpora_stats_outlier_removed}, below.
+Sci-Kit Learn's implementation of the LOF
+algorithm\footnote{https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html\#sklearn-neighbors-localoutlierfactor}
+was used with a value of \(N = 35\) for \(N\) neighbors in the K-Nearest Neighbors algorithm and Minkowski distance for distance metrics/calculations
+(in this case, since \(p=2\), Euclidean distance is effectively used for distance calculations). A total of 47 samples were detected as outliers and
+removed for analysis and are summarized in table \ref{}
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{l r r r r}
+    \begin{tabular}{l | r}
         \toprule
-        \textbf{Corpus} & \textbf{Samples} & \textbf{Mean Sequence Length (\(\pm \sigma\))} & \textbf{Unique Tokens} & \textbf{Tokens} \\
+        \multicolumn{2}{c}{Outlier Properties}   \\
         \midrule
-        ATCC            & 28,335           & \(10.81 \pm 5.43\)                             & 2,006                  & 306,382         \\
-        ATCO2           & 848              & \(11.91 \pm 5.07\)                             & 812                    & 10,103          \\
-        ATCOSIM         & 9,438            & \(11.13 \pm 3.86\)                             & 787                    & 105,017         \\
-        ZCU CZ ATC      & 14,275           & \(9.87 \pm 5.24\)                              & 2,967                  & 140,855         \\
-        \midrule
-        Total           & 52,896           & \(10.63 \pm 5.15\)                             & 4,884                  & 562,357         \\
+        \textbf{Mean Sequence Length}    & 47.30 \\
+        \textbf{Std of Sequence Length}  & 11.82 \\
+        \textbf{Minimum Sequence Length} & 38    \\
+        \textbf{Maximum Sequence Length} & 73    \\
+        \textbf{\# Samples}              & 47    \\
         \bottomrule
     \end{tabular}
-    \label{tab:corpora_stats_outlier_removed}
-    \caption{Individual and cumulative corpora statistics after outlier removal.}
+    \label{table:outlier_stats}
+    \caption{}
 \end{table}
+
 
 \subsection{Data Preprocessing}
 % explain and justify what is removed from the text, how, and why

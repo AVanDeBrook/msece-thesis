@@ -217,9 +217,7 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
 
     def remove_outliers(self) -> pd.DataFrame:
         """
-        Perform IQR-based outlier removal based on sequence lengths of the data.
-        Samples with sequence lengths less than Q1 - 1.5 * IQR and greater than Q3 + 1.5 * IQR
-        will be removed from the data.
+        Detect and remove outliers via the Local Outlier Factor algorithm.
 
         The data and seq_len instance variables are updated as a result of this.
         """
@@ -230,10 +228,36 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         # fit to data and label outliers/inliers outlier = -1, inlier = 1
         data_frame["outlier_label"] = lof.fit_predict(
             # nxm matrix for API compatibility
-            data_frame["seq_len"]
-            .to_numpy()
+            data_frame["seq_len"].to_numpy()
+            # reshape to a vector
             .reshape(-1, 1)
         )
+
+        data_frame["negative_outlier_factor_"] = lof.negative_outlier_factor_
+
+        # inliers = data_frame[data_frame["outlier_label"] == 1].dropna()
+        # plt.scatter(
+        #     # inlier sequence lengths
+        #     inliers["seq_len"],
+        #     # inlier negative outlier factors
+        #     inliers["negative_outlier_factor_"],
+        #     color="k",
+        #     label="Inliers",
+        # )
+        # outliers = data_frame[data_frame["outlier_label"] == -1].dropna()
+        # plt.scatter(
+        #     # outlier sequence lengths
+        #     outliers["seq_len"],
+        #     # outlier negative outlier factors
+        #     outliers["negative_outlier_factor_"],
+        #     color="b",
+        #     label="Outliers",
+        # )
+        # plt.legend()
+        # plt.ylabel("Negative Outlier Factor")
+        # plt.xlabel("Sample Sequence Length")
+        # plt.ylim(-20, 5)
+        # plt.show()
 
         # data with outliers trimmed
         trimmed_data = data_frame[data_frame["outlier_label"] == 1].dropna()

@@ -46,6 +46,9 @@ class ATCCompleteData(Data):
         ("ai", ""),
         ("cir-", ""),
         ("cli-", ""),
+        ("rport", "airport"),
+        ("rcraft", "aircraft"),
+        ("mntn", "maintain"),
     ]
 
     # _audio_glob: List[str]
