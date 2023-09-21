@@ -21,7 +21,15 @@ class ATCOSimData(Data):
     ```
     """
 
-    transcription_corrections = [("kil0", "kilo"), ("ai", "air"), ("airr", "air")]
+    transcription_corrections = [
+        ("kil0", "kilo"),
+        ("ai", "air"),
+        ("airr", "air"),
+        ("ahm", "hm"),
+        ("aha", "uh"),
+        ("ah", "uh"),
+        ("ohh", "uh"),
+    ]
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCOSimData, self).__init__(dataset_name="ATCOSIM", **kwargs)
@@ -43,7 +51,7 @@ class ATCOSimData(Data):
         xml_tag = re.compile(r"(<[A-Z]+>|</[A-Z]+>)")
         annotation_tag = re.compile(r"(\[[A-Z]+\])")
         special_chars = re.compile(r"[=~@]")
-        hesitation_tokens = re.compile(r"(ah|hm|ahm|yeah|aha|nah|ohh)")
+        # hesitation_tokens = re.compile(r"(ah|hm|ahm|yeah|aha|nah|ohh)")
         non_english_tags = re.compile(r"(<FL>.</FL>)")
 
         for file in self.text_glob:
@@ -59,7 +67,7 @@ class ATCOSimData(Data):
             text = xml_tag.sub("", text)
             text = annotation_tag.sub("", text)
             text = special_chars.sub("", text)
-            text = hesitation_tokens.sub("", text)
+            # text = hesitation_tokens.sub("", text)
 
             # lower case, remove whitespace
             text = text.lower().strip()

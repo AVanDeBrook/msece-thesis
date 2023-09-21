@@ -73,6 +73,19 @@ def parse_datasets():
     print(f"Min outlier sequence length: {outliers['seq_len'].min()}")
     print(f"Max outlier sequence length: {outliers['seq_len'].max()}")
     print(f"Std outlier sequence length: {outliers['seq_len'].std()}")
+    print(
+        f"Most significant outlier:\n{outliers.where(outliers['seq_len'] == outliers['seq_len'].max()).dropna()}"
+    )
+
+    print(f"Max LOF score: {outliers['negative_outlier_factor_'].min()}")
+    print(
+        outliers["text"]
+        .where(
+            outliers["negative_outlier_factor_"]
+            == outliers["negative_outlier_factor_"].min()
+        )
+        .dropna()
+    )
 
     data_objects[0].summary()
 

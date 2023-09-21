@@ -220,6 +220,8 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         Detect and remove outliers via the Local Outlier Factor algorithm.
 
         The data and seq_len instance variables are updated as a result of this.
+
+        :returns: A pandas DataFrame with entries for the `text`, `seq_len`, `negative_outlier_factor_`, and `outlier_label`
         """
         # using a pandas data frame because it keeps everything aligned and provides easy-to-use and verified helper functions
         lof = LocalOutlierFactor(n_neighbors=35)
@@ -234,30 +236,6 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         )
 
         data_frame["negative_outlier_factor_"] = lof.negative_outlier_factor_
-
-        # inliers = data_frame[data_frame["outlier_label"] == 1].dropna()
-        # plt.scatter(
-        #     # inlier sequence lengths
-        #     inliers["seq_len"],
-        #     # inlier negative outlier factors
-        #     inliers["negative_outlier_factor_"],
-        #     color="k",
-        #     label="Inliers",
-        # )
-        # outliers = data_frame[data_frame["outlier_label"] == -1].dropna()
-        # plt.scatter(
-        #     # outlier sequence lengths
-        #     outliers["seq_len"],
-        #     # outlier negative outlier factors
-        #     outliers["negative_outlier_factor_"],
-        #     color="b",
-        #     label="Outliers",
-        # )
-        # plt.legend()
-        # plt.ylabel("Negative Outlier Factor")
-        # plt.xlabel("Sample Sequence Length")
-        # plt.ylim(-20, 5)
-        # plt.show()
 
         # data with outliers trimmed
         trimmed_data = data_frame[data_frame["outlier_label"] == 1].dropna()

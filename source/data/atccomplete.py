@@ -40,19 +40,17 @@ class ATCCompleteData(Data):
         ("1347.85706", "one three four seven dot eight five seven zero six"),
         ("four]", "four"),
         # flight number metadata somehow made it into some of the transcripts
-        ("swift61", ""),
-        ("aal891", ""),
+        ("swift61", "swift six one"),
+        ("aal891", "american eight ninety one"),
         # repeated words/hesitations
         ("ai", ""),
-        ("cir-", ""),
-        ("cli-", ""),
+        ("cir-", "cir+"),
+        ("cli-", "cli+"),
         ("rport", "airport"),
         ("rcraft", "aircraft"),
         ("mntn", "maintain"),
+        ("tornado's", "tornadoes"),
     ]
-
-    # _audio_glob: List[str]
-    # _transcript_glob: List[str]
 
     def __init__(self, data_root: str, **kwargs):
         super(ATCCompleteData, self).__init__(
