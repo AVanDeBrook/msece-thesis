@@ -1,4 +1,20 @@
 
+@inproceedings{arnold_knowledge_2022,
+  address   = {Hybrid: Seattle, Washington + Online},
+  title     = {Knowledge extraction from aeronautical messages ({NOTAMs}) with self-supervised language models for aircraft pilots},
+  url       = {https://aclanthology.org/2022.naacl-industry.22},
+  doi       = {10.18653/v1/2022.naacl-industry.22},
+  abstract  = {During their pre-flight briefings, aircraft pilots must analyse a long list of NoTAMs (NOtice To AirMen) indicating potential hazards along the flight route, sometimes up to pages for long-haul flights. NOTAM free-text fields typically have a very special phrasing, with lots of acronyms and domain-specific vocabulary, which makes it differ significantly from standard English. In this paper, we pretrain language models derived from BERT on circa 1 million unlabeled NOTAMs and reuse the learnt representations on three downstream tasks valuable for pilots: criticality prediction, named entity recognition and translation into a structured language called Airlang. This self-supervised approach, where smaller amounts of labeled data are enough for task-specific fine-tuning, is well suited in the aeronautical context since expert annotations are expensive and time-consuming. We present evaluation scores across the tasks showing a high potential for an operational usability of such models (by pilots, airlines or service providers), which is a first to the best of our knowledge.},
+  urldate   = {2022-08-25},
+  booktitle = {Proceedings of the 2022 {Conference} of the {North} {American} {Chapter} of the {Association} for {Computational} {Linguistics}: {Human} {Language} {Technologies}: {Industry} {Track}},
+  publisher = {Association for Computational Linguistics},
+  author    = {Arnold, Alexandre and Ernez, Fares and Kobus, Catherine and Martin, Marion-Cécile},
+  month     = jul,
+  year      = {2022},
+  pages     = {188--196},
+  file      = {Full Text PDF:/home/avandebrook/Zotero/storage/TH8EXJDZ/Arnold et al. - 2022 - Knowledge extraction from aeronautical messages (N.pdf:application/pdf}
+}
+
 @article{badrinath_automatic_2022,
   title    = {Automatic {Speech} {Recognition} for {Air} {Traffic} {Control} {Communications}},
   volume   = {2676},
@@ -19,6 +35,113 @@
   file     = {SAGE PDF Full Text:/home/avandebrook/Zotero/storage/D5PKXU75/Badrinath and Balakrishnan - 2022 - Automatic Speech Recognition for Air Traffic Contr.pdf:application/pdf}
 }
 
+@inproceedings{baevski_wav2vec_2020,
+  title      = {wav2vec 2.0: {A} {Framework} for {Self}-{Supervised} {Learning} of {Speech} {Representations}},
+  volume     = {33},
+  shorttitle = {wav2vec 2.0},
+  url        = {https://proceedings.neurips.cc/paper/2020/hash/92d1e1eb1cd6f9fba3227870bb6d7f07-Abstract.html},
+  abstract   = {We show for the first time that learning powerful representations from speech audio alone followed by fine-tuning on transcribed speech can outperform the best semi-supervised methods while being conceptually simpler. wav2vec 2.0 masks the speech input in the latent space and solves a contrastive task defined over a quantization of the latent representations which are jointly learned. Experiments using all labeled data of Librispeech achieve 1.8/3.3 WER on the clean/other test sets. When lowering the amount of labeled data to one hour, wav2vec 2.0 outperforms the previous state of the art on the 100 hour subset while using 100 times less labeled data. Using just ten minutes of labeled data and pre-training on 53k hours of unlabeled data still achieves 4.8/8.2 WER. This demonstrates the feasibility of speech recognition with limited amounts of labeled data.},
+  urldate    = {2022-07-15},
+  booktitle  = {Advances in {Neural} {Information} {Processing} {Systems}},
+  publisher  = {Curran Associates, Inc.},
+  author     = {Baevski, Alexei and Zhou, Yuhao and Mohamed, Abdelrahman and Auli, Michael},
+  year       = {2020},
+  keywords   = {Unread},
+  pages      = {12449--12460},
+  file       = {Full Text PDF:/home/avandebrook/Zotero/storage/SGTH8QQK/Baevski et al. - 2020 - wav2vec 2.0 A Framework for Self-Supervised Learn.pdf:application/pdf}
+}
+
+@misc{bostrom_byte_2020,
+  title     = {Byte {Pair} {Encoding} is {Suboptimal} for {Language} {Model} {Pretraining}},
+  url       = {http://arxiv.org/abs/2004.03720},
+  doi       = {10.48550/arXiv.2004.03720},
+  abstract  = {The success of pretrained transformer language models (LMs) in natural language processing has led to a wide range of pretraining setups. In particular, these models employ a variety of subword tokenization methods, most notably byte-pair encoding (BPE) (Sennrich et al., 2016; Gage, 1994), the WordPiece method (Schuster and Nakajima, 2012), and unigram language modeling (Kudo, 2018), to segment text. However, to the best of our knowledge, the literature does not contain a direct evaluation of the impact of tokenization on language model pretraining. We analyze differences between BPE and unigram LM tokenization, finding that the latter method recovers subword units that align more closely with morphology and avoids problems stemming from BPE's greedy construction procedure. We then compare the fine-tuned task performance of identical transformer masked language models pretrained with these tokenizations. Across downstream tasks and two languages (English and Japanese), we find that the unigram LM tokenization method matches or outperforms BPE. We hope that developers of future pretrained LMs will consider adopting the unigram LM method over the more prevalent BPE.},
+  urldate   = {2022-07-13},
+  publisher = {arXiv},
+  author    = {Bostrom, Kaj and Durrett, Greg},
+  month     = oct,
+  year      = {2020},
+  note      = {arXiv:2004.03720 [cs]},
+  keywords  = {Computer Science - Computation and Language, I.2.7, Read},
+  file      = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/XNYLFZHQ/Bostrom and Durrett - 2020 - Byte Pair Encoding is Suboptimal for Language Mode.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/YJ64W2P5/2004.html:text/html}
+}
+
+@inproceedings{breunig_lof_2000,
+  address    = {Dallas Texas USA},
+  title      = {{LOF}: identifying density-based local outliers},
+  isbn       = {9781581132175},
+  shorttitle = {{LOF}},
+  url        = {https://dl.acm.org/doi/10.1145/342009.335388},
+  doi        = {10.1145/342009.335388},
+  language   = {en},
+  urldate    = {2023-09-13},
+  booktitle  = {Proceedings of the 2000 {ACM} {SIGMOD} international conference on {Management} of data},
+  publisher  = {ACM},
+  author     = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, Jörg},
+  month      = may,
+  year       = {2000},
+  pages      = {93--104}
+}
+
+@misc{devlin_bert_2019,
+  title      = {{BERT}: {Pre}-training of {Deep} {Bidirectional} {Transformers} for {Language} {Understanding}},
+  shorttitle = {{BERT}},
+  url        = {http://arxiv.org/abs/1810.04805},
+  doi        = {10.48550/arXiv.1810.04805},
+  abstract   = {We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial task-specific architecture modifications. BERT is conceptually simple and empirically powerful. It obtains new state-of-the-art results on eleven natural language processing tasks, including pushing the GLUE score to 80.5\% (7.7\% point absolute improvement), MultiNLI accuracy to 86.7\% (4.6\% absolute improvement), SQuAD v1.1 question answering Test F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).},
+  urldate    = {2022-08-20},
+  publisher  = {arXiv},
+  author     = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  month      = may,
+  year       = {2019},
+  note       = {arXiv:1810.04805 [cs]},
+  keywords   = {Computer Science - Computation and Language},
+  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/JQ74ZTK9/Devlin et al. - 2019 - BERT Pre-training of Deep Bidirectional Transform.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/VR3VMCGD/1810.html:text/html}
+}
+
+@misc{godfrey_air_1994,
+  title     = {Air {Traffic} {Control} {Complete}},
+  url       = {https://catalog.ldc.upenn.edu/LDC94S14A},
+  abstract  = {The Air Traffic Control Corpus (ATC0) is comprised of recorded speech for use in supporting research and development activities in the area of robust speech recognition in domains similar to air traffic control (several speakers, noisy channels, relatively small vocabulary, constrained languaged, etc.) The audio data is composed of voice communication traffic between various controllers and pilots.},
+  language  = {en},
+  urldate   = {2022-07-16},
+  publisher = {Linguistic Data Consortium},
+  author    = {Godfrey, John J.},
+  year      = {1994},
+  keywords  = {Read}
+}
+
+@inproceedings{graglia_vocalise_2005,
+  title      = {Vocalise: assessing the impact of data link technology on the {R}/{T} channel},
+  volume     = {1},
+  shorttitle = {Vocalise},
+  doi        = {10.1109/DASC.2005.1563381},
+  abstract   = {An inferential study aiming at seizing substantial gain data-link technology could yield in forthcoming years has been performed based on a solid knowledge of vocal medium use by pilots and controller. The study delivers a rich and argued analysis of the impact data link applications could have in the operational field, which type of gain could be awaited depending on the precise operational area. This study driven by hypothetical scenario has derived expected use of data link applications from a very detailed and up-to-date qualitative and quantitative database.},
+  booktitle  = {24th {Digital} {Avionics} {Systems} {Conference}},
+  author     = {Graglia, L. and Favennec, B. and Arnoux, A.},
+  month      = oct,
+  year       = {2005},
+  note       = {ISSN: 2155-7209},
+  keywords   = {Databases, Performance gain, Solids},
+  pages      = {5.C.2--51},
+  file       = {IEEE Xplore Abstract Record:/home/avandebrook/Zotero/storage/NY9DU5CZ/1563381.html:text/html}
+}
+
+@misc{guo_comparative_2022,
+  title     = {A {Comparative} {Study} of {Speaker} {Role} {Identification} in {Air} {Traffic} {Communication} {Using} {Deep} {Learning} {Approaches}},
+  url       = {http://arxiv.org/abs/2111.02041},
+  doi       = {10.48550/arXiv.2111.02041},
+  abstract  = {Automatic spoken instruction understanding (SIU) of the controller-pilot conversations in the air traffic control (ATC) requires not only recognizing the words and semantics of the speech but also determining the role of the speaker. However, few of the published works on the automatic understanding systems in air traffic communication focus on speaker role identification (SRI). In this paper, we formulate the SRI task of controller-pilot communication as a binary classification problem. Furthermore, the text-based, speech-based, and speech and text based multi-modal methods are proposed to achieve a comprehensive comparison of the SRI task. To ablate the impacts of the comparative approaches, various advanced neural network architectures are applied to optimize the implementation of text-based and speech-based methods. Most importantly, a multi-modal speaker role identification network (MMSRINet) is designed to achieve the SRI task by considering both the speech and textual modality features. To aggregate modality features, the modal fusion module is proposed to fuse and squeeze acoustic and textual representations by modal attention mechanism and self-attention pooling layer, respectively. Finally, the comparative approaches are validated on the ATCSpeech corpus collected from a real-world ATC environment. The experimental results demonstrate that all the comparative approaches are worked for the SRI task, and the proposed MMSRINet shows the competitive performance and robustness than the other methods on both seen and unseen data, achieving 98.56\%, and 98.08\% accuracy, respectively.},
+  urldate   = {2022-08-25},
+  publisher = {arXiv},
+  author    = {Guo, Dongyue and Zhang, Jianwei and Yang, Bo and Lin, Yi},
+  month     = aug,
+  year      = {2022},
+  note      = {arXiv:2111.02041 [cs, eess]},
+  keywords  = {Computer Science - Computation and Language, Computer Science - Sound, Electrical Engineering and Systems Science - Audio and Speech Processing},
+  file      = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/TMZH996S/Guo et al. - 2022 - A Comparative Study of Speaker Role Identification.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/5USST6NP/2111.html:text/html}
+}
+
 @misc{han_contextnet_2020,
   title      = {{ContextNet}: {Improving} {Convolutional} {Neural} {Networks} for {Automatic} {Speech} {Recognition} with {Global} {Context}},
   shorttitle = {{ContextNet}},
@@ -33,6 +156,35 @@
   note       = {arXiv:2005.03191 [cs, eess]},
   keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Computer Science - Sound, Electrical Engineering and Systems Science - Audio and Speech Processing, Read},
   file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/9Q9KNPLI/Han et al. - 2020 - ContextNet Improving Convolutional Neural Network.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/PZBNB7R8/2005.html:text/html}
+}
+
+@misc{hannun_deep_2014,
+  title      = {Deep {Speech}: {Scaling} up end-to-end speech recognition},
+  shorttitle = {Deep {Speech}},
+  url        = {http://arxiv.org/abs/1412.5567},
+  doi        = {10.48550/arXiv.1412.5567},
+  abstract   = {We present a state-of-the-art speech recognition system developed using end-to-end deep learning. Our architecture is significantly simpler than traditional speech systems, which rely on laboriously engineered processing pipelines; these traditional systems also tend to perform poorly when used in noisy environments. In contrast, our system does not need hand-designed components to model background noise, reverberation, or speaker variation, but instead directly learns a function that is robust to such effects. We do not need a phoneme dictionary, nor even the concept of a "phoneme." Key to our approach is a well-optimized RNN training system that uses multiple GPUs, as well as a set of novel data synthesis techniques that allow us to efficiently obtain a large amount of varied data for training. Our system, called Deep Speech, outperforms previously published results on the widely studied Switchboard Hub5'00, achieving 16.0\% error on the full test set. Deep Speech also handles challenging noisy environments better than widely used, state-of-the-art commercial speech systems.},
+  urldate    = {2022-08-21},
+  publisher  = {arXiv},
+  author     = {Hannun, Awni and Case, Carl and Casper, Jared and Catanzaro, Bryan and Diamos, Greg and Elsen, Erich and Prenger, Ryan and Satheesh, Sanjeev and Sengupta, Shubho and Coates, Adam and Ng, Andrew Y.},
+  month      = dec,
+  year       = {2014},
+  note       = {arXiv:1412.5567 [cs]},
+  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Computer Science - Neural and Evolutionary Computing},
+  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/8QXYS88A/Hannun et al. - 2014 - Deep Speech Scaling up end-to-end speech recognit.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/P238WZ2W/1412.html:text/html}
+}
+
+@inproceedings{hofbauer_atcosim_2008,
+  address   = {Marrakech, Morocco},
+  title     = {The {ATCOSIM} {Corpus} of {Non}-{Prompted} {Clean} {Air} {Traffic} {Control} {Speech}},
+  url       = {http://www.lrec-conf.org/proceedings/lrec2008/pdf/545_paper.pdf},
+  abstract  = {Air traffic control (ATC) is based on voice communication between pilots and controllers and uses a highly task and domain specific language. Due to this very reason, spoken language technologies for ATC require domain-specific corpora, of which only few exist to this day. The ATCOSIM Air Traffic Control Simulation Speech corpus is a speech database of non-prompted and clean ATC operator speech. It consists of ten hours of speech data, which were recorded in typical ATC control room conditions during ATC real-time simulations. The database includes orthographic transcriptions and additional information on speakers and recording sessions. The ATCOSIM corpus is publicly available and provided online free of charge. In this paper, we first give an overview of ATC related corpora and their shortcomings. We then show the difficulties in obtaining operational ATC speech recordings and propose the use of existing ATC real-time simulations. We describe the recording, transcription, production and validation process of the ATCOSIM corpus, and outline an application example for automatic speech recognition in the ATC domain.},
+  urldate   = {2022-10-20},
+  booktitle = {Proceedings of the {Sixth} {International} {Conference} on {Language} {Resources} and {Evaluation} ({LREC}'08)},
+  publisher = {European Language Resources Association (ELRA)},
+  author    = {Hofbauer, Konrad and Petrik, Stefan and Hering, Horst},
+  month     = may,
+  year      = {2008}
 }
 
 @inproceedings{kriman_quartznet_2020,
@@ -66,19 +218,159 @@
   file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/KR7VZXRP/Kudo - 2018 - Subword Regularization Improving Neural Network T.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/D5I5TK6S/1804.html:text/html}
 }
 
-@misc{bostrom_byte_2020,
-  title     = {Byte {Pair} {Encoding} is {Suboptimal} for {Language} {Model} {Pretraining}},
-  url       = {http://arxiv.org/abs/2004.03720},
-  doi       = {10.48550/arXiv.2004.03720},
-  abstract  = {The success of pretrained transformer language models (LMs) in natural language processing has led to a wide range of pretraining setups. In particular, these models employ a variety of subword tokenization methods, most notably byte-pair encoding (BPE) (Sennrich et al., 2016; Gage, 1994), the WordPiece method (Schuster and Nakajima, 2012), and unigram language modeling (Kudo, 2018), to segment text. However, to the best of our knowledge, the literature does not contain a direct evaluation of the impact of tokenization on language model pretraining. We analyze differences between BPE and unigram LM tokenization, finding that the latter method recovers subword units that align more closely with morphology and avoids problems stemming from BPE's greedy construction procedure. We then compare the fine-tuned task performance of identical transformer masked language models pretrained with these tokenizations. Across downstream tasks and two languages (English and Japanese), we find that the unigram LM tokenization method matches or outperforms BPE. We hope that developers of future pretrained LMs will consider adopting the unigram LM method over the more prevalent BPE.},
-  urldate   = {2022-07-13},
+@misc{lewis_bart_2019,
+  title      = {{BART}: {Denoising} {Sequence}-to-{Sequence} {Pre}-training for {Natural} {Language} {Generation}, {Translation}, and {Comprehension}},
+  shorttitle = {{BART}},
+  url        = {http://arxiv.org/abs/1910.13461},
+  doi        = {10.48550/arXiv.1910.13461},
+  abstract   = {We present BART, a denoising autoencoder for pretraining sequence-to-sequence models. BART is trained by (1) corrupting text with an arbitrary noising function, and (2) learning a model to reconstruct the original text. It uses a standard Tranformer-based neural machine translation architecture which, despite its simplicity, can be seen as generalizing BERT (due to the bidirectional encoder), GPT (with the left-to-right decoder), and many other more recent pretraining schemes. We evaluate a number of noising approaches, finding the best performance by both randomly shuffling the order of the original sentences and using a novel in-filling scheme, where spans of text are replaced with a single mask token. BART is particularly effective when fine tuned for text generation but also works well for comprehension tasks. It matches the performance of RoBERTa with comparable training resources on GLUE and SQuAD, achieves new state-of-the-art results on a range of abstractive dialogue, question answering, and summarization tasks, with gains of up to 6 ROUGE. BART also provides a 1.1 BLEU increase over a back-translation system for machine translation, with only target language pretraining. We also report ablation experiments that replicate other pretraining schemes within the BART framework, to better measure which factors most influence end-task performance.},
+  urldate    = {2022-08-21},
+  publisher  = {arXiv},
+  author     = {Lewis, Mike and Liu, Yinhan and Goyal, Naman and Ghazvininejad, Marjan and Mohamed, Abdelrahman and Levy, Omer and Stoyanov, Ves and Zettlemoyer, Luke},
+  month      = oct,
+  year       = {2019},
+  note       = {arXiv:1910.13461 [cs, stat]},
+  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Statistics - Machine Learning},
+  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/INAUVP7F/Lewis et al. - 2019 - BART Denoising Sequence-to-Sequence Pre-training .pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/VW3BLE6N/1910.html:text/html}
+}
+
+@misc{li_jasper_2019,
+  title      = {Jasper: {An} {End}-to-{End} {Convolutional} {Neural} {Acoustic} {Model}},
+  shorttitle = {Jasper},
+  url        = {http://arxiv.org/abs/1904.03288},
+  doi        = {10.48550/arXiv.1904.03288},
+  abstract   = {In this paper, we report state-of-the-art results on LibriSpeech among end-to-end speech recognition models without any external training data. Our model, Jasper, uses only 1D convolutions, batch normalization, ReLU, dropout, and residual connections. To improve training, we further introduce a new layer-wise optimizer called NovoGrad. Through experiments, we demonstrate that the proposed deep architecture performs as well or better than more complex choices. Our deepest Jasper variant uses 54 convolutional layers. With this architecture, we achieve 2.95\% WER using a beam-search decoder with an external neural language model and 3.86\% WER with a greedy decoder on LibriSpeech test-clean. We also report competitive results on the Wall Street Journal and the Hub5'00 conversational evaluation datasets.},
+  urldate    = {2022-08-21},
+  publisher  = {arXiv},
+  author     = {Li, Jason and Lavrukhin, Vitaly and Ginsburg, Boris and Leary, Ryan and Kuchaiev, Oleksii and Cohen, Jonathan M. and Nguyen, Huyen and Gadde, Ravi Teja},
+  month      = aug,
+  year       = {2019},
+  note       = {arXiv:1904.03288 [cs, eess]},
+  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Computer Science - Sound, Electrical Engineering and Systems Science - Audio and Speech Processing},
+  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/465AXJFK/Li et al. - 2019 - Jasper An End-to-End Convolutional Neural Acousti.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/Q3YKX66J/1904.html:text/html}
+}
+
+@misc{liu_roberta_2019,
+  title      = {{RoBERTa}: {A} {Robustly} {Optimized} {BERT} {Pretraining} {Approach}},
+  shorttitle = {{RoBERTa}},
+  url        = {http://arxiv.org/abs/1907.11692},
+  doi        = {10.48550/arXiv.1907.11692},
+  abstract   = {Language model pretraining has led to significant performance gains but careful comparison between different approaches is challenging. Training is computationally expensive, often done on private datasets of different sizes, and, as we will show, hyperparameter choices have significant impact on the final results. We present a replication study of BERT pretraining (Devlin et al., 2019) that carefully measures the impact of many key hyperparameters and training data size. We find that BERT was significantly undertrained, and can match or exceed the performance of every model published after it. Our best model achieves state-of-the-art results on GLUE, RACE and SQuAD. These results highlight the importance of previously overlooked design choices, and raise questions about the source of recently reported improvements. We release our models and code.},
+  urldate    = {2022-08-21},
+  publisher  = {arXiv},
+  author     = {Liu, Yinhan and Ott, Myle and Goyal, Naman and Du, Jingfei and Joshi, Mandar and Chen, Danqi and Levy, Omer and Lewis, Mike and Zettlemoyer, Luke and Stoyanov, Veselin},
+  month      = jul,
+  year       = {2019},
+  note       = {arXiv:1907.11692 [cs]},
+  keywords   = {Computer Science - Computation and Language},
+  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/TFND7JQY/Liu et al. - 2019 - RoBERTa A Robustly Optimized BERT Pretraining App.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/2T3VHMM2/1907.html:text/html}
+}
+
+@article{lopez_linguistic_2013,
+  title    = {Linguistic {Analysis} of {English} {Phraseology} and {Plain} {Language} in {Air}-{Ground} {Communication}},
+  volume   = {4},
+  url      = {https://halshs.archives-ouvertes.fr/halshs-00924821},
+  abstract = {The aim of this paper is to describe the different uses of English phraseology and plain language within pilot-controller (or air-ground) communications via a comparative study between two collections of texts (corpora): one representing the prescribed norm and made up of examples of English from two phraseology manuals; the other consisting of the orthographic transcription of recordings of real air-ground communications. The comparative study is conducted at a lexical level. It focuses on the discrepancies observed in the distribution of the corpora lexicon. Our preliminary results indicate that, in real air-ground communications, pilots and controllers tend to use more "subjectivity" markers (pronouns, courtesy expressions) than prescribed by the linguistic norm. This observation reflects their needs to use the language in its social role. A description of the different markers introducing subjectivity in air-ground communication can help understand the use of a more natural language in radiotelephony. In the long run, the results from the comparative study can be used to improve English radiotelephony teaching.},
+  language = {en},
+  number   = {1},
+  urldate  = {2022-08-27},
+  journal  = {Journal of Air Transport Studies},
+  author   = {Lopez, Stéphanie and Condamines, Anne and Josselin-Leray, Amélie and O'Donoghue, Mike and Salmon, Rupert},
+  year     = {2013},
+  pages    = {44},
+  file     = {Full Text PDF:/home/avandebrook/Zotero/storage/ETL5422T/Lopez et al. - 2013 - Linguistic Analysis of English Phraseology and Pla.pdf:application/pdf;Snapshot:/home/avandebrook/Zotero/storage/S8CRIL9J/halshs-00924821.html:text/html}
+}
+
+@article{madeira_machine_2021,
+  title     = {Machine {Learning} and {Natural} {Language} {Processing} for {Prediction} of {Human} {Factors} in {Aviation} {Incident} {Reports}},
+  volume    = {8},
+  copyright = {© 2021 by the authors. Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (http://creativecommons.org/licenses/by/4.0/). Notwithstanding the ProQuest Terms and Conditions, you may use this content in accordance with the terms of the License.},
+  url       = {https://www.proquest.com/docview/2524211382/abstract/5B09B07DC1084F4EPQ/1},
+  doi       = {10.3390/aerospace8020047},
+  abstract  = {In the aviation sector, human factors are the primary cause of safety incidents. Intelligent prediction systems, which are capable of evaluating human state and managing risk, have been developed over the years to identify and prevent human factors. However, the lack of large useful labelled data has often been a drawback to the development of these systems. This study presents a methodology to identify and classify human factor categories from aviation incident reports. For feature extraction, a text pre-processing and Natural Language Processing (NLP) pipeline is developed. For data modelling, semi-supervised Label Spreading (LS) and supervised Support Vector Machine (SVM) techniques are considered. Random search and Bayesian optimization methods are applied for hyper-parameter analysis and the improvement of model performance, as measured by the Micro F1 score. The best predictive models achieved a Micro F1 score of 0.900, 0.779, and 0.875, for each level of the taxonomic framework, respectively. The results of the proposed method indicate that favourable predicting performances can be achieved for the classification of human factors based on text data. Notwithstanding, a larger data set would be recommended in future research.},
+  language  = {English},
+  number    = {2},
+  urldate   = {2022-08-25},
+  journal   = {Aerospace},
+  author    = {Madeira, Tomás and Melício, Rui and Valério, Duarte and Santos, Luis and Link to external site, this link will open in a new window},
+  year      = {2021},
+  note      = {Num Pages: 47
+               Place: Basel, Switzerland
+               Publisher: MDPI AG},
+  keywords  = {aviation incident reports, aviation safety, human factors, machine learning, natural language processing, prediction},
+  pages     = {47},
+  file      = {Full Text PDF:/home/avandebrook/Zotero/storage/EZWF5V3C/Madeira et al. - 2021 - Machine Learning and Natural Language Processing f.pdf:application/pdf}
+}
+
+@inproceedings{navigli_learning_2010,
+  title    = {Learning {Word}-{Class} {Lattices} for {Definition} and {Hypernym} {Extraction}},
+  abstract = {Definition extraction is the task of automatically identifying definitional sentences within texts. The task has proven useful in many research areas including ontology learning, relation extraction and question answering. However, current approaches -- mostly focused on lexicosyntactic patterns -- suffer from both low recall and precision, as definitional sentences occur in highly variable syntactic structures. In this paper, we propose Word-Class Lattices (WCLs), a generalization of word lattices that we use to model textual definitions. Lattices are learned from a dataset of definitions from Wikipedia. Our method is applied to the task of definition and hypernym extraction and compares favorably to other pattern generalization methods proposed in the literature.},
+  author   = {Navigli, Roberto and Velardi, Paola},
+  month    = sep,
+  year     = {2010},
+  pages    = {1318--1327},
+  file     = {Full Text PDF:/home/avandebrook/Zotero/storage/A75FFMC8/Navigli and Velardi - 2010 - Learning Word-Class Lattices for Definition and Hy.pdf:application/pdf}
+}
+
+@inproceedings{panayotov_librispeech_2015,
+  title      = {Librispeech: {An} {ASR} corpus based on public domain audio books},
+  shorttitle = {Librispeech},
+  doi        = {10.1109/ICASSP.2015.7178964},
+  abstract   = {This paper introduces a new corpus of read English speech, suitable for training and evaluating speech recognition systems. The LibriSpeech corpus is derived from audiobooks that are part of the LibriVox project, and contains 1000 hours of speech sampled at 16 kHz. We have made the corpus freely available for download, along with separately prepared language-model training data and pre-built language models. We show that acoustic models trained on LibriSpeech give lower error rate on the Wall Street Journal (WSJ) test sets than models trained on WSJ itself. We are also releasing Kaldi scripts that make it easy to build these systems.},
+  booktitle  = {2015 {IEEE} {International} {Conference} on {Acoustics}, {Speech} and {Signal} {Processing} ({ICASSP})},
+  author     = {Panayotov, Vassil and Chen, Guoguo and Povey, Daniel and Khudanpur, Sanjeev},
+  month      = apr,
+  year       = {2015},
+  note       = {ISSN: 2379-190X},
+  keywords   = {Bioinformatics, Blogs, Corpus, Electronic publishing, Genomics, Information services, LibriVox, Resource description framework, Speech Recognition},
+  pages      = {5206--5210},
+  file       = {IEEE Xplore Abstract Record:/home/avandebrook/Zotero/storage/7MCBA35C/7178964.html:text/html;IEEE Xplore Full Text PDF:/home/avandebrook/Zotero/storage/IZVX9WT5/Panayotov et al. - 2015 - Librispeech An ASR corpus based on public domain .pdf:application/pdf}
+}
+
+@article{radford_improving_2018,
+  title  = {Improving language understanding by generative pre-training},
+  author = {Radford, Alec and Narasimhan, Karthik and Salimans, Tim and Sutskever, Ilya},
+  year   = {2018},
+  note   = {Publisher: OpenAI}
+}
+
+@misc{raffel_exploring_2020,
+  title     = {Exploring the {Limits} of {Transfer} {Learning} with a {Unified} {Text}-to-{Text} {Transformer}},
+  url       = {http://arxiv.org/abs/1910.10683},
+  doi       = {10.48550/arXiv.1910.10683},
+  abstract  = {Transfer learning, where a model is first pre-trained on a data-rich task before being fine-tuned on a downstream task, has emerged as a powerful technique in natural language processing (NLP). The effectiveness of transfer learning has given rise to a diversity of approaches, methodology, and practice. In this paper, we explore the landscape of transfer learning techniques for NLP by introducing a unified framework that converts all text-based language problems into a text-to-text format. Our systematic study compares pre-training objectives, architectures, unlabeled data sets, transfer approaches, and other factors on dozens of language understanding tasks. By combining the insights from our exploration with scale and our new ``Colossal Clean Crawled Corpus'', we achieve state-of-the-art results on many benchmarks covering summarization, question answering, text classification, and more. To facilitate future work on transfer learning for NLP, we release our data set, pre-trained models, and code.},
+  urldate   = {2022-08-21},
   publisher = {arXiv},
-  author    = {Bostrom, Kaj and Durrett, Greg},
-  month     = oct,
+  author    = {Raffel, Colin and Shazeer, Noam and Roberts, Adam and Lee, Katherine and Narang, Sharan and Matena, Michael and Zhou, Yanqi and Li, Wei and Liu, Peter J.},
+  month     = jul,
   year      = {2020},
-  note      = {arXiv:2004.03720 [cs]},
-  keywords  = {Computer Science - Computation and Language, I.2.7, Read},
-  file      = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/XNYLFZHQ/Bostrom and Durrett - 2020 - Byte Pair Encoding is Suboptimal for Language Mode.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/YJ64W2P5/2004.html:text/html}
+  note      = {arXiv:1910.10683 [cs, stat]},
+  keywords  = {Computer Science - Computation and Language, Computer Science - Machine Learning, Statistics - Machine Learning},
+  file      = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/WEU2PI57/Raffel et al. - 2020 - Exploring the Limits of Transfer Learning with a U.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/C5PZCI4Q/1910.html:text/html}
+}
+
+@inproceedings{ragnarsdottir_language_2003,
+  title     = {Language technology in air traffic control},
+  volume    = {1},
+  doi       = {10.1109/DASC.2003.1245815},
+  abstract  = {Voice communication is a volatile part of Air Traffic Control (ATC). According to research, on average one miscommunication happens every hour per radio frequency where there is frequent communication such as in TRACON. ICAO puts great emphasis on improving communication in ATC. This article proposes that a language technology system (LTS) can make communication between controller and pilot more reliable and efficient, thus improving safety in aviation. An LTS can for example detect readback errors. It can also directly feed data from the voice recognizer on XML (eXtensible Markup Language) form into a flight data processing system or interact with it as we show. By interviewing air traffic controllers and studying the literature, we identified several examples of use of language technology in ATC. As an example we take a system to support controllers in their work by making the LTS give warnings when discrepancy is found in the communications between controller and pilot. This system is not meant to control the airspace autonomously. Latest advances in language technology have enabled the development of such a system. The functionality of the proposed LTS is described using scenarios and sequence diagrams. A demonstration conversational agent using Hex Technology was implemented. A Wizard of Oz usability test was administered to seven controllers. Their attitude to the agent was positive and indicates that there is reason for further research. The performance and error logs of the agent and voice server were analyzed and give guidance on further development of a fully functioning language technology system for air traffic control.},
+  booktitle = {Digital {Avionics} {Systems} {Conference}, 2003. {DASC} '03. {The} 22nd},
+  author    = {Ragnarsdottir, M.D. and Waage, H. and Hvannberg, E.T.},
+  month     = oct,
+  year      = {2003},
+  keywords  = {Speech recognition, Air traffic control, Aircraft, Grammar, Natural language processing, Safety, Speech},
+  pages     = {2.E.2--21--13 vol.1},
+  file      = {IEEE Xplore Abstract Record:/home/avandebrook/Zotero/storage/G7XJY9XB/5731067.html:text/html;IEEE Xplore Full Text PDF:/home/avandebrook/Zotero/storage/N9QWK5YU/Ragnarsdottir et al. - 2003 - Language technology in air traffic control.pdf:application/pdf}
+}
+
+@misc{segura_hiwire_2007,
+  title      = {The {HIWIRE} database, a noisy and non-native {English} speech corpus for cockpit communication. http://www.hiwire.org},
+  shorttitle = {The {HIWIRE} database, a noisy and non-native {English} speech corpus for cockpit communication},
+  abstract   = {The HIWIRE database was collected to investigate human-machine spoken dialogue communication in the cockpit. The two main adverse conditions encountered in aeronautical appli-cations have been simulated in this database, namely, cockpit noise and non-native speech. The database collection process, application domain (command and control in the cockpit) and speaker population are described in detail. In addition, base-line speech recognition experiments are presented for the robust speech recognition task and the non-native tasks. Model adapta-tion results are also included in the paper, to serve as a baseline for further research in this area. Index Terms: robust speech recognition, non-native speech recognition},
+  author     = {Segura, J. C. and Ehrette, T. and Potamianos, A. and Fohr, D. and Illina, I. and Breton, P.-a and Clot, V. and Gemello, R. and Matassoni, M. and Maragos, P.},
+  year       = {2007},
+  keywords   = {Unread},
+  file       = {Citeseer - Full Text PDF:/home/avandebrook/Zotero/storage/J7XLYURN/Segura et al. - 2007 - The HIWIRE database, a noisy and non-native Englis.pdf:application/pdf;Citeseer - Snapshot:/home/avandebrook/Zotero/storage/3JIYG7XW/summary.html:text/html}
 }
 
 @article{smidl_air_2019,
@@ -100,42 +392,91 @@
   file     = {Full Text PDF:/home/avandebrook/Zotero/storage/BW5KD7IS/Šmídl et al. - 2019 - Air traffic control communication (ATCC) speech co.pdf:application/pdf}
 }
 
-@inproceedings{baevski_wav2vec_2020,
-  title      = {wav2vec 2.0: {A} {Framework} for {Self}-{Supervised} {Learning} of {Speech} {Representations}},
-  volume     = {33},
-  shorttitle = {wav2vec 2.0},
-  url        = {https://proceedings.neurips.cc/paper/2020/hash/92d1e1eb1cd6f9fba3227870bb6d7f07-Abstract.html},
-  abstract   = {We show for the first time that learning powerful representations from speech audio alone followed by fine-tuning on transcribed speech can outperform the best semi-supervised methods while being conceptually simpler. wav2vec 2.0 masks the speech input in the latent space and solves a contrastive task defined over a quantization of the latent representations which are jointly learned. Experiments using all labeled data of Librispeech achieve 1.8/3.3 WER on the clean/other test sets. When lowering the amount of labeled data to one hour, wav2vec 2.0 outperforms the previous state of the art on the 100 hour subset while using 100 times less labeled data. Using just ten minutes of labeled data and pre-training on 53k hours of unlabeled data still achieves 4.8/8.2 WER. This demonstrates the feasibility of speech recognition with limited amounts of labeled data.},
-  urldate    = {2022-07-15},
-  booktitle  = {Advances in {Neural} {Information} {Processing} {Systems}},
-  publisher  = {Curran Associates, Inc.},
-  author     = {Baevski, Alexei and Zhou, Yuhao and Mohamed, Abdelrahman and Auli, Michael},
+@book{srinivasamurthy_semi-supervised_2017,
+  title    = {Semi-supervised {Learning} with {Semantic} {Knowledge} {Extraction} for {Improved} {Speech} {Recognition} in {Air} {Traffic} {Control}},
+  abstract = {Automatic Speech Recognition (ASR) can introduce higher levels of automation into Air Traffic Control (ATC), where spoken language is still the predominant form of communication. While ATC uses standard phraseology and a limited vocabulary, we need to adapt the speech recognition systems to local acoustic conditions and vocabularies at each airport to reach optimal performance. Due to continuous operation of ATC systems, a large and increasing amount of untranscribed speech data is available, allowing for semi-supervised learning methods to build and adapt ASR models. In this paper, we first identify the challenges in building ASR systems for specific ATC areas and propose to utilize out-of-domain data to build baseline ASR models. Then we explore different methods of data selection for adapting baseline models by exploiting the continuously increasing untranscribed data. We develop a basic approach capable of exploiting semantic representations of ATC commands. We achieve relative improvement in both word error rate (23.5\%) and concept error rates (7\%) when adapting ASR models to different ATC conditions in a semi-supervised manner},
+  editor   = {Srinivasamurthy, Ajay and Motlicek, Petr and Himawan, Ivan and Szaszak, Gyorgy and Oualil, Youssef and Helmke, Hartmut},
+  year     = {2017},
+  doi      = {10.21437/Interspeech.2017-1446},
+  note     = {Meeting Name: Proceedings of Interspeech 2017},
+  file     = {Submitted Version:/home/avandebrook/Zotero/storage/N6Y4KDRT/Srinivasamurthy et al. - 2017 - Semi-supervised Learning with Semantic Knowledge E.pdf:application/pdf}
+}
+
+@article{szoke_detecting_2021,
+  title    = {Detecting {English} {Speech} in the {Air} {Traffic} {Control} {Voice} {Communication}},
+  url      = {https://arxiv.org/abs/2104.02332v1},
+  doi      = {10.48550/arXiv.2104.02332},
+  abstract = {We launched a community platform for collecting the ATC speech world-wide in the ATCO2 project. Filtering out unseen non-English speech is one of the main components in the data processing pipeline. The proposed English Language Detection (ELD) system is based on the embeddings from Bayesian subspace multinomial model. It is trained on the word confusion network from an ASR system. It is robust, easy to train, and light weighted. We achieved 0.0439 equal-error-rate (EER), a 50\% relative reduction as compared to the state-of-the-art acoustic ELD system based on x-vectors, in the in-domain scenario. Further, we achieved an EER of 0.1352, a 33\% relative reduction as compared to the acoustic ELD, in the unseen language (out-of-domain) condition. We plan to publish the evaluation dataset from the ATCO2 project.},
+  language = {en},
+  urldate  = {2022-11-05},
+  author   = {Szoke, Igor and Kesiraju, Santosh and Novotny, Ondrej and Kocour, Martin and Vesely, Karel and Cernocky, Jan "Honza"},
+  month    = apr,
+  year     = {2021}
+}
+
+@article{tanguy_natural_2016,
+  series     = {Natural {Language} {Processing} and {Text} {Analytics} in {Industry}},
+  title      = {Natural language processing for aviation safety reports: {From} classification to interactive analysis},
+  volume     = {78},
+  issn       = {0166-3615},
+  shorttitle = {Natural language processing for aviation safety reports},
+  url        = {https://www.sciencedirect.com/science/article/pii/S0166361515300464},
+  doi        = {10.1016/j.compind.2015.09.005},
+  abstract   = {In this paper we describe the different NLP techniques designed and used in collaboration between the CLLE-ERSS research laboratory and the CFH/Safety Data company to manage and analyse aviation incident reports. These reports are written every time anything abnormal occurs during a civil air flight. Although most of them relate routine problems, they are a valuable source of information about possible sources of greater danger. These texts are written in plain language, show a wide range of linguistic variation (telegraphic style overcrowded by acronyms or standard prose) and exist in different languages, even for a single company/country (although our main focus is on English and French). In addition to their variety, their sheer quantity (e.g. 600/month for a large airline company) clearly requires the use of advanced NLP and text mining techniques in order to extract useful information from them. Although this context and objectives seem to indicate that standard NLP techniques can be applied in a straightforward manner, innovative techniques are required to handle the specifics of aviation report text and the complex classification systems. We present several tools that aim at a better access to this data (classification and information retrieval), and help aviation safety experts in their analyses (data/text mining and interactive analysis). Some of these tools are currently in test or in use both at the national and international levels, by airline companies as well as by regulation authorities (DGAC,11Direction Générale de l’Aviation Civile. EASA,22European Aviation Safety Agency. ICAO33International Civil Aviation Organization.).},
+  language   = {en},
+  urldate    = {2022-08-25},
+  journal    = {Computers in Industry},
+  author     = {Tanguy, Ludovic and Tulechki, Nikola and Urieli, Assaf and Hermann, Eric and Raynal, Céline},
+  month      = may,
+  year       = {2016},
+  keywords   = {Aviation, Document classification, NLP, Safety reports, Text mining},
+  pages      = {80--95},
+  file       = {ScienceDirect Full Text PDF:/home/avandebrook/Zotero/storage/K4NMD2LM/Tanguy et al. - 2016 - Natural language processing for aviation safety re.pdf:application/pdf;ScienceDirect Snapshot:/home/avandebrook/Zotero/storage/D5XNXYWJ/S0166361515300464.html:text/html}
+}
+
+@article{vaswani_attention_2017,
+  title    = {Attention {Is} {All} {You} {Need}},
+  url      = {https://arxiv.org/abs/1706.03762v5},
+  doi      = {10.48550/arXiv.1706.03762},
+  abstract = {The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.},
+  language = {en},
+  urldate  = {2022-08-21},
+  author   = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, Lukasz and Polosukhin, Illia},
+  month    = jun,
+  year     = {2017},
+  file     = {Full Text PDF:/home/avandebrook/Zotero/storage/49LY9A7C/Vaswani et al. - 2017 - Attention Is All You Need.pdf:application/pdf}
+}
+
+@misc{wu_googles_2016,
+  title      = {Google's {Neural} {Machine} {Translation} {System}: {Bridging} the {Gap} between {Human} and {Machine} {Translation}},
+  shorttitle = {Google's {Neural} {Machine} {Translation} {System}},
+  url        = {http://arxiv.org/abs/1609.08144},
+  doi        = {10.48550/arXiv.1609.08144},
+  abstract   = {Neural Machine Translation (NMT) is an end-to-end learning approach for automated translation, with the potential to overcome many of the weaknesses of conventional phrase-based translation systems. Unfortunately, NMT systems are known to be computationally expensive both in training and in translation inference. Also, most NMT systems have difficulty with rare words. These issues have hindered NMT's use in practical deployments and services, where both accuracy and speed are essential. In this work, we present GNMT, Google's Neural Machine Translation system, which attempts to address many of these issues. Our model consists of a deep LSTM network with 8 encoder and 8 decoder layers using attention and residual connections. To improve parallelism and therefore decrease training time, our attention mechanism connects the bottom layer of the decoder to the top layer of the encoder. To accelerate the final translation speed, we employ low-precision arithmetic during inference computations. To improve handling of rare words, we divide words into a limited set of common sub-word units ("wordpieces") for both input and output. This method provides a good balance between the flexibility of "character"-delimited models and the efficiency of "word"-delimited models, naturally handles translation of rare words, and ultimately improves the overall accuracy of the system. Our beam search technique employs a length-normalization procedure and uses a coverage penalty, which encourages generation of an output sentence that is most likely to cover all the words in the source sentence. On the WMT'14 English-to-French and English-to-German benchmarks, GNMT achieves competitive results to state-of-the-art. Using a human side-by-side evaluation on a set of isolated simple sentences, it reduces translation errors by an average of 60\% compared to Google's phrase-based production system.},
+  urldate    = {2023-09-29},
+  publisher  = {arXiv},
+  author     = {Wu, Yonghui and Schuster, Mike and Chen, Zhifeng and Le, Quoc V. and Norouzi, Mohammad and Macherey, Wolfgang and Krikun, Maxim and Cao, Yuan and Gao, Qin and Macherey, Klaus and Klingner, Jeff and Shah, Apurva and Johnson, Melvin and Liu, Xiaobing and Kaiser, Łukasz and Gouws, Stephan and Kato, Yoshikiyo and Kudo, Taku and Kazawa, Hideto and Stevens, Keith and Kurian, George and Patil, Nishant and Wang, Wei and Young, Cliff and Smith, Jason and Riesa, Jason and Rudnick, Alex and Vinyals, Oriol and Corrado, Greg and Hughes, Macduff and Dean, Jeffrey},
+  month      = oct,
+  year       = {2016},
+  note       = {arXiv:1609.08144 [cs]},
+  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Computer Science - Artificial Intelligence},
+  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/46SP7UJR/Wu et al. - 2016 - Google's Neural Machine Translation System Bridgi.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/AJWL8IX9/1609.html:text/html}
+}
+
+@inproceedings{yang_atcspeech_2020,
+  title      = {{ATCSpeech}: {A} {Multilingual} {Pilot}-{Controller} {Speech} {Corpus} from {Real} {Air} {Traffic} {Control} {Environment}},
+  shorttitle = {{ATCSpeech}},
+  url        = {https://www.isca-speech.org/archive/interspeech_2020/yang20b_interspeech.html},
+  doi        = {10.21437/Interspeech.2020-1020},
+  language   = {en},
+  urldate    = {2022-08-27},
+  booktitle  = {Interspeech 2020},
+  publisher  = {ISCA},
+  author     = {Yang, Bo and Tan, Xianlong and Chen, Zhengmao and Wang, Bing and Ruan, Min and Li, Dan and Yang, Zhongping and Wu, Xiping and Lin, Yi},
+  month      = oct,
   year       = {2020},
-  keywords   = {Unread},
-  pages      = {12449--12460},
-  file       = {Full Text PDF:/home/avandebrook/Zotero/storage/SGTH8QQK/Baevski et al. - 2020 - wav2vec 2.0 A Framework for Self-Supervised Learn.pdf:application/pdf}
-}
-
-@misc{godfrey_air_1994,
-  title     = {Air {Traffic} {Control} {Complete}},
-  url       = {https://catalog.ldc.upenn.edu/LDC94S14A},
-  abstract  = {The Air Traffic Control Corpus (ATC0) is comprised of recorded speech for use in supporting research and development activities in the area of robust speech recognition in domains similar to air traffic control (several speakers, noisy channels, relatively small vocabulary, constrained languaged, etc.) The audio data is composed of voice communication traffic between various controllers and pilots.},
-  language  = {en},
-  urldate   = {2022-07-16},
-  publisher = {Linguistic Data Consortium},
-  author    = {Godfrey, John J.},
-  year      = {1994},
-  keywords  = {Read}
-}
-
-@misc{segura_hiwire_2007,
-  title      = {The {HIWIRE} database, a noisy and non-native {English} speech corpus for cockpit communication. http://www.hiwire.org},
-  shorttitle = {The {HIWIRE} database, a noisy and non-native {English} speech corpus for cockpit communication},
-  abstract   = {The HIWIRE database was collected to investigate human-machine spoken dialogue communication in the cockpit. The two main adverse conditions encountered in aeronautical appli-cations have been simulated in this database, namely, cockpit noise and non-native speech. The database collection process, application domain (command and control in the cockpit) and speaker population are described in detail. In addition, base-line speech recognition experiments are presented for the robust speech recognition task and the non-native tasks. Model adapta-tion results are also included in the paper, to serve as a baseline for further research in this area. Index Terms: robust speech recognition, non-native speech recognition},
-  author     = {Segura, J. C. and Ehrette, T. and Potamianos, A. and Fohr, D. and Illina, I. and Breton, P.-a and Clot, V. and Gemello, R. and Matassoni, M. and Maragos, P.},
-  year       = {2007},
-  keywords   = {Unread},
-  file       = {Citeseer - Full Text PDF:/home/avandebrook/Zotero/storage/J7XLYURN/Segura et al. - 2007 - The HIWIRE database, a noisy and non-native Englis.pdf:application/pdf;Citeseer - Snapshot:/home/avandebrook/Zotero/storage/3JIYG7XW/summary.html:text/html}
+  pages      = {399--403},
+  file       = {Submitted Version:/home/avandebrook/Zotero/storage/TWRFZBS4/Yang et al. - 2020 - ATCSpeech A Multilingual Pilot-Controller Speech .pdf:application/pdf}
 }
 
 @misc{zuluaga-gomez_automatic_2020,
@@ -167,329 +508,4 @@
   note       = {arXiv:2104.03643 [cs, eess]},
   keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Electrical Engineering and Systems Science - Audio and Speech Processing, Computer Science - Computer Vision and Pattern Recognition},
   file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/7797Z4CP/Zuluaga-Gomez et al. - 2021 - Contextual Semi-Supervised Learning An Approach T.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/MLFC4NI9/2104.html:text/html}
-}
-
-@misc{liu_roberta_2019,
-  title      = {{RoBERTa}: {A} {Robustly} {Optimized} {BERT} {Pretraining} {Approach}},
-  shorttitle = {{RoBERTa}},
-  url        = {http://arxiv.org/abs/1907.11692},
-  doi        = {10.48550/arXiv.1907.11692},
-  abstract   = {Language model pretraining has led to significant performance gains but careful comparison between different approaches is challenging. Training is computationally expensive, often done on private datasets of different sizes, and, as we will show, hyperparameter choices have significant impact on the final results. We present a replication study of BERT pretraining (Devlin et al., 2019) that carefully measures the impact of many key hyperparameters and training data size. We find that BERT was significantly undertrained, and can match or exceed the performance of every model published after it. Our best model achieves state-of-the-art results on GLUE, RACE and SQuAD. These results highlight the importance of previously overlooked design choices, and raise questions about the source of recently reported improvements. We release our models and code.},
-  urldate    = {2022-08-21},
-  publisher  = {arXiv},
-  author     = {Liu, Yinhan and Ott, Myle and Goyal, Naman and Du, Jingfei and Joshi, Mandar and Chen, Danqi and Levy, Omer and Lewis, Mike and Zettlemoyer, Luke and Stoyanov, Veselin},
-  month      = jul,
-  year       = {2019},
-  note       = {arXiv:1907.11692 [cs]},
-  keywords   = {Computer Science - Computation and Language},
-  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/TFND7JQY/Liu et al. - 2019 - RoBERTa A Robustly Optimized BERT Pretraining App.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/2T3VHMM2/1907.html:text/html}
-}
-
-@book{srinivasamurthy_semi-supervised_2017,
-  title    = {Semi-supervised {Learning} with {Semantic} {Knowledge} {Extraction} for {Improved} {Speech} {Recognition} in {Air} {Traffic} {Control}},
-  abstract = {Automatic Speech Recognition (ASR) can introduce higher levels of automation into Air Traffic Control (ATC), where spoken language is still the predominant form of communication. While ATC uses standard phraseology and a limited vocabulary, we need to adapt the speech recognition systems to local acoustic conditions and vocabularies at each airport to reach optimal performance. Due to continuous operation of ATC systems, a large and increasing amount of untranscribed speech data is available, allowing for semi-supervised learning methods to build and adapt ASR models. In this paper, we first identify the challenges in building ASR systems for specific ATC areas and propose to utilize out-of-domain data to build baseline ASR models. Then we explore different methods of data selection for adapting baseline models by exploiting the continuously increasing untranscribed data. We develop a basic approach capable of exploiting semantic representations of ATC commands. We achieve relative improvement in both word error rate (23.5\%) and concept error rates (7\%) when adapting ASR models to different ATC conditions in a semi-supervised manner},
-  editor   = {Srinivasamurthy, Ajay and Motlicek, Petr and Himawan, Ivan and Szaszak, Gyorgy and Oualil, Youssef and Helmke, Hartmut},
-  year     = {2017},
-  doi      = {10.21437/Interspeech.2017-1446},
-  note     = {Meeting Name: Proceedings of Interspeech 2017},
-  file     = {Submitted Version:/home/avandebrook/Zotero/storage/N6Y4KDRT/Srinivasamurthy et al. - 2017 - Semi-supervised Learning with Semantic Knowledge E.pdf:application/pdf}
-}
-
-@misc{hannun_deep_2014,
-  title      = {Deep {Speech}: {Scaling} up end-to-end speech recognition},
-  shorttitle = {Deep {Speech}},
-  url        = {http://arxiv.org/abs/1412.5567},
-  doi        = {10.48550/arXiv.1412.5567},
-  abstract   = {We present a state-of-the-art speech recognition system developed using end-to-end deep learning. Our architecture is significantly simpler than traditional speech systems, which rely on laboriously engineered processing pipelines; these traditional systems also tend to perform poorly when used in noisy environments. In contrast, our system does not need hand-designed components to model background noise, reverberation, or speaker variation, but instead directly learns a function that is robust to such effects. We do not need a phoneme dictionary, nor even the concept of a "phoneme." Key to our approach is a well-optimized RNN training system that uses multiple GPUs, as well as a set of novel data synthesis techniques that allow us to efficiently obtain a large amount of varied data for training. Our system, called Deep Speech, outperforms previously published results on the widely studied Switchboard Hub5'00, achieving 16.0\% error on the full test set. Deep Speech also handles challenging noisy environments better than widely used, state-of-the-art commercial speech systems.},
-  urldate    = {2022-08-21},
-  publisher  = {arXiv},
-  author     = {Hannun, Awni and Case, Carl and Casper, Jared and Catanzaro, Bryan and Diamos, Greg and Elsen, Erich and Prenger, Ryan and Satheesh, Sanjeev and Sengupta, Shubho and Coates, Adam and Ng, Andrew Y.},
-  month      = dec,
-  year       = {2014},
-  note       = {arXiv:1412.5567 [cs]},
-  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Computer Science - Neural and Evolutionary Computing},
-  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/8QXYS88A/Hannun et al. - 2014 - Deep Speech Scaling up end-to-end speech recognit.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/P238WZ2W/1412.html:text/html}
-}
-
-@misc{li_jasper_2019,
-  title      = {Jasper: {An} {End}-to-{End} {Convolutional} {Neural} {Acoustic} {Model}},
-  shorttitle = {Jasper},
-  url        = {http://arxiv.org/abs/1904.03288},
-  doi        = {10.48550/arXiv.1904.03288},
-  abstract   = {In this paper, we report state-of-the-art results on LibriSpeech among end-to-end speech recognition models without any external training data. Our model, Jasper, uses only 1D convolutions, batch normalization, ReLU, dropout, and residual connections. To improve training, we further introduce a new layer-wise optimizer called NovoGrad. Through experiments, we demonstrate that the proposed deep architecture performs as well or better than more complex choices. Our deepest Jasper variant uses 54 convolutional layers. With this architecture, we achieve 2.95\% WER using a beam-search decoder with an external neural language model and 3.86\% WER with a greedy decoder on LibriSpeech test-clean. We also report competitive results on the Wall Street Journal and the Hub5'00 conversational evaluation datasets.},
-  urldate    = {2022-08-21},
-  publisher  = {arXiv},
-  author     = {Li, Jason and Lavrukhin, Vitaly and Ginsburg, Boris and Leary, Ryan and Kuchaiev, Oleksii and Cohen, Jonathan M. and Nguyen, Huyen and Gadde, Ravi Teja},
-  month      = aug,
-  year       = {2019},
-  note       = {arXiv:1904.03288 [cs, eess]},
-  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Computer Science - Sound, Electrical Engineering and Systems Science - Audio and Speech Processing},
-  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/465AXJFK/Li et al. - 2019 - Jasper An End-to-End Convolutional Neural Acousti.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/Q3YKX66J/1904.html:text/html}
-}
-
-@misc{raffel_exploring_2020,
-  title     = {Exploring the {Limits} of {Transfer} {Learning} with a {Unified} {Text}-to-{Text} {Transformer}},
-  url       = {http://arxiv.org/abs/1910.10683},
-  doi       = {10.48550/arXiv.1910.10683},
-  abstract  = {Transfer learning, where a model is first pre-trained on a data-rich task before being fine-tuned on a downstream task, has emerged as a powerful technique in natural language processing (NLP). The effectiveness of transfer learning has given rise to a diversity of approaches, methodology, and practice. In this paper, we explore the landscape of transfer learning techniques for NLP by introducing a unified framework that converts all text-based language problems into a text-to-text format. Our systematic study compares pre-training objectives, architectures, unlabeled data sets, transfer approaches, and other factors on dozens of language understanding tasks. By combining the insights from our exploration with scale and our new ``Colossal Clean Crawled Corpus'', we achieve state-of-the-art results on many benchmarks covering summarization, question answering, text classification, and more. To facilitate future work on transfer learning for NLP, we release our data set, pre-trained models, and code.},
-  urldate   = {2022-08-21},
-  publisher = {arXiv},
-  author    = {Raffel, Colin and Shazeer, Noam and Roberts, Adam and Lee, Katherine and Narang, Sharan and Matena, Michael and Zhou, Yanqi and Li, Wei and Liu, Peter J.},
-  month     = jul,
-  year      = {2020},
-  note      = {arXiv:1910.10683 [cs, stat]},
-  keywords  = {Computer Science - Computation and Language, Computer Science - Machine Learning, Statistics - Machine Learning},
-  file      = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/WEU2PI57/Raffel et al. - 2020 - Exploring the Limits of Transfer Learning with a U.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/C5PZCI4Q/1910.html:text/html}
-}
-
-@misc{lewis_bart_2019,
-  title      = {{BART}: {Denoising} {Sequence}-to-{Sequence} {Pre}-training for {Natural} {Language} {Generation}, {Translation}, and {Comprehension}},
-  shorttitle = {{BART}},
-  url        = {http://arxiv.org/abs/1910.13461},
-  doi        = {10.48550/arXiv.1910.13461},
-  abstract   = {We present BART, a denoising autoencoder for pretraining sequence-to-sequence models. BART is trained by (1) corrupting text with an arbitrary noising function, and (2) learning a model to reconstruct the original text. It uses a standard Tranformer-based neural machine translation architecture which, despite its simplicity, can be seen as generalizing BERT (due to the bidirectional encoder), GPT (with the left-to-right decoder), and many other more recent pretraining schemes. We evaluate a number of noising approaches, finding the best performance by both randomly shuffling the order of the original sentences and using a novel in-filling scheme, where spans of text are replaced with a single mask token. BART is particularly effective when fine tuned for text generation but also works well for comprehension tasks. It matches the performance of RoBERTa with comparable training resources on GLUE and SQuAD, achieves new state-of-the-art results on a range of abstractive dialogue, question answering, and summarization tasks, with gains of up to 6 ROUGE. BART also provides a 1.1 BLEU increase over a back-translation system for machine translation, with only target language pretraining. We also report ablation experiments that replicate other pretraining schemes within the BART framework, to better measure which factors most influence end-task performance.},
-  urldate    = {2022-08-21},
-  publisher  = {arXiv},
-  author     = {Lewis, Mike and Liu, Yinhan and Goyal, Naman and Ghazvininejad, Marjan and Mohamed, Abdelrahman and Levy, Omer and Stoyanov, Ves and Zettlemoyer, Luke},
-  month      = oct,
-  year       = {2019},
-  note       = {arXiv:1910.13461 [cs, stat]},
-  keywords   = {Computer Science - Computation and Language, Computer Science - Machine Learning, Statistics - Machine Learning},
-  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/INAUVP7F/Lewis et al. - 2019 - BART Denoising Sequence-to-Sequence Pre-training .pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/VW3BLE6N/1910.html:text/html}
-}
-
-@article{vaswani_attention_2017,
-  title    = {Attention {Is} {All} {You} {Need}},
-  url      = {https://arxiv.org/abs/1706.03762v5},
-  doi      = {10.48550/arXiv.1706.03762},
-  abstract = {The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.},
-  language = {en},
-  urldate  = {2022-08-21},
-  author   = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, Lukasz and Polosukhin, Illia},
-  month    = jun,
-  year     = {2017},
-  file     = {Full Text PDF:/home/avandebrook/Zotero/storage/49LY9A7C/Vaswani et al. - 2017 - Attention Is All You Need.pdf:application/pdf}
-}
-
-@misc{devlin_bert_2019,
-  title      = {{BERT}: {Pre}-training of {Deep} {Bidirectional} {Transformers} for {Language} {Understanding}},
-  shorttitle = {{BERT}},
-  url        = {http://arxiv.org/abs/1810.04805},
-  doi        = {10.48550/arXiv.1810.04805},
-  abstract   = {We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial task-specific architecture modifications. BERT is conceptually simple and empirically powerful. It obtains new state-of-the-art results on eleven natural language processing tasks, including pushing the GLUE score to 80.5\% (7.7\% point absolute improvement), MultiNLI accuracy to 86.7\% (4.6\% absolute improvement), SQuAD v1.1 question answering Test F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).},
-  urldate    = {2022-08-20},
-  publisher  = {arXiv},
-  author     = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  month      = may,
-  year       = {2019},
-  note       = {arXiv:1810.04805 [cs]},
-  keywords   = {Computer Science - Computation and Language},
-  file       = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/JQ74ZTK9/Devlin et al. - 2019 - BERT Pre-training of Deep Bidirectional Transform.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/VR3VMCGD/1810.html:text/html}
-}
-
-@article{radford_improving_2018,
-  title  = {Improving language understanding by generative pre-training},
-  author = {Radford, Alec and Narasimhan, Karthik and Salimans, Tim and Sutskever, Ilya},
-  year   = {2018},
-  note   = {Publisher: OpenAI}
-}
-
-@inproceedings{panayotov_librispeech_2015,
-  title      = {Librispeech: {An} {ASR} corpus based on public domain audio books},
-  shorttitle = {Librispeech},
-  doi        = {10.1109/ICASSP.2015.7178964},
-  abstract   = {This paper introduces a new corpus of read English speech, suitable for training and evaluating speech recognition systems. The LibriSpeech corpus is derived from audiobooks that are part of the LibriVox project, and contains 1000 hours of speech sampled at 16 kHz. We have made the corpus freely available for download, along with separately prepared language-model training data and pre-built language models. We show that acoustic models trained on LibriSpeech give lower error rate on the Wall Street Journal (WSJ) test sets than models trained on WSJ itself. We are also releasing Kaldi scripts that make it easy to build these systems.},
-  booktitle  = {2015 {IEEE} {International} {Conference} on {Acoustics}, {Speech} and {Signal} {Processing} ({ICASSP})},
-  author     = {Panayotov, Vassil and Chen, Guoguo and Povey, Daniel and Khudanpur, Sanjeev},
-  month      = apr,
-  year       = {2015},
-  note       = {ISSN: 2379-190X},
-  keywords   = {Bioinformatics, Blogs, Corpus, Electronic publishing, Genomics, Information services, LibriVox, Resource description framework, Speech Recognition},
-  pages      = {5206--5210},
-  file       = {IEEE Xplore Abstract Record:/home/avandebrook/Zotero/storage/7MCBA35C/7178964.html:text/html;IEEE Xplore Full Text PDF:/home/avandebrook/Zotero/storage/IZVX9WT5/Panayotov et al. - 2015 - Librispeech An ASR corpus based on public domain .pdf:application/pdf}
-}
-
-@article{lopez_linguistic_2013,
-  title    = {Linguistic {Analysis} of {English} {Phraseology} and {Plain} {Language} in {Air}-{Ground} {Communication}},
-  volume   = {4},
-  url      = {https://halshs.archives-ouvertes.fr/halshs-00924821},
-  abstract = {The aim of this paper is to describe the different uses of English phraseology and plain language within pilot-controller (or air-ground) communications via a comparative study between two collections of texts (corpora): one representing the prescribed norm and made up of examples of English from two phraseology manuals; the other consisting of the orthographic transcription of recordings of real air-ground communications. The comparative study is conducted at a lexical level. It focuses on the discrepancies observed in the distribution of the corpora lexicon. Our preliminary results indicate that, in real air-ground communications, pilots and controllers tend to use more "subjectivity" markers (pronouns, courtesy expressions) than prescribed by the linguistic norm. This observation reflects their needs to use the language in its social role. A description of the different markers introducing subjectivity in air-ground communication can help understand the use of a more natural language in radiotelephony. In the long run, the results from the comparative study can be used to improve English radiotelephony teaching.},
-  language = {en},
-  number   = {1},
-  urldate  = {2022-08-27},
-  journal  = {Journal of Air Transport Studies},
-  author   = {Lopez, Stéphanie and Condamines, Anne and Josselin-Leray, Amélie and O'Donoghue, Mike and Salmon, Rupert},
-  year     = {2013},
-  pages    = {44},
-  file     = {Full Text PDF:/home/avandebrook/Zotero/storage/ETL5422T/Lopez et al. - 2013 - Linguistic Analysis of English Phraseology and Pla.pdf:application/pdf;Snapshot:/home/avandebrook/Zotero/storage/S8CRIL9J/halshs-00924821.html:text/html}
-}
-
-@inproceedings{graglia_vocalise_2005,
-  title      = {Vocalise: assessing the impact of data link technology on the {R}/{T} channel},
-  volume     = {1},
-  shorttitle = {Vocalise},
-  doi        = {10.1109/DASC.2005.1563381},
-  abstract   = {An inferential study aiming at seizing substantial gain data-link technology could yield in forthcoming years has been performed based on a solid knowledge of vocal medium use by pilots and controller. The study delivers a rich and argued analysis of the impact data link applications could have in the operational field, which type of gain could be awaited depending on the precise operational area. This study driven by hypothetical scenario has derived expected use of data link applications from a very detailed and up-to-date qualitative and quantitative database.},
-  booktitle  = {24th {Digital} {Avionics} {Systems} {Conference}},
-  author     = {Graglia, L. and Favennec, B. and Arnoux, A.},
-  month      = oct,
-  year       = {2005},
-  note       = {ISSN: 2155-7209},
-  keywords   = {Databases, Performance gain, Solids},
-  pages      = {5.C.2--51},
-  file       = {IEEE Xplore Abstract Record:/home/avandebrook/Zotero/storage/NY9DU5CZ/1563381.html:text/html}
-}
-
-@inproceedings{yang_atcspeech_2020,
-  title      = {{ATCSpeech}: {A} {Multilingual} {Pilot}-{Controller} {Speech} {Corpus} from {Real} {Air} {Traffic} {Control} {Environment}},
-  shorttitle = {{ATCSpeech}},
-  url        = {https://www.isca-speech.org/archive/interspeech_2020/yang20b_interspeech.html},
-  doi        = {10.21437/Interspeech.2020-1020},
-  language   = {en},
-  urldate    = {2022-08-27},
-  booktitle  = {Interspeech 2020},
-  publisher  = {ISCA},
-  author     = {Yang, Bo and Tan, Xianlong and Chen, Zhengmao and Wang, Bing and Ruan, Min and Li, Dan and Yang, Zhongping and Wu, Xiping and Lin, Yi},
-  month      = oct,
-  year       = {2020},
-  pages      = {399--403},
-  file       = {Submitted Version:/home/avandebrook/Zotero/storage/TWRFZBS4/Yang et al. - 2020 - ATCSpeech A Multilingual Pilot-Controller Speech .pdf:application/pdf}
-}
-
-@article{madeira_machine_2021,
-  title     = {Machine {Learning} and {Natural} {Language} {Processing} for {Prediction} of {Human} {Factors} in {Aviation} {Incident} {Reports}},
-  volume    = {8},
-  copyright = {© 2021 by the authors. Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (http://creativecommons.org/licenses/by/4.0/). Notwithstanding the ProQuest Terms and Conditions, you may use this content in accordance with the terms of the License.},
-  url       = {https://www.proquest.com/docview/2524211382/abstract/5B09B07DC1084F4EPQ/1},
-  doi       = {10.3390/aerospace8020047},
-  abstract  = {In the aviation sector, human factors are the primary cause of safety incidents. Intelligent prediction systems, which are capable of evaluating human state and managing risk, have been developed over the years to identify and prevent human factors. However, the lack of large useful labelled data has often been a drawback to the development of these systems. This study presents a methodology to identify and classify human factor categories from aviation incident reports. For feature extraction, a text pre-processing and Natural Language Processing (NLP) pipeline is developed. For data modelling, semi-supervised Label Spreading (LS) and supervised Support Vector Machine (SVM) techniques are considered. Random search and Bayesian optimization methods are applied for hyper-parameter analysis and the improvement of model performance, as measured by the Micro F1 score. The best predictive models achieved a Micro F1 score of 0.900, 0.779, and 0.875, for each level of the taxonomic framework, respectively. The results of the proposed method indicate that favourable predicting performances can be achieved for the classification of human factors based on text data. Notwithstanding, a larger data set would be recommended in future research.},
-  language  = {English},
-  number    = {2},
-  urldate   = {2022-08-25},
-  journal   = {Aerospace},
-  author    = {Madeira, Tomás and Melício, Rui and Valério, Duarte and Santos, Luis and Link to external site, this link will open in a new window},
-  year      = {2021},
-  note      = {Num Pages: 47
-               Place: Basel, Switzerland
-               Publisher: MDPI AG},
-  keywords  = {aviation incident reports, aviation safety, human factors, machine learning, natural language processing, prediction},
-  pages     = {47},
-  file      = {Full Text PDF:/home/avandebrook/Zotero/storage/EZWF5V3C/Madeira et al. - 2021 - Machine Learning and Natural Language Processing f.pdf:application/pdf}
-}
-
-@article{tanguy_natural_2016,
-  series     = {Natural {Language} {Processing} and {Text} {Analytics} in {Industry}},
-  title      = {Natural language processing for aviation safety reports: {From} classification to interactive analysis},
-  volume     = {78},
-  issn       = {0166-3615},
-  shorttitle = {Natural language processing for aviation safety reports},
-  url        = {https://www.sciencedirect.com/science/article/pii/S0166361515300464},
-  doi        = {10.1016/j.compind.2015.09.005},
-  abstract   = {In this paper we describe the different NLP techniques designed and used in collaboration between the CLLE-ERSS research laboratory and the CFH/Safety Data company to manage and analyse aviation incident reports. These reports are written every time anything abnormal occurs during a civil air flight. Although most of them relate routine problems, they are a valuable source of information about possible sources of greater danger. These texts are written in plain language, show a wide range of linguistic variation (telegraphic style overcrowded by acronyms or standard prose) and exist in different languages, even for a single company/country (although our main focus is on English and French). In addition to their variety, their sheer quantity (e.g. 600/month for a large airline company) clearly requires the use of advanced NLP and text mining techniques in order to extract useful information from them. Although this context and objectives seem to indicate that standard NLP techniques can be applied in a straightforward manner, innovative techniques are required to handle the specifics of aviation report text and the complex classification systems. We present several tools that aim at a better access to this data (classification and information retrieval), and help aviation safety experts in their analyses (data/text mining and interactive analysis). Some of these tools are currently in test or in use both at the national and international levels, by airline companies as well as by regulation authorities (DGAC,11Direction Générale de l’Aviation Civile. EASA,22European Aviation Safety Agency. ICAO33International Civil Aviation Organization.).},
-  language   = {en},
-  urldate    = {2022-08-25},
-  journal    = {Computers in Industry},
-  author     = {Tanguy, Ludovic and Tulechki, Nikola and Urieli, Assaf and Hermann, Eric and Raynal, Céline},
-  month      = may,
-  year       = {2016},
-  keywords   = {Aviation, Document classification, NLP, Safety reports, Text mining},
-  pages      = {80--95},
-  file       = {ScienceDirect Full Text PDF:/home/avandebrook/Zotero/storage/K4NMD2LM/Tanguy et al. - 2016 - Natural language processing for aviation safety re.pdf:application/pdf;ScienceDirect Snapshot:/home/avandebrook/Zotero/storage/D5XNXYWJ/S0166361515300464.html:text/html}
-}
-
-@inproceedings{ragnarsdottir_language_2003,
-  title     = {Language technology in air traffic control},
-  volume    = {1},
-  doi       = {10.1109/DASC.2003.1245815},
-  abstract  = {Voice communication is a volatile part of Air Traffic Control (ATC). According to research, on average one miscommunication happens every hour per radio frequency where there is frequent communication such as in TRACON. ICAO puts great emphasis on improving communication in ATC. This article proposes that a language technology system (LTS) can make communication between controller and pilot more reliable and efficient, thus improving safety in aviation. An LTS can for example detect readback errors. It can also directly feed data from the voice recognizer on XML (eXtensible Markup Language) form into a flight data processing system or interact with it as we show. By interviewing air traffic controllers and studying the literature, we identified several examples of use of language technology in ATC. As an example we take a system to support controllers in their work by making the LTS give warnings when discrepancy is found in the communications between controller and pilot. This system is not meant to control the airspace autonomously. Latest advances in language technology have enabled the development of such a system. The functionality of the proposed LTS is described using scenarios and sequence diagrams. A demonstration conversational agent using Hex Technology was implemented. A Wizard of Oz usability test was administered to seven controllers. Their attitude to the agent was positive and indicates that there is reason for further research. The performance and error logs of the agent and voice server were analyzed and give guidance on further development of a fully functioning language technology system for air traffic control.},
-  booktitle = {Digital {Avionics} {Systems} {Conference}, 2003. {DASC} '03. {The} 22nd},
-  author    = {Ragnarsdottir, M.D. and Waage, H. and Hvannberg, E.T.},
-  month     = oct,
-  year      = {2003},
-  keywords  = {Speech recognition, Air traffic control, Aircraft, Grammar, Natural language processing, Safety, Speech},
-  pages     = {2.E.2--21--13 vol.1},
-  file      = {IEEE Xplore Abstract Record:/home/avandebrook/Zotero/storage/G7XJY9XB/5731067.html:text/html;IEEE Xplore Full Text PDF:/home/avandebrook/Zotero/storage/N9QWK5YU/Ragnarsdottir et al. - 2003 - Language technology in air traffic control.pdf:application/pdf}
-}
-
-@misc{guo_comparative_2022,
-  title     = {A {Comparative} {Study} of {Speaker} {Role} {Identification} in {Air} {Traffic} {Communication} {Using} {Deep} {Learning} {Approaches}},
-  url       = {http://arxiv.org/abs/2111.02041},
-  doi       = {10.48550/arXiv.2111.02041},
-  abstract  = {Automatic spoken instruction understanding (SIU) of the controller-pilot conversations in the air traffic control (ATC) requires not only recognizing the words and semantics of the speech but also determining the role of the speaker. However, few of the published works on the automatic understanding systems in air traffic communication focus on speaker role identification (SRI). In this paper, we formulate the SRI task of controller-pilot communication as a binary classification problem. Furthermore, the text-based, speech-based, and speech and text based multi-modal methods are proposed to achieve a comprehensive comparison of the SRI task. To ablate the impacts of the comparative approaches, various advanced neural network architectures are applied to optimize the implementation of text-based and speech-based methods. Most importantly, a multi-modal speaker role identification network (MMSRINet) is designed to achieve the SRI task by considering both the speech and textual modality features. To aggregate modality features, the modal fusion module is proposed to fuse and squeeze acoustic and textual representations by modal attention mechanism and self-attention pooling layer, respectively. Finally, the comparative approaches are validated on the ATCSpeech corpus collected from a real-world ATC environment. The experimental results demonstrate that all the comparative approaches are worked for the SRI task, and the proposed MMSRINet shows the competitive performance and robustness than the other methods on both seen and unseen data, achieving 98.56\%, and 98.08\% accuracy, respectively.},
-  urldate   = {2022-08-25},
-  publisher = {arXiv},
-  author    = {Guo, Dongyue and Zhang, Jianwei and Yang, Bo and Lin, Yi},
-  month     = aug,
-  year      = {2022},
-  note      = {arXiv:2111.02041 [cs, eess]},
-  keywords  = {Computer Science - Computation and Language, Computer Science - Sound, Electrical Engineering and Systems Science - Audio and Speech Processing},
-  file      = {arXiv Fulltext PDF:/home/avandebrook/Zotero/storage/TMZH996S/Guo et al. - 2022 - A Comparative Study of Speaker Role Identification.pdf:application/pdf;arXiv.org Snapshot:/home/avandebrook/Zotero/storage/5USST6NP/2111.html:text/html}
-}
-
-@inproceedings{arnold_knowledge_2022,
-  address   = {Hybrid: Seattle, Washington + Online},
-  title     = {Knowledge extraction from aeronautical messages ({NOTAMs}) with self-supervised language models for aircraft pilots},
-  url       = {https://aclanthology.org/2022.naacl-industry.22},
-  doi       = {10.18653/v1/2022.naacl-industry.22},
-  abstract  = {During their pre-flight briefings, aircraft pilots must analyse a long list of NoTAMs (NOtice To AirMen) indicating potential hazards along the flight route, sometimes up to pages for long-haul flights. NOTAM free-text fields typically have a very special phrasing, with lots of acronyms and domain-specific vocabulary, which makes it differ significantly from standard English. In this paper, we pretrain language models derived from BERT on circa 1 million unlabeled NOTAMs and reuse the learnt representations on three downstream tasks valuable for pilots: criticality prediction, named entity recognition and translation into a structured language called Airlang. This self-supervised approach, where smaller amounts of labeled data are enough for task-specific fine-tuning, is well suited in the aeronautical context since expert annotations are expensive and time-consuming. We present evaluation scores across the tasks showing a high potential for an operational usability of such models (by pilots, airlines or service providers), which is a first to the best of our knowledge.},
-  urldate   = {2022-08-25},
-  booktitle = {Proceedings of the 2022 {Conference} of the {North} {American} {Chapter} of the {Association} for {Computational} {Linguistics}: {Human} {Language} {Technologies}: {Industry} {Track}},
-  publisher = {Association for Computational Linguistics},
-  author    = {Arnold, Alexandre and Ernez, Fares and Kobus, Catherine and Martin, Marion-Cécile},
-  month     = jul,
-  year      = {2022},
-  pages     = {188--196},
-  file      = {Full Text PDF:/home/avandebrook/Zotero/storage/TH8EXJDZ/Arnold et al. - 2022 - Knowledge extraction from aeronautical messages (N.pdf:application/pdf}
-}
-
-@inproceedings{navigli_learning_2010,
-  title    = {Learning {Word}-{Class} {Lattices} for {Definition} and {Hypernym} {Extraction}},
-  abstract = {Definition extraction is the task of automatically identifying definitional sentences within texts. The task has proven useful in many research areas including ontology learning, relation extraction and question answering. However, current approaches -- mostly focused on lexicosyntactic patterns -- suffer from both low recall and precision, as definitional sentences occur in highly variable syntactic structures. In this paper, we propose Word-Class Lattices (WCLs), a generalization of word lattices that we use to model textual definitions. Lattices are learned from a dataset of definitions from Wikipedia. Our method is applied to the task of definition and hypernym extraction and compares favorably to other pattern generalization methods proposed in the literature.},
-  author   = {Navigli, Roberto and Velardi, Paola},
-  month    = sep,
-  year     = {2010},
-  pages    = {1318--1327},
-  file     = {Full Text PDF:/home/avandebrook/Zotero/storage/A75FFMC8/Navigli and Velardi - 2010 - Learning Word-Class Lattices for Definition and Hy.pdf:application/pdf}
-}
-
-@article{szoke_detecting_2021,
-  title    = {Detecting {English} {Speech} in the {Air} {Traffic} {Control} {Voice} {Communication}},
-  url      = {https://arxiv.org/abs/2104.02332v1},
-  doi      = {10.48550/arXiv.2104.02332},
-  abstract = {We launched a community platform for collecting the ATC speech world-wide in the ATCO2 project. Filtering out unseen non-English speech is one of the main components in the data processing pipeline. The proposed English Language Detection (ELD) system is based on the embeddings from Bayesian subspace multinomial model. It is trained on the word confusion network from an ASR system. It is robust, easy to train, and light weighted. We achieved 0.0439 equal-error-rate (EER), a 50\% relative reduction as compared to the state-of-the-art acoustic ELD system based on x-vectors, in the in-domain scenario. Further, we achieved an EER of 0.1352, a 33\% relative reduction as compared to the acoustic ELD, in the unseen language (out-of-domain) condition. We plan to publish the evaluation dataset from the ATCO2 project.},
-  language = {en},
-  urldate  = {2022-11-05},
-  author   = {Szoke, Igor and Kesiraju, Santosh and Novotny, Ondrej and Kocour, Martin and Vesely, Karel and Cernocky, Jan "Honza"},
-  month    = apr,
-  year     = {2021}
-}
-
-@inproceedings{hofbauer_atcosim_2008,
-  address   = {Marrakech, Morocco},
-  title     = {The {ATCOSIM} {Corpus} of {Non}-{Prompted} {Clean} {Air} {Traffic} {Control} {Speech}},
-  url       = {http://www.lrec-conf.org/proceedings/lrec2008/pdf/545_paper.pdf},
-  abstract  = {Air traffic control (ATC) is based on voice communication between pilots and controllers and uses a highly task and domain specific language. Due to this very reason, spoken language technologies for ATC require domain-specific corpora, of which only few exist to this day. The ATCOSIM Air Traffic Control Simulation Speech corpus is a speech database of non-prompted and clean ATC operator speech. It consists of ten hours of speech data, which were recorded in typical ATC control room conditions during ATC real-time simulations. The database includes orthographic transcriptions and additional information on speakers and recording sessions. The ATCOSIM corpus is publicly available and provided online free of charge. In this paper, we first give an overview of ATC related corpora and their shortcomings. We then show the difficulties in obtaining operational ATC speech recordings and propose the use of existing ATC real-time simulations. We describe the recording, transcription, production and validation process of the ATCOSIM corpus, and outline an application example for automatic speech recognition in the ATC domain.},
-  urldate   = {2022-10-20},
-  booktitle = {Proceedings of the {Sixth} {International} {Conference} on {Language} {Resources} and {Evaluation} ({LREC}'08)},
-  publisher = {European Language Resources Association (ELRA)},
-  author    = {Hofbauer, Konrad and Petrik, Stefan and Hering, Horst},
-  month     = may,
-  year      = {2008}
-}
-
-@inproceedings{breunig_lof_2000,
-  address    = {Dallas Texas USA},
-  title      = {{LOF}: identifying density-based local outliers},
-  isbn       = {9781581132175},
-  shorttitle = {{LOF}},
-  url        = {https://dl.acm.org/doi/10.1145/342009.335388},
-  doi        = {10.1145/342009.335388},
-  language   = {en},
-  urldate    = {2023-09-13},
-  booktitle  = {Proceedings of the 2000 {ACM} {SIGMOD} international conference on {Management} of data},
-  publisher  = {ACM},
-  author     = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, Jörg},
-  month      = may,
-  year       = {2000},
-  pages      = {93--104}
 }

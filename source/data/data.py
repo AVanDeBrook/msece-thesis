@@ -215,7 +215,7 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         else:
             return dataset_summary
 
-    def remove_outliers(self) -> pd.DataFrame:
+    def detect_outliers(self) -> pd.DataFrame:
         """
         Detect and remove outliers via the Local Outlier Factor algorithm.
 

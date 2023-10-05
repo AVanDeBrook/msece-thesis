@@ -128,7 +128,7 @@ well at speaker and role identification tasks in general\cite{guo_comparative_20
 There are four datasets used in this work. The datasets are primarily speech corpora intended either for automatic speech recognition
 research in the domain of aviation communications, linguistics research in aviation english, or both. As a result, the text-based data
 samples that are used to train the language models in this work are transcripts of aural speech. The datasets used are described in more
-detail below. All recordings and transcripts are in english, although there are multiple instances of foreign words occuring
+detail below. All recordings and transcripts are in english, although there are multiple instances of foreign words occurring
 
 \subsection{Air Traffic Control Complete}\label{sec:atcc}
 The Air Traffic Control Complete (ATCC) corpus is a speech corpus consisting of audio recordings with corresponding transcriptions.
@@ -152,7 +152,7 @@ resolved\cite{hofbauer_atcosim_2008}.
 \subsection{ZCU CZ ATC Corpus}\label{sec:zcu_atc}
 The ZCU CZ ATC corpus consists of audio recordings and corresponding transcripts in the Czech airspace. Both controller and pilot sides of the
 communications are included in this data. Annotations were created by experienced transcribers/annotators and labeled samples were randomly selected
-for review during the annoation process. After the dataset was completely labeled, all samples were checked, corrected, and
+for review during the annotation process. After the dataset was completely labeled, all samples were checked, corrected, and
 unified\cite{smidl_air_2019}.
 
 \section{Data Processing}\label{sec:data_processing}
@@ -171,15 +171,16 @@ file.
 By the nature of the data labeling process, there are bound to be spelling errors introduced by the annotators during corpora creation. This gets
 exacerbated by the aggregation of several corpora with varying controls for correcting spelling errors and inconsistencies. Nearly all of the errors
 are recoverable/correctable given context. For example, ``possibility of \textbf{tornado's}'' should clearly have been
-``possibility of \textbf{tornadoes}'', changing the posessive form of ``tornado'' to the plural form. There are also instances of spelling conventions
+``possibility of \textbf{tornadoes}'', changing the possessive form of ``tornado'' to the plural form. There are also instances of spelling conventions
 that are consistent within corpora, but become inconsistent when the corpora are combined.
 
 % 22 spelling errors
 Manually reviewing every sample in the corpus is unrealistic considering that there are over 50,000 data samples and would be subject the same
-human error that introduced those errors in the first place. Instead, the frequency of occurence of tokens in the corpora combined with manual review
+human error that introduced those errors in the first place. Instead, the frequency of occurrence of tokens in the corpora combined with manual review
 thereafter, was used to detect and correct the most common errors. Tokens with the lowest frequency across corpora were manually reviewed and
 corrected where necessary. An \(A \rightarrow B\) mapping system was used to correct the errors, where \(A\) is the erroneous token and \(B\) is the
-corrected or replaced token. A total of 22 unique errors were detected and subsequently corrected or removed using this method.
+corrected or replaced token. A total of 22 unique errors were detected and subsequently corrected or removed using this method, although multiple
+instances of those errors typically occurred.
 
 % hesitations, cut off words, different kinds of filled pauses
 The mapping system described above is also used to modify within corpora conventions to be consistent across corpora. Three areas are addressed here:
@@ -188,12 +189,57 @@ unifying the transcripts difficult. Hesitations, for example, are defined by one
 completely undefined by another (despite annotators making notes about hesitations). The way in which hesitations, pauses, and partial words are
 transcribed differs between corpora as well. Two corpora prescribe special tokens to these phenomena such as ``[hes]'', ``[hesitation]'', ``<pause>'',
 or similar, while the others transcribe the data as it sounds (i.e., ``uh'', ``eh'', or ``er'' for filled pauses and ``cir-'' or ``cir+'' for
-instances that were cut-off mid pronunciation). In order to facilitate the unification of the transcripts for all four copora, all three of these
-phenomena have been redefined with accompanying translation/replacement rules below:
+instances that were cut-off mid pronunciation). In order to facilitate the unification of the transcripts for all four corpora, the conventions for
+transcribing these phenomena are redefined below:
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l p{0.65\linewidth}}
+        \toprule
+        Phenomenon               & Definition                                                                                                              \\
+        \midrule
+        Hesitations              & Instances of hesitation for which the specific realization is not defined (usually some special token is used instead). \\
+        \midrule
+        Partial \& cut-off words & Partially pronounced words are indicated by a hyphen character where the pronunciation of the word is missing.          \\
+        \midrule
+        Filled pauses            & Hesitations with a verbal component that has been described or otherwise defined by the corpus/annotator.               \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:phenomena_definitions}
+    \caption{Speech/transcription phenomena with corresponding convention for transcribing or translating, depending on the corpus being processed.}
+\end{table}
+
+
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{l l}
+        \toprule
+        Phenomenon                   & Convention for representation \\
+        \midrule
+        Hesitations                  & [HES]                         \\
+        \midrule
+        Partial \& cut-off words     & -                             \\
+        \midrule
+        Filled pauses (open-mouth)   & uh, um, ah                    \\
+        \midrule
+        Filled pauses (closed-mouth) & hm, mhm                       \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:phenomena_conventions}
+    \caption{Conventions for transcript representation/translation of phenomena to keep transcripts consistent across corpora.}
+\end{table}
+
+A special token is used to represent hesitations when no other context regarding the realization of hesitation is present. If other corpora use a
+special token to represent hesitations, it is translated to match the convention in table~\ref{tab:phenomena_conventions}. Partial/cut-off words
+are represented with a hyphen (-) at the point where the pronounced word is cut off. For example, if the last syllable of ``approaching'' is cut
+mid transmission, it would be represented in the transcript as ``approa-'' or, likewise, if the first syllable is cut off, it would be written as
+``-roaching''. Lastly, if there is enough information in the original transcript to indicate the realization of a hesitation, it is represented by
+the most appropriate token from ``Filled pauses'' in table~\ref{tab:phenomena_conventions}.
 
 \section{Data Analysis}\label{sec:data_analysis}
 % sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
-Relevant corpora statistics were observed or calculated are are presented in Table~\ref{table:corpora_stats}. This includes the number of samples in
+Relevant corpora statistics were observed or calculated and are presented in Table~\ref{table:corpora_stats}. This includes the number of samples in
 the corpus, mean sequence length per sample in the corpus, the number of unique tokens in the corpus, and the total number of tokens in the corpus.
 The same statistics were also calculated across corpora, since all four corpora will be combined for training and testing the language and speech
 recognition models. Note that this is based on the raw data after loading and unifying the corpora, prior to preprocessing for model training/testing
@@ -220,7 +266,7 @@ and outlier removal.
 \end{table}
 
 The ATCC and ZCU CZ ATC corpora make up a significant portion of the data, ATCC alone makes up more than half (approximately 54\%) of the combined
-data, and ATCC and ZCU CZ ATC together make up aprroximately 81\% of the data. The sequence lengths of the samples are fairly consistent across
+data, and ATCC and ZCU CZ ATC together make up approximately 81\% of the data. The sequence lengths of the samples are fairly consistent across
 corpora with at most about an 18\% percent difference between sequence lengths. The number of unique tokens does not scale additively to the
 combined corpora, which is as expected. Considering that aviation English generally conforms to and follows ICAO phraseology standards we would expect
 that many terms would be shared across corpora with the exception of geographic/location specific terms, such as city, landmark, airport, and airline
@@ -258,13 +304,33 @@ Although all of the outliers have higher sequence lengths than the typical seque
 the outlying samples manually and reviewing each reveals that, for the most part, the samples are typical albeit somewhat complex communications.
 With the exception of four outliers, all of the samples labeled as outlying by the LOF algorithm were kept in the data.
 
-\subsection{Data Preprocessing}
-% explain and justify what is removed from the text, how, and why
-% present and explain any relevant algorithms where necessary
+\section{Language Modeling}
+% bert, roberta
+% ngram
+This section introduces the chosen language model architectures as well as their pretrained checkpoints, if one is used. Two transformer-based
+architectures are used, BERT and RoBERTa, and statistical/machine learning-based approaches such as N-gram and word lattices.
+
+The transformers are pre-trained using the same masked language modeling (MLM) objective presented in Devlin et al.~\cite{devlin_bert_2019}
+to train BERT for bidirectional encoding representation. Both pretrained checkpoints and base models are pretrained and used with the best performing
+ASR model to analyze their impacts on performance. The pre-training data is taken from the unified transcripts as described above, tokens are masked
+at random with a probability of 0.2.
+
+\section{Speech Recognition}
 
 
-\subsection{Tokenization}
+\section{Tokenization Algorithms}
 % present and explain the tokenization algorithms used (possibly which models they correspond to)
+Tokenization is the process of separating or segmenting samples into tokens. The rules by which the tokens are created or segmented depends entirely
+on the algorithm used. The simplest and most intuitive way to do this by creating tokens based on whitespace i.e., each ``word'' in the corpus
+is treated as a token\footnote{The Huggingface Tokenizer library implements this as the \lstinline|WordLevel| tokenizer.}. Although this is a simple
+and easy to understand method of tokenization, it does little to nothing to address the out-of-vocabulary problem that necessarily comes with any
+NLP tasks~\cite{wu_googles_2016}.
+
+\subsection{WordPiece}
+
+
+\subsection{(Byte-Level) Byte-Pair Encoding}
+
 
 \newpage
 \bibliography{refs}

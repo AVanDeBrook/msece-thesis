@@ -68,7 +68,7 @@ def parse_datasets():
     data_objects[0].dataset_name = "All"
     data_objects[0].summary()
 
-    outliers = data_objects[0].remove_outliers()
+    outliers = data_objects[0].detect_outliers()
     print(f"Mean outlier sequence length: {outliers['seq_len'].mean()}")
     print(f"Min outlier sequence length: {outliers['seq_len'].min()}")
     print(f"Max outlier sequence length: {outliers['seq_len'].max()}")

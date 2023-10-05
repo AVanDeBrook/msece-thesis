@@ -37,15 +37,13 @@ class ATCCompleteData(Data):
         ("bye]", "bye"),
         (" -", ""),
         (" 3 ", "three"),
-        ("1347.85706", "one three four seven dot eight five seven zero six"),
+        ("1347.85706", "one three four seven decimal eight five seven zero six"),
         ("four]", "four"),
         # flight number metadata somehow made it into some of the transcripts
         ("swift61", "swift six one"),
         ("aal891", "american eight ninety one"),
         # repeated words/hesitations
         ("ai", ""),
-        ("cir-", "cir+"),
-        ("cli-", "cli+"),
         ("rport", "airport"),
         ("rcraft", "aircraft"),
         ("mntn", "maintain"),
