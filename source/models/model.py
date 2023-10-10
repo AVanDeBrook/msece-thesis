@@ -1,9 +1,11 @@
 import os
+import random
 from typing import *
 
 import pytorch_lightning as pl
 import torchmetrics
 import torch
+import numpy
 from data import Data
 from torch import nn, optim
 from torch.utils.data import DataLoader
@@ -102,8 +104,18 @@ class HuggingFaceModel:
         pass
 
     def preprocess_data(self, dataset: Data):
+        # function to initialize DataLoader workers and control randomness
+        def seed_worker(worker_id):
+            worker_seed = torch.initial_seed() % 2**32
+            numpy.random.seed(worker_seed)
+            random.seed(worker_seed)
+
         assert self.tokenizer is not None
         collator = DataCollatorForLanguageModeling(self.tokenizer, mlm_probability=0.2)
+
+        # from: https://pytorch.org/docs/stable/notes/randomness#dataloader
+        g = torch.Generator()
+        g.manual_seed(1)
 
         dataset.preprocess(tokenizer=self.tokenizer, collator=collator)
 
@@ -112,4 +124,6 @@ class HuggingFaceModel:
             batch_size=16,
             drop_last=True,
             num_workers=os.cpu_count(),
+            worker_init_fn=seed_worker,
+            generator=g
         )

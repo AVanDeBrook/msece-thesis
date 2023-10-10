@@ -21,7 +21,7 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
 
         self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5)
+        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="bert_finetuned"
@@ -57,7 +57,7 @@ class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
 
         self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5)
+        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="roberta_finetuned"
@@ -95,7 +95,7 @@ class RandomInitBERTModel(Model, HuggingFaceModel):
             )
             model = AutoModelForMaskedLM.from_config(self.config)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5)
+        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="bert_randominit"
@@ -137,7 +137,7 @@ class RandomInitRoBERTaModel(Model, HuggingFaceModel):
             self.config = AutoConfig.from_pretrained("roberta-base")
             model = AutoModelForMaskedLM.from_config(self.config)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5)
+        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="roberta_randominit"

@@ -1,9 +1,12 @@
 import importlib
 import json
 import os
+import random
 from typing import *
 
 import matplotlib.pyplot as plt
+import numpy.random
+import torch
 from data import (
     ATCCompleteData,
     ATCO2SimData,
@@ -128,6 +131,11 @@ def parse_datasets():
 if __name__ == "__main__":
     plt.style.use("ggplot")
     RANDOM_SEED: int = 1
+
+    # control sources of randomness
+    numpy.random.seed(RANDOM_SEED)
+    random.seed(RANDOM_SEED)
+    torch.manual_seed(RANDOM_SEED)
 
     with open("outliers.txt", "w") as f:
         f.write("")
