@@ -332,23 +332,15 @@ With the exception of four outliers, all of the samples labeled as outlying by t
 This section introduces the chosen language model architectures as well as their pretrained checkpoints, if one is used. Two transformer-based
 architectures are used, BERT and RoBERTa, and statistical/machine learning-based approaches such as N-gram and word lattices.
 
-<<<<<<< Updated upstream
-The transformers are pre-trained using the same masked language modeling (MLM) objective presented in Devlin et al.~\cite{devlin_bert_2019}
-to train BERT for bidirectional encoding representation. Both pretrained checkpoints and base models are pretrained and used with the best performing
-ASR model to analyze their impacts on performance. The pre-training data is taken from the unified transcripts as described above, tokens are masked
-at random with a probability of 0.2. N-grams are trained using the Natural Language Toolkit (NLTK) library in Python with values for $N$ of 1, 2,
-and 3.
-=======
 The transformers are pre-trained using the same masked language modeling (MLM) objective presented in Devlin et al.~\cite{devlin_bert_2019} to train
 BERT for bidirectional encoding representation and likewise in Liu et al.~for training RoBERTa~\cite{liu_roberta_2019}. Given the results of the
 RoBERTa pretraining and downstream task training thereafter~\cite{liu_roberta_2019}, it was initially decided to eliminate the next sentence prediction
 (NSP) task as it was used in BERT, however, their results suggest that the success of the MLM-only approach was due to the increase in batch and
 overall data size~\cite{liu_roberta_2019}. Taking this into account, along with the very limited amount of data available in the domain of aviation
-an NSP pretraining task was implemented where possible\footnote{Only about half of our data is in a format that enables us to extract the turn taking
-    phenomenon that is present in most air-traffic communications.} to improve its pretraining results.
+an NSP pretraining task was implemented where possible\footnote{Only about half of the data (ATCC) is in a format that enables us to extract the turn
+    taking phenomenon that is present in most air-traffic communications.} to improve its pretraining results.
 
 
->>>>>>> Stashed changes
 
 \section{Speech Recognition}
 
