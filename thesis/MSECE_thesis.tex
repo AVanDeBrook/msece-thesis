@@ -78,10 +78,30 @@ Masters of Electrical \& Computer Engineering.
 \section{Abstract}\label{sec:abstract}
 
 \section{Introduction}\label{sec:introduction}
+There have been noticeable and significant advancements in the general domain of artificial intelligence recently. Automatic speech recognition and
+language modeling technologies, in particular, have made tremendous advances over the past two decades achieving performance levels good enough to
+be brought to consumer facing products such as personal assistants, search engines, phones, televisions, etc. Due to the success in the general
+domain, applications have begun to spin-off into problem-specific domains, such as (and most notably for this work) aviation. For example, several
+speech recognition systems with rule-based natural language inference and semantic extraction algorithms have been implemented at EUROCONTROL
+simulation centers across Europe.
+
+At the time of this writing, the current focus of general machine learning algorithms in the automatic speech recognition (ASR) and language modeling
+domains has been a mixture of deep learning methods, namely; recurrent, convolutional, and transformer neural networks due to the availability of
+large corpora such as LibriSpeech~\cite{panayotov_librispeech_2015} and Mozilla Common Voice~\cite{ardila_common_2020} for ASR and
+WikiText~\cite{merity_pointer_2016} and IMDB~\cite{maas_learning_2011} corpora for language modeling. In contrast to the general domain, the aviation
+domain still prefers, and sees much success with traditional machine learning models for both ASR and language modeling applications. Typically, the
+most prevalent of the traditional models are Hidden Markov models and Gaussian Mixture models, in conjunction with word lattices, N-grams, and/or
+rule-based approaches depending on the application and operating environment of the models. The most likely reason for this divergence between the
+domains is the difference and relative lack of labeled data in the aviation domain. By comparison, the largest corpus in the general domain is
+LibriSpeech with approximately 1000 hours of labeled data whereas, for aviation, the largest corpus is Air Traffic Control Complete with approximately
+26 hours of labeled data\footnote{Air Traffic Control Complete has approximately 70 hours of audio data, however, about 26 hours of the 70 are
+    labeled.}.
+
+
 
 \section{Literature Review}\label{sec:lit_review}
-% from proposal; revise and add to this as more references are used
-% transformer history
+% from thesis proposal; revise and add to this as more references are used
+% transformer history (background)
 The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved
 state-of-the-art (28.4 BLEU on WMT 2014 English-to-German; 41.8 BLEU on WMT English-to-French datasets)\cite{vaswani_attention_2017}. Transformer
 architectures have been found to be extremely effective at learning representations and understandings of languages to predict token probabilities as
@@ -123,6 +143,8 @@ for pilots during long-haul flights\cite{arnold_knowledge_2022}. Transformer mod
 identification tasks in the aviation domain (e.g.~identifying pilot versus controller in communications), specifically,
 a pretrained BERT model was used and fine-tuned on problem specific data and compared to other models that performed
 well at speaker and role identification tasks in general\cite{guo_comparative_2022}.
+
+
 
 \section{Data Sources}\label{sec:data_source}
 There are four datasets used in this work. The datasets are primarily speech corpora intended either for automatic speech recognition
@@ -278,10 +300,9 @@ sequence lengths of the data samples were used to determine outliers. Since all 
 aggregated data instead of on the individual corpora.
 
 Sci-Kit Learn's implementation of the LOF
-algorithm\footnote{https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html\#sklearn-neighbors-localoutlierfactor}
-was used with a value of \(N = 35\) for \(N\) neighbors in the K-Nearest Neighbors algorithm and Minkowski distance for distance metrics/calculations
-(in this case, since \(p=2\), Euclidean distance is effectively used for distance calculations). A total of 47 samples were detected as outliers and
-removed for analysis and are summarized in table~\ref{table:outlier_stats}.
+algorithm was used with a value of \(N = 35\) for \(N\) neighbors in the K-Nearest Neighbors algorithm and Minkowski distance for distance
+metrics/calculations (in this case, since \(p=2\), Euclidean distance is effectively used for distance calculations). A total of 47 samples were
+detected as outliers and removed for analysis and are summarized in table~\ref{table:outlier_stats}.
 
 \begin{table}[h!]
     \centering
@@ -313,7 +334,8 @@ architectures are used, BERT and RoBERTa, and statistical/machine learning-based
 The transformers are pre-trained using the same masked language modeling (MLM) objective presented in Devlin et al.~\cite{devlin_bert_2019}
 to train BERT for bidirectional encoding representation. Both pretrained checkpoints and base models are pretrained and used with the best performing
 ASR model to analyze their impacts on performance. The pre-training data is taken from the unified transcripts as described above, tokens are masked
-at random with a probability of 0.2.
+at random with a probability of 0.2. N-grams are trained using the Natural Language Toolkit (NLTK) library in Python with values for $N$ of 1, 2,
+and 3.
 
 \section{Speech Recognition}
 
