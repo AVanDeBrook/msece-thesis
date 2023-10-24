@@ -174,7 +174,7 @@ def reformat(data: List[str]) -> Dict:
     return formatted_data
 
 
-def parse(lines: List[str]) -> List[Dict]:
+def parse(lines: List[str], file_name: str = "") -> List[Dict]:
     document = ""
     for line in lines:
         # remove trailing whitespace
@@ -193,5 +193,7 @@ def parse(lines: List[str]) -> List[Dict]:
 
     for i, data in enumerate(data_blocks):
         data_blocks[i] = reformat(data)
+        if file_name != "":
+            data_blocks[i]["FILE"] = file_name
 
     return data_blocks

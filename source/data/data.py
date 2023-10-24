@@ -68,6 +68,16 @@ class Data(IterableDataset):
             "is an issue with the implementing class."
         )
 
+    def parse_transcripts_for_nsp(self) -> List[str]:
+        """
+        TODO
+        """
+        raise NotImplementedError(
+            "This is an abstract method that should be implemented and overridden for "
+            "all classes that implement this one. If this method has been called, there "
+            "is an issue with the implementing class."
+        )
+
     def preprocess(
         self, tokenizer: PreTrainedTokenizer, collator: DataCollatorForLanguageModeling
     ) -> List[List[int]]:

@@ -14,8 +14,9 @@ latexmk -gg -bibtex -pdf proposal/MSECE_thesis_proposal.tex && latexmk -c
 
 Thesis:
 ```bash
+cd thesis
 # Build PDF from latex source and clean auxiliary files (build artifacts)
-latexmk -gg -bibtex -pdf thesis/MSECE_thesis.tex && latexmk -c
+latexmk -gg -bibtex -pdf MSECE_thesis.tex && latexmk -c
 ```
 
 This is currently a work in progress. I will continue to update this README and repo as I make more progress on my thesis.
