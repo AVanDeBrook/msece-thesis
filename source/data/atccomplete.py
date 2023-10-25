@@ -14,14 +14,14 @@ class TransmissionTurn(object):
         start_time: float,
         end_time: float,
         text: str,
-        to_craft: str,
-        from_craft: str,
+        to_key: str,
+        from_key: str,
     ) -> "TransmissionTurn":
         self.start_time = start_time
         self.end_time = end_time
         self.text = text
-        self.to_craft = to_craft
-        self.from_craft = from_craft
+        self.to_key = to_key
+        self.from_key = from_key
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
@@ -31,8 +31,8 @@ class TransmissionTurn(object):
             "start_time": self.start_time,
             "end_time": self.end_time,
             "text": self.text,
-            "to_craft": self.to_craft,
-            "from_craft": self.from_craft,
+            "to_key": self.to_key,
+            "from_key": self.from_key,
         }
 
     def __repr__(self) -> str:
@@ -44,6 +44,7 @@ class TransmissionGroup(object):
         self,
         first_transmission: TransmissionTurn,
         transmissions: List[TransmissionTurn],
+        file: str,
         cls_token="[CLS]",
         sep_token="[SEP]",
     ) -> "TransmissionGroup":
@@ -51,12 +52,14 @@ class TransmissionGroup(object):
         self.sep_token = sep_token
         self.first_transmission = first_transmission
         self.transmissions = transmissions
+        self.file = file
 
     def to_json(self) -> str:
         return json.dumps(
             {
                 "cls_token": self.cls_token,
                 "sep_token": self.sep_token,
+                "file": self.file,
                 "first_transmission": self.first_transmission.to_dict(),
                 "transmissions": [t.to_dict() for t in self.transmissions],
             }
@@ -250,8 +253,8 @@ class ATCCompleteData(Data):
                             start_time=pair["TIMES"]["start"],
                             end_time=pair["TIMES"]["end"],
                             text=pair["TEXT"],
-                            to_craft=pair["TO"],
-                            from_craft=pair["FROM"],
+                            to_key=pair["TO"],
+                            from_key=pair["FROM"],
                         )
                     )
 
@@ -260,12 +263,16 @@ class ATCCompleteData(Data):
                     start_time=first_transmission["TIMES"]["start"],
                     end_time=first_transmission["TIMES"]["end"],
                     text=first_transmission["TEXT"],
-                    to_craft=first_transmission["TO"],
-                    from_craft=first_transmission["FROM"],
+                    to_key=first_transmission["TO"],
+                    from_key=first_transmission["FROM"],
                 )
 
                 transmission_groups.append(
-                    TransmissionGroup(first_transmission, transmission_group)
+                    TransmissionGroup(
+                        first_transmission,
+                        transmission_group,
+                        file_groupings[group][i]["FILE"],
+                    )
                 )
 
         pprint(transmission_groups)
