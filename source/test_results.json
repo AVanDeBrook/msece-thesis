@@ -1,0 +1,44 @@
+{
+    "test_results": [
+        {
+            "checkpoint_name": "bert_randominit",
+            "model_class": "models.RandomInitBERTModel",
+            "results": [
+                {
+                    "test_ppl": 1435064.875,
+                    "test_loss": 10.54083251953125
+                }
+            ]
+        },
+        {
+            "checkpoint_name": "roberta_randominit",
+            "model_class": "models.RandomInitRoBERTaModel",
+            "results": [
+                {
+                    "test_ppl": 10376598.0,
+                    "test_loss": 11.406475067138672
+                }
+            ]
+        },
+        {
+            "checkpoint_name": "bert_finetuned",
+            "model_class": "models.PreTrainedBERTModel",
+            "results": [
+                {
+                    "test_ppl": 13805354.0,
+                    "test_loss": 10.998977661132812
+                }
+            ]
+        },
+        {
+            "checkpoint_name": "roberta_finetuned",
+            "model_class": "models.PreTrainedRoBERTaModel",
+            "results": [
+                {
+                    "test_ppl": 6816011.5,
+                    "test_loss": 11.796222686767578
+                }
+            ]
+        }
+    ]
+}
