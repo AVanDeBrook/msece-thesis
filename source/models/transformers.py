@@ -21,7 +21,9 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
 
         self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
+        optimizer = AdamW(
+            model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01
+        )
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="bert_finetuned"
@@ -41,6 +43,16 @@ class PreTrainedBERTModel(Model, HuggingFaceModel):
         )
         trainer.fit(self, datamodule=datamodule)
 
+    def test(self, test_dataset):
+        trainer = pl.Trainer(accelerator="gpu")
+        datamodule = PLDataLoader(
+            train_dataset=self.train_dataset,
+            val_dataset=self.valid_dataset,
+            test_dataset=test_dataset,
+            preprocess_fn=self.preprocess_data,
+        )
+        return trainer.test(self, datamodule=datamodule)
+
 
 class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
     def __init__(
@@ -57,7 +69,9 @@ class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
 
         self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_model_name)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
+        optimizer = AdamW(
+            model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01
+        )
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="roberta_finetuned"
@@ -77,6 +91,16 @@ class PreTrainedRoBERTaModel(Model, HuggingFaceModel):
         )
         trainer.fit(self, datamodule=datamodule)
 
+    def test(self, test_dataset):
+        trainer = pl.Trainer(accelerator="gpu")
+        datamodule = PLDataLoader(
+            train_dataset=self.train_dataset,
+            val_dataset=self.valid_dataset,
+            test_dataset=test_dataset,
+            preprocess_fn=self.preprocess_data,
+        )
+        return trainer.test(self, datamodule=datamodule)
+
 
 class RandomInitBERTModel(Model, HuggingFaceModel):
     def __init__(
@@ -95,7 +119,9 @@ class RandomInitBERTModel(Model, HuggingFaceModel):
             )
             model = AutoModelForMaskedLM.from_config(self.config)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
+        optimizer = AdamW(
+            model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01
+        )
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="bert_randominit"
@@ -121,6 +147,16 @@ class RandomInitBERTModel(Model, HuggingFaceModel):
 
         trainer.fit(self, datamodule=datamodule)
 
+    def test(self, test_dataset):
+        trainer = pl.Trainer(accelerator="gpu")
+        datamodule = PLDataLoader(
+            train_dataset=self.train_dataset,
+            val_dataset=self.valid_dataset,
+            test_dataset=test_dataset,
+            preprocess_fn=self.preprocess_data,
+        )
+        return trainer.test(self, datamodule=datamodule)
+
 
 class RandomInitRoBERTaModel(Model, HuggingFaceModel):
     def __init__(
@@ -137,7 +173,9 @@ class RandomInitRoBERTaModel(Model, HuggingFaceModel):
             self.config = AutoConfig.from_pretrained("roberta-base")
             model = AutoModelForMaskedLM.from_config(self.config)
 
-        optimizer = AdamW(model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01)
+        optimizer = AdamW(
+            model.parameters(), lr=4e-5, betas=[0.9, 0.98], eps=1e-6, weight_decay=0.01
+        )
 
         super().__init__(
             model=model, optimizer=optimizer, checkpoint_name="roberta_randominit"
@@ -161,3 +199,13 @@ class RandomInitRoBERTaModel(Model, HuggingFaceModel):
             preprocess_fn=self.preprocess_data,
         )
         trainer.fit(self, datamodule=datamodule)
+
+    def test(self, test_dataset):
+        trainer = pl.Trainer(accelerator="gpu")
+        datamodule = PLDataLoader(
+            train_dataset=self.train_dataset,
+            val_dataset=self.valid_dataset,
+            test_dataset=test_dataset,
+            preprocess_fn=self.preprocess_data,
+        )
+        return trainer.test(self, datamodule=datamodule)

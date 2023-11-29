@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from numpy.random import default_rng
+from pytorch_lightning.utilities.types import EVAL_DATALOADERS
 from torch.utils.data import IterableDataset, DataLoader
 from transformers import (
     PreTrainedTokenizer,
@@ -445,11 +446,14 @@ def get_train_test_split(
 
 
 class PLDataLoader(LightningDataModule):
-    def __init__(self, train_dataset, val_dataset, preprocess_fn: Callable = None):
+    def __init__(
+        self, train_dataset, val_dataset, test_dataset, preprocess_fn: Callable = None
+    ):
         super().__init__()
 
         self.train_dataset = train_dataset
         self.val_dataset = val_dataset
+        self.test_dataset = test_dataset
 
         if preprocess_fn is not None:
             self.preprocess = preprocess_fn
@@ -465,3 +469,9 @@ class PLDataLoader(LightningDataModule):
             return self.preprocess(self.val_dataset)
         else:
             return DataLoader(self.val_dataset)
+
+    def test_dataloader(self):
+        if self.preprocess:
+            return self.preprocess(self.test_dataset)
+        else:
+            return DataLoader(self.test_dataset)

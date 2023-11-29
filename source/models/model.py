@@ -9,7 +9,7 @@ import numpy
 from data import Data
 from torch import nn, optim
 from torch.utils.data import DataLoader
-from transformers import AutoTokenizer, DataCollatorForLanguageModeling
+from transformers import DataCollatorForLanguageModeling
 
 
 class Model(pl.LightningModule):
@@ -25,9 +25,11 @@ class Model(pl.LightningModule):
 
         self.train_perplexity = torchmetrics.Perplexity()
         self.valid_perplexity = torchmetrics.Perplexity()
+        self.test_perplexity = torchmetrics.Perplexity()
 
         self.train_loss = []
         self.valid_loss = []
+        self.test_loss = []
 
     def forward(self, batch):
         return self.model(**batch)
@@ -62,6 +64,21 @@ class Model(pl.LightningModule):
         self.log("val_loss", epoch_mean)
 
         self.valid_loss.clear()
+
+    def test_step(self, batch, batch_idx):
+        outputs = self.model(**batch)
+
+        self.test_perplexity.update(outputs.logits, batch["labels"])
+        self.test_loss.append(outputs.loss)
+
+        return outputs.loss
+
+    def on_test_epoch_end(self):
+        test_mean = torch.stack(self.test_loss).mean()
+        self.log("test_ppl", self.test_perplexity)
+        self.log("test_loss", test_mean)
+
+        self.test_loss.clear()
 
     def configure_optimizers(self):
         return {
@@ -125,5 +142,5 @@ class HuggingFaceModel:
             drop_last=True,
             num_workers=os.cpu_count(),
             worker_init_fn=seed_worker,
-            generator=g
+            generator=g,
         )
