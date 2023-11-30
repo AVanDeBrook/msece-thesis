@@ -1,6 +1,8 @@
 numpy
 matplotlib
 transformers
+tokenizers
 torch
 pytorch_lightning
 torchmetrics
+tensorboard
