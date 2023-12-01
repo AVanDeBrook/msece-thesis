@@ -14,7 +14,7 @@
 \usepackage{algpseudocode}
 \usepackage{xcolor}
 \usepackage[T1]{fontenc}
-\usepackage[numbib]{tocbibind}
+% \usepackage[numbib]{tocbibind}
 \usepackage[lmargin=1.25in,rmargin=1.25in,tmargin=1.0in,bmargin=1.0in]{geometry}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -102,33 +102,16 @@ Masters of Electrical \& Computer Engineering.
 \newpage
 \doublespacing{}
 
-\section{Notation and Terminology}
-% TODO: proper writing, bulleted list for now
-This section is included for the sake of clarity throughout this thesis. In pursuit of that, there are a few terms and notations that are defined
-below.
-
-Set notation is used in parts of this thesis, particularly in equations and algorithms, to convey mathematical concepts. With that being said, the
-shorthand below is defined
-\begin{equation*}
-    A; x := A \cup \{x\}
-\end{equation*}
-
-\noindent
-as adding the element $x$, of its own set, to the set $A$.
-
-The following words (in bold) are used throughout the thesis as they relate to language modeling and are defined concretely as follows:
-\begin{itemize}
-    \item A \textbf{sequence} shall be defined as a set of tokens (distinct from a sentence)
-    \item A \textbf{token} shall be defined as the smallest, fundamental component of a sequence (distinct from characters and words)
-    \item The rules for the formation of tokens from a sentence (and into sequences) shall be defined by tokenization algorithms (section
-          \ref{sec:tokenizers})
-    \item The definition of \textbf{words} and \textbf{sentences} follow from that of the English language
-    \item The \textbf{vocabulary}, \textbf{inventory}, \textbf{index}, and \textbf{word list} of a model shall be semantically identical
-\end{itemize}
-\newpage
-
 \section{Abstract}\label{sec:abstract}
-
+With recent advances in machine learning and deep learning technologies along with the creation of larger aviation-specific corpora, the application
+of natural language processing technologies to aviation communications, especially those based on transformer neural networks, is becoming
+increasingly feasible. Previous work has been done focusing on machine learning applications to natural language processing such as N-grams and word
+lattices. This thesis will layout a process for pretraining transformer-based language models on aviation English corpora and compare the
+effectiveness and performance of language models transfer learned from pretrained checkpoints and those trained from their base weight initializations
+(trained from scratch). The results show that transformer language models trained from scratch outperform models fine-tuned from pretrained
+checkpoints, achieving perplexity values on the test partition of the corpus nearly two orders of magnitude lower than that of the pretrained models.
+The work concludes by making recommendations for future work to improve pretraining performance as well as suggestions for downstream, in-domain tasks
+such as semantic extraction, named entity recognition (callsign identification), speaker role identification and speech recognition.
 
 \section{Introduction}\label{sec:introduction}
 There have been noticeable and significant advancements in the general domain of artificial intelligence (AI) recently. Natural language processing
@@ -172,6 +155,30 @@ based NLP methods, specifically automatic speech recognition and text-based lang
 volume of text used to train the language models is not yet sufficient to produce results akin to those in the conversational and/or literary English
 domains. However, the automatic speech recognition models were able to achieve near state-of-the-art results and, according to the literature review,
 better than other deep learning-based approaches in the aviation domain.
+
+\section{Notation and Terminology}
+% TODO: proper writing, bulleted list for now
+This section is included for the sake of clarity throughout this thesis. In pursuit of that, there are a few terms and notations that are defined
+below.
+
+Set notation is used in parts of this thesis, particularly in equations and algorithms, to convey mathematical concepts. With that being said, the
+shorthand below is defined
+\begin{equation*}
+    A; x := A \cup \{x\}
+\end{equation*}
+
+\noindent
+as adding the element $x$, of its own set, to the set $A$.
+
+The following words (in bold) are used throughout the thesis as they relate to language modeling and are defined concretely as follows:
+\begin{itemize}
+    \item A \textbf{sequence} shall be defined as a set of tokens (distinct from a sentence)
+    \item A \textbf{token} shall be defined as the smallest, fundamental component of a sequence (distinct from characters and words)
+    \item The rules for the formation of tokens from a sentence (and into sequences) shall be defined by tokenization algorithms (section
+          \ref{sec:tokenizers})
+    \item The definition of \textbf{words} and \textbf{sentences} follow from that of the English language
+    \item The \textbf{vocabulary}, \textbf{inventory}, \textbf{index}, and \textbf{word list} of a model shall be semantically identical
+\end{itemize}
 
 \section{Literature Review}\label{sec:lit_review}
 % from thesis proposal; revise and add to this as more references are used
@@ -1222,9 +1229,43 @@ has been used by several state-of-the-art automatic speech recognition models to
 QuartzNet models, for example, both use this approach to reduce their relative word error rates compared to the performance of other models on the
 same corpora \cite{majumdar_citrinet_2021,kriman_quartznet_2020}. Considering the relatively high word error rates of most automatic speech
 recognition models in the aviation domain, the pretraining procedures introduced here could be used to further reduce the error rates of these models.
+This will be elaborated further in appendix A in section \ref{sec:appendix_a}.
 
 \newpage
-\bibliography{refs}
-\bibliographystyle{plain}
+\section{Acknowledgements}
+The following libraries were used to develop, train, test, and validate the models used in this work as well as perform data processing and analysis:
+\begin{itemize}
+    \item PyTorch \cite{paszke_pytorch_2019}
+    \item HuggingFace transformers (and tokenizers) \cite{wolf_transformers_2020}
+    \item PyTorch Lightning \cite{falcon_pytorchlightning_2019}
+    \item Sci-Kit Learn \cite{pedregosa_scikit-learn_2011}
+\end{itemize}
+
+\newpage
+\section{Appendix A: Neural Language Modeling Application to Speech Recognition}\label{sec:appendix_a}
+NVIDIA's NeMo (Neural Modules) framework \cite{kuchaiev_nemo_2019} is a state-of-the-art deep learning framework with implementations for dozens of
+natural language processing models and utilities. Notably among those are the automatic speech recognition (ASR) model implementations and tools for
+decoding/augmenting predictions from model outputs.
+
+For ASR models, there are generally two methods of decoding predictions: greedy decoding and decoding with beam search. Greedy decoding methods simply
+use the neuron, in the last layer of the network (the output layer), with the highest value to determine the prediction for that time step. Beam
+search-based decoding methods use a language model along with a beam search algorithm to determine predictions at each time step. The most commonly
+used language model for these types of decoding methods is an N-gram and, in fact, are what PyTorch's \lstinline|CTCDecoder|\footnote{More
+    specifically, the \lstinline|torchaudio| package of PyTorch} \cite{paszke_pytorch_2019} and NeMo's \lstinline|BeamSearchDecoderWithLM|
+\cite{kuchaiev_nemo_2019} use to decode predictions.
+
+The purpose of language models in beam search decoding algorithms is to estimate the likelihood of the decoded sequence occurring based on the
+language models knowledge of sequence structures. The beam search algorithm is then used to select tokens such that the overall likelihood of the
+sequence occurring is maximized. As mentioned above in section \ref{sec:ngram}, N-grams are left-associative language models (assuming the model is
+being applied to the English language in this case), which is an inherently limiting factor. A neural language model capable of representing
+sequences bidirectionally, such as those covered in this work, is a significantly more robust method of language modeling in speech recognition and
+has been used in the past to improve word error rates \cite{kriman_quartznet_2020,majumdar_citrinet_2021}. There is at least one instance of a deep
+learning-based language model being used for beam search decoding in aviation applications, however, it did not perform well, likely due to small
+size of the dataset that it was trained on \cite{pellegrini_airbus_2019}. The models trained in this work used considerably more data and, therefore,
+will likely have better performance in beam search decoding algorithms.
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,refs}
 
 \end{document}
