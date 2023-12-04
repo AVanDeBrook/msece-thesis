@@ -37,6 +37,9 @@ class ATCOSimData(Data):
         self.text_glob = glob.glob(
             os.path.join(data_root, "txtdata/**/*.txt"), recursive=True
         )
+        self.audio_data_paths = glob.glob(
+            os.path.join(data_root, "wavdata/**/*.wav"), recursive=True
+        )
 
         # at the moment this is easier than updating the regex to exclude this specific file
         # TODO: update regex

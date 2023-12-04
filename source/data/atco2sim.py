@@ -29,6 +29,7 @@ class ATCO2SimData(Data):
         super(ATCO2SimData, self).__init__(dataset_name="ATCO2", **kwargs)
 
         self.transcripts = glob.glob(os.path.join(data_root, "DATA/*.xml"))
+        self.audio_data_paths = glob.glob(os.path.join(data_root, "DATA/*.wav"))
         assert len(self.transcripts) != 0
 
     def parse_transcripts(self) -> List[str]:

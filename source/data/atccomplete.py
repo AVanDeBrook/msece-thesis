@@ -2,10 +2,12 @@ import os
 import glob
 import re
 import json
+import subprocess
 from pprint import pprint
 from typing import *
 from typing import List
 from data import Data, atccutils
+from pathlib import Path
 
 
 class TransmissionTurn(object):
@@ -121,6 +123,21 @@ class ATCCompleteData(Data):
         )
         transcript_glob_string = os.path.join(data_root, "**/data/transcripts/*.txt")
         self._transcript_glob = glob.glob(transcript_glob_string, recursive=True)
+
+        sphere_glob_string = os.path.join(data_root, "**/data/audio/*.sph")
+        wav_glob_string = os.path.join(data_root, "**/data/audio/*.wav")
+
+        # collect audio and transcript file, convert if needed
+        sphere_files = glob.glob(sphere_glob_string, recursive=True)
+
+        #: list of paths to audio files in the dataset.
+        self._audio_glob = glob.glob(wav_glob_string, recursive=True)
+
+        if len(self._audio_glob) != len(self._transcript_glob):
+            self.sphere_to_wav(sphere_files)
+            self._audio_glob = glob.glob(wav_glob_string, recursive=True)
+
+        self.audio_data_paths = self._audio_glob
 
     def parse_transcripts(self) -> List[Dict[str, Union[str, float]]]:
         """
@@ -276,3 +293,34 @@ class ATCCompleteData(Data):
                 )
 
         pprint(transmission_groups)
+
+    def sphere_to_wav(self, sphere_glob: List[str]) -> List[str]:
+        """
+        Runs ffmpeg on each sphere file in `sphere_glob` to convert the
+        files from the NIST Sphere format to the MS Wav format. Also resamples
+        the audio to 16k.
+
+        :param sphere_glob: List of paths (strings) to sphere files to convert
+        :returns: List of converted files
+        """
+        assert len(sphere_glob) > 0
+        converted_paths = []
+
+        for sphere_file in sphere_glob:
+            sphere_file = Path(sphere_file)
+            converted_file = str(sphere_file).replace(".sph", ".wav")
+            if sphere_file.exists():
+                # program and arguments to run to reformat/resample the sphere file
+                process = [
+                    "sox",
+                    f"{sphere_file}",
+                    "-r",
+                    "16000",
+                    f"{converted_file}",
+                ]
+                # for debugging
+                # print(" ".join(ffmpeg_options))
+                subprocess.run(process)
+                converted_paths.append(converted_file)
+
+        return converted_paths

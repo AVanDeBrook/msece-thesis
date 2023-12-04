@@ -246,31 +246,101 @@ ATCC is a collection of three smaller corpora recorded at Dallas-Fort Worth, Log
 transcribed by current or former air traffic controllers familiar with the respective areas. Audio data was recorded through the placement of Very
 High Frequency (VHF) antennae configured to monitor several frequencies at each airport, such as arrival, departure, approach, ground, etc. The types
 of frequencies monitored vary by airport, but the presence of departure, approach, and ground frequencies is relatively consistent across subcorpora
-\cite{godfrey_air_1994}.
-% TODO: data length/size; samples, hours, tokens
+\cite{godfrey_air_1994}. See Table \ref{tab:atcc_stats} for corpus-specific statistics.
+
+\begin{table}
+    \centering
+    \begin{tabular}{l r}
+        \toprule
+        \multicolumn{2}{c}{ATCC Corpus Properties} \\
+        \midrule
+        Samples              & 9,556               \\
+        Audio (hours)        & 72.48               \\
+        Mean Sequence Length & 11.90               \\
+        Std.~Sequence Length & 7.22                \\
+
+        Total Tokens         & 355,485             \\
+        Unique Tokens        & 2,209               \\
+        \bottomrule
+    \end{tabular}
+    \caption{Data statistics for the Air Traffic Control Complete (ATCC) corpus.}
+    \label{tab:atcc_stats}
+\end{table}
 
 \subsection{ATCO2}\label{sec:atco2}
 The ATCO2 dataset is a speech corpus that consists of audio communications at Prague and Brno airports, in Czechia, along with corresponding
 transcriptions. The speech recordings and transcripts are crowd sourced from volunteers. The dataset was created and labeled, in part, as an English
 language detection corpus, however, the labeling also includes transcripts of speech segments which makes it practical for ASR and language model
 development in addition to language detection (although in this work it is only used for ASR and LM development)~\cite{szoke_detecting_2021}.
-% TODO: data length/size; samples, hours, tokens
+See Table \ref{tab:atco2_stats} for corpus-specific statistics.
 
+\begin{table}
+    \centering
+    \begin{tabular}{l r}
+        \toprule
+        \multicolumn{2}{c}{ATCO2 Corpus Properties} \\
+        \midrule
+        Samples              & 874                  \\
+        Audio (hours)        & 1.10                 \\
+        Mean Sequence Length & 12.28                \\
+        Std.~Sequence Length & 5.78                 \\
+        Total Tokens         & 10,733               \\
+        Unique Tokens        & 786                  \\
+        \bottomrule
+    \end{tabular}
+    \caption{Data statistics for the ATCO2 corpus.}
+    \label{tab:atco2_stats}
+\end{table}
 
 \subsection{Air Traffic Control Simulation}\label{sec:atcosim}
 The Air Traffic Control Simulation (ATCOSIM) corpus is a speech corpus consisting of audio recordings and corresponding transcriptions.
 The data was recorded at the EUROCONTROL Experimental Centre for air traffic control simulation in Bretigny-sur-Orge, France. In this corpus, only the
 controllers' voices are included and therefore the transcripts only include the controller's side of each interaction. The audio data was transcribed
 by one person, trained according to the guidelines and formatting requirements of the corpus. After all data was transcribed, it was reviewed and
-corrected and any remaining problems were reviewed by an operational air traffic controller and resolved \cite{hofbauer_atcosim_2008}.
-% TODO: data length/size; samples, hours, tokens
+corrected and any remaining problems were reviewed by an operational air traffic controller and resolved \cite{hofbauer_atcosim_2008}. See Table
+\ref{tab:atcosim_stats} for corpus-specific statistics.
+
+\begin{table}
+    \centering
+    \begin{tabular}{l r}
+        \toprule
+        \multicolumn{2}{c}{ATCOSIM Corpus Properties} \\
+        \midrule
+        Samples              & 9,556                  \\
+        Audio (hours)        & 10.69                  \\
+        Mean Sequence Length & 11.29                  \\
+        Std.~Sequence Length & 4.17                   \\
+        Total Tokens         & 107,881                \\
+        Unique Tokens        & 827                    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Data statistics for the ATCOSIM corpus.}
+    \label{tab:atcosim_stats}
+\end{table}
 
 \subsection{ZCU CZ ATC Corpus}\label{sec:zcu_atc}
 The ZCU CZ ATC corpus consists of audio recordings and corresponding transcripts in the Czech airspace. Both controller and pilot sides of the
 communications are included in this data. Annotations were created by experienced transcribers/annotators and labeled samples were randomly selected
 for review during the annotation process. After the dataset was completely labeled, all samples were checked, corrected, and
-unified\cite{smidl_air_2019}.
-% TODO: data length/size; samples, hours, tokens
+unified\cite{smidl_air_2019}. See Table \ref{tab:zcu_cz_atc_stats} for corpus-specific statistics.
+
+\begin{table}
+    \centering
+    \begin{tabular}{l r}
+        \toprule
+        \multicolumn{2}{c}{ZCU CZ ATC Corpus Properties} \\
+        \midrule
+        Samples              & 14,435                    \\
+        Audio (hours)        & 20.58                     \\
+        Mean Sequence Length & 10.05                     \\
+        Std.~Sequence Length & 5.50                      \\
+        Total Tokens         & 145,107                   \\
+        Unique Tokens        & 3,100                     \\
+        \bottomrule
+    \end{tabular}
+    \caption{Data statistics for ZCU CZ ATC corpus.}
+    \label{tab:zcu_cz_atc_stats}
+\end{table}
 
 \section{Data Processing}\label{sec:data_processing}
 All of the corpora listed above (see Section \ref{sec:data_source}) are created at different times, for different purposes, and by different authors.
@@ -358,11 +428,11 @@ transcribing these phenomena are redefined below:
 \end{table}
 
 A special token is used to represent hesitations when no other context regarding the realization of hesitation is present. If other corpora use a
-special token to represent hesitations, it is translated to match the convention in table~\ref{tab:phenomena_conventions}. Partial/cut-off words
+special token to represent hesitations, it is translated to match the convention in Table \ref{tab:phenomena_conventions}. Partial/cut-off words
 are represented with a hyphen (-) at the point where the pronounced word is cut off. For example, if the last syllable of ``approaching'' is cut
 mid transmission, it would be represented in the transcript as ``approa-'' or, likewise, if the first syllable is cut off, it would be written as
 ``-roaching''. Lastly, if there is enough information in the original transcript to indicate the realization of a hesitation, it is represented by
-the most appropriate token from ``Filled pauses'' in table~\ref{tab:phenomena_conventions}.
+the most appropriate token from ``Filled pauses'' in Table \ref{tab:phenomena_conventions}.
 
 One of the intended downstream use cases of the language models developed from this work is decoding speech recognition predictions into transcripts,
 so including as much data as possible regarding the realization of spoken words is useful given the context. The \lstinline|[HES]| token is used as a
@@ -370,7 +440,7 @@ catch-all, fallback token in the case that no knowledge can be extracted about t
 
 \section{Data Analysis}\label{sec:data_analysis}
 % sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
-Relevant corpora statistics were observed or calculated and are presented in Table~\ref{tab:corpora_stats}. This includes the number of samples in
+Relevant corpora statistics were observed or calculated and are presented in Table \ref{tab:corpora_stats}. This includes the number of samples in
 the corpus, mean sequence length per sample in the corpus, the number of unique tokens in the corpus, and the total number of tokens in the corpus.
 The same statistics were also calculated across corpora, since all four corpora will be combined for training and testing the language and speech
 recognition models. Note that this is based on the raw data after loading and unifying the corpora, prior to preprocessing for model training/testing
@@ -410,7 +480,7 @@ the individual corpora.
 
 Sci-Kit Learn's \cite{pedregosa_scikit-learn_2011} implementation of the LOF algorithm was used with a value of \(N = 35\) for \(N\) neighbors in the
 K-Nearest Neighbors algorithm and Minkowski distance for distance metrics/calculations (in this case, since \(p=2\), Euclidean distance is effectively
-used for distance calculations). A total of 47 samples were detected as outliers and removed for analysis and are summarized in table
+used for distance calculations). A total of 47 samples were detected as outliers and removed for analysis and are summarized in Table
 \ref{tab:outlier_stats}.
 
 \begin{table}[!t]
@@ -432,7 +502,8 @@ used for distance calculations). A total of 47 samples were detected as outliers
 
 Although all of the outliers have higher sequence lengths than the typical sequence lengths of the other samples in the data, going the through
 the outlying samples manually and reviewing each reveals that, for the most part, the samples are typical albeit somewhat complex communications.
-With the exception of four outliers, all of the samples labeled as outlying by the LOF algorithm were kept in the data.
+With the exception of four outliers, all of the samples labeled as outlying by the LOF algorithm were kept in the data. Examples of the outliers are
+listed in Appendix A in Section \ref{sec:appendix_a}, including the sample removed.
 
 \section{Language Modeling}\label{sec:language_modeling}
 % bert, roberta
@@ -454,36 +525,26 @@ An N-gram language model estimates the probability of a token occurring in a seq
 In other words, for a sequence, $X$, of $T$ tokens
 
 \begin{equation}\label{eq:ngram_sequence}
-    X = \mbox{$w_1$, $w_2$, $w_3$, ..., $w_T$}
+    X = \mbox{$w_1$, $w_2$, $w_3$, ..., $w_T$}\\
 \end{equation}
 
 \noindent
-the probability of a token, $w_i$, occurring in the sequence can be represented as
+the probability of tokens occurring in order, in a sequence can be represented using the chain-rule of probability:
 
-\begin{equation}\label{eq:ngram_preceding}
+\begin{equation}
     \begin{gathered}
-        P(w_i) = P(w_i|w_{i-1},w_{i-2},w_{i-3},...,w_{i-N}) \\
-        P(w_i) = \prod_{j=i-1}^{i-N} P(w_j)
+        P(X) = P(w_1) P(w_2|w_1) P(w_3|w_2, w_1) ... P(w_T|w_{T-1}, w_{T-2}, ..., w_1)\\
+        P(X) = P(w_i)\prod_{i=2}^{T} P(w_i|w_{i-1}, w_{i-2}, ..., w_1)
     \end{gathered}
 \end{equation}
 
 \noindent
-or for the case of succeeding tokens (looking ahead $N$ tokens)
+Except for the first token in the sequence, the probability of a token occurring at a specific point in the sequence depends on the tokens preceding it
+\footnote{The most common use case for an N-gram model is the preceding tokens.}. Due to this fact, N-grams are sometimes referred to as
+left-associative models (in a left-to-right language).
 
-\begin{equation}\label{eq:ngram_succeeding}
-    \begin{gathered}
-        P(w_i) = P(w_i|w_{i+1},w_{i+2},w_{i+3},...,w_{i+N}) \\
-        P(w_i) = \prod_{j=i+1}^{i+N} P(w_j)
-    \end{gathered}
-\end{equation}
-
-\noindent
-where $N$ is the number of preceding (or succeeding) tokens. Since the $N$ preceding tokens\footnote{The most common use case for an N-gram model is
-    the preceding tokens.} are needed prior to the estimation of the probability of $w_i$, N-grams are sometimes referred to as left-associative
-models (in a left-to-right language).
-
-The probability of a token occurring anywhere in a sequence (referred to as $w_j$ in equations \ref{eq:ngram_preceding} and \ref{eq:ngram_succeeding})
-is determined statistically as the number occurrences of a token in a corpus divided by the total number of tokens in the corpus.
+The probability of a token occurring at all is determined statistically as the number occurrences of a token in a corpus divided by the total number
+of tokens in the corpus.
 
 \begin{equation}\label{eq:ngram_prob_wj}
     P(w) = \frac{\phi_w(w)}{D_{tokens}}
@@ -512,20 +573,30 @@ token, 10\% for random tokens, and 10\% for the original/unchanged token). The o
 
 \textbf{Next Sentence Prediction}. While MLM conditions the model to represent tokens within sentences, NSP is meant to condition the model to
 understand relationships between sentences/sequences to further support downstream tasks. Since BERTs training set consists primarily of literary
-works and excerpts from Wikipedia, the  model simply predicts whether two sentences appear together (one after the other) in the original text.
-Instead of a single input sequence, the input consists of two sequences separated by a ``separation'' token and beginning with a ``classification''
-token, these are represented by \lstinline|[SEP]| and \lstinline|[CLS]|, respectively in Devlin et al.~\cite{devlin_bert_2019}.
+works and excerpts from Wikipedia, the  model simply predicts whether two sentences appear together (one after the other) in the original text,
+making this a binary classification task as opposed to MLM which is a multi-class classification task. Instead of a single input sequence, the input
+consists of two sequences separated by a ``separation'' token and beginning with a ``classification'' token, these are represented by
+\lstinline|[SEP]| and \lstinline|[CLS]|, respectively in Devlin et al.~\cite{devlin_bert_2019}.
 
 For symmetry between pretraining tasks, the special tokens specifying the beginning and end of input sequences are shared between tasks. For both MLM
-and NSP objectives, input sequences always start with a classification token and end with a separation token (see figure
+and NSP objectives, input sequences always start with a classification token and end with a separation token (see Figure
 \ref{fig:bert_mlm_input_example}). Likewise, NSP inputs always begin with a classification token and each input sequence is concatenated with a
-separation token terminating each sequence (see figure \ref{fig:bert_nsp_input_example}).
+separation token terminating each sequence (see Figure \ref{fig:bert_nsp_input_example} and equations (\ref{eq:bert_mlm_input_example}) and
+(\ref{eq:bert_nsp_input_example})).
+
+\begin{equation}\label{eq:bert_mlm_input_example}
+    \mbox{[CLS], the, quick, brown, fox, [SEP]}
+\end{equation}
 
 \begin{figure}[!t]
     \includegraphics[width=\linewidth]{figures/BERT_MLM_input.png}
     \caption{An example of an input sequence for a masked language modeling pretraining task. Modified from Devlin et al.~\cite{devlin_bert_2019}.}
     \label{fig:bert_mlm_input_example}
 \end{figure}
+
+\begin{equation}\label{eq:bert_nsp_input_example}
+    \mbox{[CLS], the, quick, brown, fox, [SEP], jumps, over, the, [SEP]}
+\end{equation}
 
 \begin{figure}[!t]
     \includegraphics[width=\linewidth]{figures/BERT_NSP_input.png}
@@ -690,7 +761,7 @@ problem. Note that the values of the integers representing the tokens are determ
 training process (special tokens are defined and therefore seen first), so these results are completely reproducible as long as the data appears in
 the same order.
 
-The tokenization of words with shared roots but different suffixes is shown in table \ref{tab:wordlevel_tokenization_shared_roots_example}. Clearly
+The tokenization of words with shared roots but different suffixes is shown in Table \ref{tab:wordlevel_tokenization_shared_roots_example}. Clearly
 all three words are seen as independent and unique words by the tokenizer, since they are mapped to their own integer representations.
 
 \begin{table}[!t]
@@ -710,7 +781,7 @@ all three words are seen as independent and unique words by the tokenizer, since
 
 The tokenizer used to generate the examples in tables \ref{tab:wordlevel_tokenization_example} and
 \ref{tab:wordlevel_tokenization_shared_roots_example} was trained on two sentences, notably lacking the word ``you'll''. Running the tokenizer on the
-word ``you'll'' alone results in the output in table \ref{tab:wordlevel_unk_word}. Although the word shares a root with some of the words in the
+word ``you'll'' alone results in the output in Table \ref{tab:wordlevel_unk_word}. Although the word shares a root with some of the words in the
 training data (``you'', ``you're'', and ``you've'') and is semantically very similar, the tokenizer does not recognize the word at all (represented
 by the ``[UNK]'' or unknown token). This word would be considered out-of-vocabulary since it did not appear in the training data and thus reveals one
 of the major downsides of this algorithm, as mentioned in section \ref{sec:tokenizers}. This problem can be alleviated to some extent by modifying the
@@ -765,17 +836,17 @@ the following considerations to reduce the computational complexity:
 
 Table \ref{tab:wordpiece_tokenization_example}, below, shows an example of a WordPiece tokenizer model output on a sentence that was seen during the
 training procedure (trained on the same data as the WordLevel tokenizer in Section \ref{sec:wordlevel}). Since this sentence was in the training data,
-the segmentation is identical to that of the WordLevel tokenizer in table \ref{tab:wordlevel_tokenization_example}, however, tokenization of similar
-words e.g.~words with shared roots or similar contractions are handled differently as in table \ref{tab:wordpiece_tokenization_shared_roots_example}.
+the segmentation is identical to that of the WordLevel tokenizer in Table \ref{tab:wordlevel_tokenization_example}, however, tokenization of similar
+words e.g.~words with shared roots or similar contractions are handled differently as in Table \ref{tab:wordpiece_tokenization_shared_roots_example}.
 Since each word has a shared root word in the contractions (as well as an apostrophe separating the contraction), the tokenizer segments each word and
 represents them as groups of small, more common (thus with higher probabilities of occurring) tokens. Additionally, the WordPiece algorithm
-effectively handles OOV words. Take the OOV in table \ref{tab:wordpiece_unk_word_similar} with a shared root and similar contraction as those in table
+effectively handles OOV words. Take the OOV in Table \ref{tab:wordpiece_unk_word_similar} with a shared root and similar contraction as those in Table
 \ref{tab:wordpiece_tokenization_shared_roots_example}, which appear in the training data. Since the base of the contraction, ``you'', occurs in the
 training data as well as the apostrophe in the contraction, so the tokenizer segments those parts of the word as tokens. The last part of the word,
 ``ll'', does not appear at all in the training data, so it is broken down into its component characters which are represented as ``l'' (beginning of
 a word) and ``\#\#l'' (segmented part of a word that should be concatenated to the previous token when they are recombined). Comparing this to the
-results of the WordLevel tokenizer output on the same word in table \ref{tab:wordlevel_unk_word}, the WordPiece algorithm sidesteps the OOV problem
-for words similar to those in the trining corpus and, according to the output of the WordPiece tokenizer in table \ref{tab:wordpiece_unk_word}, for
+results of the WordLevel tokenizer output on the same word in Table \ref{tab:wordlevel_unk_word}, the WordPiece algorithm sidesteps the OOV problem
+for words similar to those in the trining corpus and, according to the output of the WordPiece tokenizer in Table \ref{tab:wordpiece_unk_word}, for
 words unlike those in the training corpus.
 
 \begin{table}[!t]
@@ -920,7 +991,7 @@ of the tokens) and very similar to that of the WordLevel tokenizer.
 \end{table}
 
 Now, testing the BPE algorithm on words that did not appear in the training data, it is clear that the BPE algorithm effectively deals with and
-processes OOV words (tables \ref{tab:bpe_unk_similar} and \ref{tab:bpe_unk}), even when no subunits of the word appear in the training data (table
+processes OOV words (tables \ref{tab:bpe_unk_similar} and \ref{tab:bpe_unk}), even when no subunits of the word appear in the training data (Table
 \ref{tab:bpe_unk}).
 
 \begin{table}[!t]
@@ -959,7 +1030,7 @@ processes OOV words (tables \ref{tab:bpe_unk_similar} and \ref{tab:bpe_unk}), ev
 translation, language modeling, and generative tasks (GPT-2 uses a byte-level BPE tokenizer~\cite{radford_language_2019}). As Huggingface's
 \lstinline|tokenizers| library implements it, this is a preprocessing step for the tokenizer model that maps all bytes in a string/sentence to their
 own unique and visible character. Functionally, byte-level BPE is nearly identical to standard BPE models except that the beginning of word symbol is
-actually rendered and represented by a visible character in the tokenized sequence (see table \ref{tab:byte_level_bpe_example}).
+actually rendered and represented by a visible character in the tokenized sequence (see Table \ref{tab:byte_level_bpe_example}).
 
 \begin{table}[!t]
     \centering
@@ -992,7 +1063,7 @@ length, if greater. The maximum sequence length for BERT and RoBERTa models is 5
 analysis in Section \ref{sec:data_analysis}, there are few, if any, samples that meet or exceed the maximum sequence length for BERT and RoBERTa
 models.
 
-The models are trained with the \textit{AdamW} optimizer \cite{loshchilov_decoupled_2019} using the hyperparameters in table \ref{tab:optim_params}
+The models are trained with the \textit{AdamW} optimizer \cite{loshchilov_decoupled_2019} using the hyperparameters in Table \ref{tab:optim_params}
 based on the most effective pretraining configuration presented in \cite{devlin_bert_2019} and \cite{liu_roberta_2019}.
 
 \begin{table}[!t]
@@ -1036,8 +1107,8 @@ worked reliably with the hardware available to train the models\footnote{Values 
 \end{table}
 
 \subsection{Performance Metrics}\label{sec:performance_metrics}
-As mentioned previously, perplexity and cross-entropy loss (often shortened to loss) are used to track the performance of the model on the training
-and validation sets, per epoch, while training. Cross-entropy loss is defined by the following equation:
+\textbf{Cross-Entropy Loss}. As mentioned previously, perplexity and cross-entropy loss (often shortened to loss) are used to track the performance of
+the model on the training and validation sets, per epoch, while training. Cross-entropy loss is defined by the following equation:
 
 \begin{equation}\label{eq:cross_entropy_loss}
     \begin{gathered}
@@ -1048,13 +1119,14 @@ and validation sets, per epoch, while training. Cross-entropy loss is defined by
 
 \noindent
 where $x$ is a $512 \times N$ vector representing model inputs (a sequence of tokens) and $y$ is a $1 \times N$ vector representing the target/label
-for each sample in the batch. $N$ is the number of samples in the batch, $l_n$ is the loss for an individual sample, $n$, in the batch, and $C$ is the
-number of class labels. For the purpose of language modeling, the set of class labels is equivalent to the vocabulary of the tokenizer (and thus the
-language model). Numerical labels will correspond to token IDs. The overall loss is then found by taking the mean of the loss over the batch, likewise
-for an epoch, the loss is found by taking the average of each batch in the epoch.
+for each sample in the batch. $L$ is an $N \times 1$ vector containing the losses for each sample in the batch, $N$ is the number of samples in the
+batch, $l_n$ is the loss for an individual sample, $n$, in the batch, and $C$ is the number of class labels. For the purpose of language modeling, the
+set of class labels is equivalent to the vocabulary of the tokenizer (and thus the language model). Numerical labels will correspond to token IDs. The
+overall loss is then found by taking the mean of the loss over the batch, likewise for an epoch, the loss is found by taking the average of each batch
+in the epoch.
 
-Perplexity is related to the probability of a token appearing in a sequence. It is used as a measure of how well a language model can predict tokens
-in a sequence and is defined by the equation below:
+\textbf{Perplexity}. Perplexity is related to the probability of a token appearing in a sequence. It is used as a measure of how well a language model
+can predict tokens in a sequence and is defined by the equation below:
 
 \begin{equation}\label{eq:perplexity}
     \begin{gathered}
@@ -1084,21 +1156,21 @@ converge on either local or global minima.
     \label{fig:training_loss}
 \end{figure}
 
-The perplexity of the models on the training data yields interesting results (figure \ref{fig:training_ppl}). Although the pretrained models have a
+The perplexity of the models on the training data yields interesting results (Figure \ref{fig:training_ppl}). Although the pretrained models have a
 more stable curve over time, the models trained from scratch result in a significantly lower perplexity. Note the difference in the scales on the
-y-axis in figure \ref{fig:training_ppl}; the final perplexity value of each language model trained from scratch is at least two orders of magnitude
+y-axis in Figure \ref{fig:training_ppl}; the final perplexity value of each language model trained from scratch is at least two orders of magnitude
 lower than that of the pretrained models. At the end of training, the BERT and RoBERTa models trained from scratch had perplexity values of
 $0.52\times 10^7$ and $0.16\times 10^7$, respectively, whereas the pretrained models reached perplexity values of $0.29\times 10^9$ and
 $0.17\times 10^9$, for BERT and RoBERTa, respectively. This indicates that best language model performance may be achieved by pretraining models on
 in-domain data, then continuing to fine-tune on specific downstream tasks. This is a direct contradiction of the current recommended practice of using
 one of the pretrained checkpoints from Devlin et al.~\cite{devlin_bert_2019} and Liu et al.~\cite{liu_roberta_2019} then fine-tuning on specific
-downstream tasks. This is further upheld by the results of the model performance on the test partition of the corpus in table
+downstream tasks. This is further upheld by the results of the model performance on the test partition of the corpus in Table
 \ref{tab:pretraining_results}, below. As with the training data, the perplexity of the language models trained from scratch over the test partition of
 the corpus is significantly lower than that of the pretrained language models. The loss of each model over the test set is somewhat high, but they are
 around the same values for each model, which is consistent with the loss statistics during training. A higher loss value on unseen (test) data is
 normal and expected. The BERT model trained from scratch had the best performance among the models tested despite both RoBERTa models training better
 within their model classes. Within the class of pretrained models, however, the RoBERTa model still technically performed better than the BERT model
-(values shown in table \ref{tab:pretraining_results} were rounded to three significant figures) with a perplexity value of $0.007\times 10^9$ compared
+(values shown in Table \ref{tab:pretraining_results} were rounded to three significant figures) with a perplexity value of $0.007\times 10^9$ compared
 to BERT's $0.014\times 10^9$.
 
 \begin{figure}[!t]
@@ -1143,7 +1215,7 @@ articles such as those from \textit{Wikipedia}. The data used in this work are o
 sources share the common root of English, transfer learning from literary English to aviation English yields limited results, as evidenced above.
 Especially with relatively small amounts of data.
 
-\textbf{Mixed regional data sources}. As described in Section \ref{sec:data_source}, the data aggregated for use here is comes from several different
+\textbf{Mixed regional data sources}. As described in Section \ref{sec:data_source}, the data aggregated for use here comes from several different
 regions, namely international airports in the US \cite{godfrey_air_1994} and international and domestic airports in Europe
 \cite{smidl_air_2019,hofbauer_atcosim_2008,szoke_detecting_2021}. During data processing it was ensured that only English transcriptions were included
 in the corpus, however, proper nouns from each region will be present in the data regardless. Additionally, dialectical differences and varying levels
@@ -1156,15 +1228,14 @@ in order for the pretraining process to be effective for downstream tasks.
 Up to this point we have followed a procedure for studying the effectiveness of the models that is somewhat symmetrical to that of BERT and RoBERTa,
 so at this point the models should be trained for downstream tasks in order to further measure the effectiveness of the pretraining procedures.
 In the aviation domain and for this particular data, that would mean training for tasks such as callsign identification, speaker identification,
-flight phase classification, clearance recognition, etc., however, labels for these tasks are not present in the corpora used here. Corpora with
+flight phase classification, clearance recognition, etc. However, labels for these tasks are not present in the corpora used here. Corpora with
 relevant labels for downstream tasks could not be obtained within an appropriate amount of time to run and include the experiments in this work.
 Some potential algorithms were developed in an attempt to mine labels from the corpora aggregated for this work which will be expanded upon in section
 \ref{sec:future_work}. For these reasons, testing model performance and effectiveness on downstream tasks must be left for future work.
 
 \section{Conclusion}\label{sec:conclusion}
-Four aviation English corpora are aggregated and unified for use in neural language modeling. A masked language modeling objective is used pretrain
-two classes of BERT and RoBERTa models (models trained from scratch and pretrained models transfer learned to aviation English) on the aggregated
-data.
+Four aviation English corpora are aggregated and unified for use in neural language modeling. Masked language modeling is then used pretrain two
+classes of BERT and RoBERTa models (models trained from scratch and pretrained models transfer learned to aviation English).
 
 Contrary to the recommended best practice of using pretrained checkpoints and training for downstream tasks, we find that, in the domain of aviation
 English, models achieve better performance when pretrained from scratch than model checkpoints transfer learned from the available BERT and RoBERTa
@@ -1174,9 +1245,9 @@ the BERT and RoBERTa models trained from scratch consistently outperformed the c
 with BERT performing the best overall.
 
 The results from the experiments in this work indicate that, for natural language processing tasks in the aviation domain, models pretrained from
-scratch are more effective than transfer learning pretrained models. Thus, models trained from scratch should fine-tuned and used for downstream tasks
-over pretrained models. The most significant limiting factor to the performance of the models is the small volume of aviation English data available
-for pretraining and downstream task use.
+scratch are more effective than transfer learning pretrained models. Thus, models trained from scratch should be fine-tuned and used for downstream
+tasks over pretrained models. The most significant limiting factor to the performance of the models is the small volume of aviation English data
+available for pretraining and downstream task use.
 
 \section{Future Work}\label{sec:future_work}
 This section is intended to serve as a brief proposal or set of suggestions for future work based on the results of this work. The main focus of these
@@ -1229,7 +1300,48 @@ The following libraries were used to develop, train, test, and validate the mode
 
 \newpage
 \section{Appendix A: Examples of Samples Detected as Outliers}
+The outlying sample that was removed from the corpus is below\footnote{The preprocessing effects on the string, capitalization, punctuation, etc.~are left
+    unmodified for display purposes}:
 
+\begin{quote}
+    uh uh have a nice evening thank you bye bye ciao yes to the irish pub you know it uh you have to ask i have no idea where it is i'm just walking
+    behind the others uh no uh but you come in front and you ask and he will tell you but i really don't know i don't even know the address okay it's
+    in paris definitely okay bye
+\end{quote}
+
+This sample has a sequence length of 71 tokens, well above the mean of the aggregated corpora. The decision was made to remove this sample, because
+it has little to no relevance to aviation communications, especially the ones being examined by the model in this thesis.
+
+A few other samples, detected as outliers, but not removed are shown in Table \ref{tab:outlier_examples}.
+
+\begin{table}
+    \centering
+    \begin{tabular}{p{0.75\linewidth} r}
+        \toprule
+        Outlying Sample                                                                                                                                                                                                                                                                                                             & Sequence Length \\
+        \midrule
+        ah they're probably putting well i don't know if they are are not the weather is niner hundred scattered measured ceiling one thousand five hundred broken two thousand five hundred overcast visibility one zero temperature five three dew point five zero wind ah zero six zero at three altimeter two niner niner seven & 53              \\
+        \midrule
+        american eight forty six descend and maintain one thousand six hundred turn left heading zero three zero join the localizer you're four from oxonn maintain one thousand six hundred till established cleared i l s three six approach                                                                                      & 38              \\
+        \midrule
+        t w a seven hundred traffic's a helicopter below you at the pentagon he's no factor there's a cessna at one o'clock three miles three thousand five hundred v f r circling he'll stay east of the river                                                                                                                     & 38              \\
+        \midrule
+        yeah we're supposed to ah the thing is now we're going to get you a way out of line for your profile ah in your turn you can continue right around the left to ah zero four zero and then we're going to have to bring you all the way back around to the right                                                             & 55              \\
+        \midrule
+        actually continental ten seventy two he's just ahead a little bit to your right now ten seventy two you're five from ripit maintain two thousand til established cleared i l s d m e approach runway two seven                                                                                                              & 38              \\
+        \midrule
+        continental three eighty two from the i loner cross loner at three or above cleared i l s d m e two seven approach maintain one seven zero knots to loner correction one seven zero knots until ripit                                                                                                                       & 38              \\
+        \midrule
+        u s r sixteen fifteen turn left heading two niner zero three from loner cross loner at three or above cleared i l s d m e runway two seven approach maintain one seven zero knots until ripit                                                                                                                               & 38              \\
+        \midrule
+        clipper sixty five forty seven miles from ripit heading three zero zero maintain three thousand til established on the localizer cleared i l s d m e runway two seven approach speed one ninety or greater to ripit                                                                                                         & 38              \\
+        \midrule
+        cessna three ten bravo whiskey boston tower ah move up and ah the heavy jet's going to runway two two left you'll ah depart prior to both heavies you can move up to the next avlable taxiway it's just it's about a thousand feet ahead turn right and hold short of runway two two right acknowledge hold                 & 57              \\
+        \bottomrule
+    \end{tabular}
+    \caption{A few examples of samples detected as outliers that were kept in the aggregated corpus.}
+    \label{tab:outlier_examples}
+\end{table}
 
 \newpage
 \section{Appendix B: Neural Language Modeling Application to Speech Recognition}\label{sec:appendix_a}

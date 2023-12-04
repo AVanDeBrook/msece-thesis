@@ -6,6 +6,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import librosa
 from numpy.random import default_rng
 from pytorch_lightning.utilities.types import EVAL_DATALOADERS
 from torch.utils.data import IterableDataset, DataLoader
@@ -40,6 +41,7 @@ class Data(IterableDataset):
         """
         self.dataset_name: str = dataset_name
         self.data: List[str] = []
+        self.audio_data_paths: List[str] = []
         self.seq_lens = []
         # create random number generator sequence with specified seed, if applicable
         Data._random: np.random.Generator = np.random.default_rng(random_seed)
@@ -215,6 +217,7 @@ class Data(IterableDataset):
         dataset_summary = f"""
 Name: {self.name}
 Samples: {self.num_samples}
+Hours of audio: {self.audio_hours}
 Mean Sequence Length: {self.average_sequence_length}
 Std of Sequence Length: {self.std_sequence_length}
 Number of Tokens: {self.total_tokens}
@@ -322,6 +325,22 @@ Ratio of unique tokens to the total number of tokens: {self.token_ratio()}, {sel
         Number of samples in the dataset
         """
         return len(self.data)
+
+    @property
+    def audio_hours(self) -> float:
+        """
+        Hours of audio in the dataset
+        """
+        assert len(self.audio_data_paths) != 0
+
+        duration_seconds = 0
+
+        for path in self.audio_data_paths:
+            # duration in seconds
+            duration_seconds += librosa.get_duration(path=path)
+
+        # convert seconds to hours (second -> minutes -> hours; 3600)
+        return duration_seconds / 3600
 
     @property
     def total_tokens(self) -> int:

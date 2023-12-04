@@ -14,13 +14,12 @@ class ZCUCZATCDataset(Data):
     Dataset can be obtained here: https://lindat.mff.cuni.cz/repository/xmlui/handle/11858/00-097C-0000-0001-CCA1-0
     """
 
-    _transcript_corrections = [
-        ("+", "-")
-    ]
+    _transcript_corrections = [("+", "-")]
 
     def __init__(self, data_root: str, **kwargs):
         super(ZCUCZATCDataset, self).__init__(dataset_name="ZCU CZ ATC", **kwargs)
         self.transcript_paths = glob.glob(os.path.join(data_root, "*.trs"))
+        self.audio_data_paths = glob.glob(os.path.join(data_root, "*.wav"))
 
         assert (
             len(self.transcript_paths) != 0

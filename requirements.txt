@@ -6,3 +6,4 @@ torch
 pytorch_lightning
 torchmetrics
 tensorboard
+librosa

@@ -84,33 +84,33 @@ def parse_datasets():
     data_objects[0].dataset_name = "All"
     data_objects[0].summary()
 
-    # outliers = data_objects[0].detect_outliers()
-    # print(f"Mean outlier sequence length: {outliers['seq_len'].mean()}")
-    # print(f"Min outlier sequence length: {outliers['seq_len'].min()}")
-    # print(f"Max outlier sequence length: {outliers['seq_len'].max()}")
-    # print(f"Std outlier sequence length: {outliers['seq_len'].std()}")
-    # print(
-    #     f"Most significant outlier:\n{outliers.where(outliers['seq_len'] == outliers['seq_len'].max()).dropna()}"
-    # )
+    outliers = data_objects[0].detect_outliers()
+    print(f"Mean outlier sequence length: {outliers['seq_len'].mean()}")
+    print(f"Min outlier sequence length: {outliers['seq_len'].min()}")
+    print(f"Max outlier sequence length: {outliers['seq_len'].max()}")
+    print(f"Std outlier sequence length: {outliers['seq_len'].std()}")
+    print(
+        f"Most significant outlier:\n{outliers.where(outliers['seq_len'] == outliers['seq_len'].max()).dropna()}"
+    )
 
-    # print(f"Max LOF score: {outliers['negative_outlier_factor_'].min()}")
-    # print(
-    #     outliers["text"]
-    #     .where(
-    #         outliers["negative_outlier_factor_"]
-    #         == outliers["negative_outlier_factor_"].min()
-    #     )
-    #     .dropna()
-    # )
+    print(f"Max LOF score: {outliers['negative_outlier_factor_'].min()}")
+    print(
+        outliers["text"]
+        .where(
+            outliers["negative_outlier_factor_"]
+            == outliers["negative_outlier_factor_"].min()
+        )
+        .dropna()
+    )
 
-    # data_objects[0].summary()
+    data_objects[0].summary()
 
-    # with open("outliers.txt", "a") as f:
-    #     for item, length in zip(
-    #         outliers["text"].tolist(), outliers["seq_len"].tolist()
-    #     ):
-    #         f.write(f"{int(length)}\n")
-    #         f.write(item + "\n")
+    with open("outliers.txt", "w") as f:
+        for item, length in zip(
+            outliers["text"].tolist(), outliers["seq_len"].tolist()
+        ):
+            f.write(f"{int(length)}\n")
+            f.write(item + "\n")
 
     # data_objects[0].plot_histogram()
 
@@ -150,9 +150,6 @@ if __name__ == "__main__":
     random.seed(RANDOM_SEED)
     torch.manual_seed(RANDOM_SEED)
 
-    with open("outliers.txt", "w") as f:
-        f.write("")
-
     train, valid, test = parse_datasets()
 
     # python representation of pretraining_info.json
@@ -168,35 +165,35 @@ if __name__ == "__main__":
     # with open("config/pretraining_info.json", "r", encoding="utf-8") as f:
     #     pretraining_info = json.load(f)
 
-    test_results = {"test_results": []}
+    # test_results = {"test_results": []}
 
-    with open("config/testing_config.json", "r", encoding="utf-8") as f:
-        testing_info = json.load(f)
+    # with open("config/testing_config.json", "r", encoding="utf-8") as f:
+    #     testing_info = json.load(f)
 
-    for model_config in testing_info["testing_config"]:
-        module_name = model_config["model_class"].rsplit(".")
-        module = __import__(".".join(module_name[:-1]), fromlist=[module_name[-1]])
-        model_class: Model = getattr(module, module_name[-1])
+    # for model_config in testing_info["testing_config"]:
+    #     module_name = model_config["model_class"].rsplit(".")
+    #     module = __import__(".".join(module_name[:-1]), fromlist=[module_name[-1]])
+    #     model_class: Model = getattr(module, module_name[-1])
 
-        model = model_class.load_from(
-            path=model_config["checkpoint_folder_path"],
-            train_dataset=train,
-            valid_dataset=valid,
-            checkpoint_name=model_config["checkpoint_name"],
-        )
+    #     model = model_class.load_from(
+    #         path=model_config["checkpoint_folder_path"],
+    #         train_dataset=train,
+    #         valid_dataset=valid,
+    #         checkpoint_name=model_config["checkpoint_name"],
+    #     )
 
-        results = model.test(test)
+    #     results = model.test(test)
 
-        test_results["test_results"].append(
-            {
-                "checkpoint_name": model_config["checkpoint_name"],
-                "model_class": model_config["model_class"],
-                "results": results,
-            }
-        )
+    #     test_results["test_results"].append(
+    #         {
+    #             "checkpoint_name": model_config["checkpoint_name"],
+    #             "model_class": model_config["model_class"],
+    #             "results": results,
+    #         }
+    #     )
 
-    with open("test_results.json", "w", encoding="utf-8") as f:
-        json.dump(test_results, f)
+    # with open("test_results.json", "w", encoding="utf-8") as f:
+    #     json.dump(test_results, f)
 
     # for model_config in pretraining_info["pretraining_config"]:
     #     """dynamically import class specified in "model_class"""
