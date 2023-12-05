@@ -7,3 +7,5 @@ pytorch_lightning
 torchmetrics
 tensorboard
 librosa
+pandas
+seaborn

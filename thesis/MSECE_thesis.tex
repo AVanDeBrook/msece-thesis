@@ -234,8 +234,8 @@ model pretraining on data considered out-of-domain will have negative effects on
 \section{Data Sources}\label{sec:data_source}
 There are four corpora used in this thesis. The datasets are primarily speech corpora intended either for automatic speech recognition research in the
 domain of aviation communications, linguistics research in aviation English, or both. All data in all four corpora include both recordings and
-transcriptions, audio and text, respectively. The transcriptions are used to pretrain and train the language models and tokenizers (described in
-sections \ref{sec:language_modeling} and \ref{sec:tokenizers}).
+transcriptions, which are audio and text, respectively. The transcriptions are used to pretrain and train the language models and tokenizers
+(described in sections \ref{sec:language_modeling} and \ref{sec:tokenizers}).
 
 The four corpora that were selected and used for this work are briefly described below. Further analysis is performed in Section
 \ref{sec:data_analysis}.
@@ -351,13 +351,12 @@ All data was processed in Python using primarily built-in functions/modules\foot
     although these are built into most Python distributions by default.}. The text data is extracted from the corpus transcripts by parsing from the
 corpora-specific formats where necessary i.e.~Lisp in ATCC, XML in ATCO2 and ZCU CZ ATC, and plain text in ATCOSIM, the transcriber annotations
 are removed where necessary\footnote{A copy of the original data is made, then the annotations are removed from the copy.}, and the resulting text
-is written to a file in the standard corpus format (an ASCII text file with one line in the file corresponding to one sample from the corpus) to a
-file.
+is written to a file in the standard corpus format (an ASCII text file with one line in the file corresponding to one sample from the corpus).
 
 \subsection{Handling Spelling Errors \& Inconsistencies}\label{sec:spelling_errors}
-By the nature of the data labeling process, there are bound to be spelling errors introduced by the annotators during corpora creation. This gets
-exacerbated by the aggregation of several corpora with varying controls for correcting spelling errors and inconsistencies. Nearly all of the errors
-are recoverable/correctable given context. For example, ``possibility of \textbf{tornado's}'' should clearly have been ``possibility of
+By the nature of the data labeling process, there is a high likelihood to be spelling errors introduced by the annotators during corpora creation.
+This gets exacerbated by the aggregation of several corpora with varying controls for correcting spelling errors and inconsistencies. Nearly all of
+the errors are recoverable/correctable given context. For example, ``possibility of \textbf{tornado's}'' should clearly have been ``possibility of
 \textbf{tornadoes}'', changing the possessive form of ``tornado'' to the plural form. There are also instances of spelling conventions that are
 consistent within corpora, but become inconsistent when the corpora are combined.
 
@@ -387,7 +386,7 @@ completely undefined by another (despite annotators making notes about hesitatio
 transcribed differs between corpora as well. Two corpora prescribe special tokens to these phenomena such as ``[hes]'', ``[hesitation]'', ``<pause>'',
 or similar, while the others transcribe the data as it sounds (i.e., ``uh'', ``eh'', or ``er'' for filled pauses and ``cir-'' or ``cir+'' for
 instances that were cut-off mid pronunciation). In order to facilitate the unification of the transcripts for all four corpora, the conventions for
-transcribing these phenomena are redefined below:
+transcribing these phenomena are redefined in Table \ref{tab:phenomena_definitions}.
 
 \begin{table}[!t]
     \centering
@@ -405,7 +404,6 @@ transcribing these phenomena are redefined below:
     \caption{Speech/transcription phenomena with corresponding convention for transcribing or translating, depending on the corpus being processed.}
     \label{tab:phenomena_definitions}
 \end{table}
-
 
 
 \begin{table}[!t]
@@ -468,20 +466,24 @@ and outlier removal.
 
 The ATCC and ZCU CZ ATC corpora make up a significant portion of the data, ATCC alone makes up more than half (approximately 54\%) of the combined
 data, and ATCC and ZCU CZ ATC together make up approximately 81\% of the data. The sequence lengths of the samples are fairly consistent across
-corpora with at most about an 18\% percent difference between sequence lengths. The number of unique tokens does not scale additively to the
-combined corpora, which is as expected. Considering that aviation English generally conforms to and follows ICAO phraseology standards we would expect
-that many terms would be shared across corpora with the exception of geographic/location specific terms, such as city, landmark, airport, and airline
-names, etc.~that typically vary across regions.
+corpora with at most about an 18\% percent difference between sequence lengths (calculated using equation (\ref{eq:percent_difference}), below). The
+number of unique tokens does not scale additively to the combined corpora, which is as expected since there will be an overlap of tokens between
+corpora. Aviation English generally conforms to and follows ICAO phraseology standards, so we would expect that many terms would be
+shared across corpora with the exception of geographic/location specific terms, such as city, landmark, airport, and airline names, etc.~that
+typically vary across regions.
+
+\begin{equation}\label{eq:percent_difference}
+    \mbox{PD} = \frac{|V_1 - V_2|}{\frac{V_1 + V_2}{2}} \times 100
+\end{equation}
 
 \subsection{Outlier Detection and Analysis}\label{sec:outliers}
 The Local Outlier Factor (LOF) algorithm \cite{breunig_lof_2000} was used to detect and analyze outliers in the corpora. The sequence lengths of the
 data samples were used to determine outliers. Since all four corpora are aggregated, LOF analysis was performed on the aggregated data instead of on
 the individual corpora.
 
-Sci-Kit Learn's \cite{pedregosa_scikit-learn_2011} implementation of the LOF algorithm was used with a value of \(N = 35\) for \(N\) neighbors in the
-K-Nearest Neighbors algorithm and Minkowski distance for distance metrics/calculations (in this case, since \(p=2\), Euclidean distance is effectively
-used for distance calculations). A total of 47 samples were detected as outliers and removed for analysis and are summarized in Table
-\ref{tab:outlier_stats}.
+Sci-Kit Learn's \cite{pedregosa_scikit-learn_2011} implementation of the LOF algorithm was used with a value of \(K = 35\) for the K-Nearest Neighbors
+algorithm and Minkowski distance for distance metrics/calculations (in this case, since \(p=2\), Euclidean distance is effectively used for distance
+calculations). A total of 47 samples were detected as outliers and removed for analysis and are summarized in Table \ref{tab:outlier_stats}.
 
 \begin{table}[!t]
     \centering
@@ -500,25 +502,21 @@ used for distance calculations). A total of 47 samples were detected as outliers
     \label{tab:outlier_stats}
 \end{table}
 
-Although all of the outliers have higher sequence lengths than the typical sequence lengths of the other samples in the data, going the through
-the outlying samples manually and reviewing each reveals that, for the most part, the samples are typical albeit somewhat complex communications.
-With the exception of four outliers, all of the samples labeled as outlying by the LOF algorithm were kept in the data. Examples of the outliers are
+Although all of the outliers have longer sequence lengths than the typical sequence lengths of the other samples in the data, going the through the
+outlying samples manually and reviewing each reveals that, for the most part, the samples are typical albeit somewhat complex communications.
+With the exception of one outlier, all of the samples labeled as outlying by the LOF algorithm were kept in the data. Examples of the outliers are
 listed in Appendix A in Section \ref{sec:appendix_a}, including the sample removed.
 
 \section{Language Modeling}\label{sec:language_modeling}
 % bert, roberta
 % n-gram
-This section introduces the chosen language model architectures as well as their pretrained checkpoints, if one is used. Two transformer-based
-architectures are used, BERT and RoBERTa, and statistical/machine learning-based approaches such as N-gram and word lattices.
+This section introduces the chosen language model architectures as well as their pretrained checkpoints. Two transformer-based architectures are used,
+BERT and RoBERTa, as well as one statistical/machine learning-based approach: N-gram language modeling.
 
 The transformers are pre-trained using the same masked language modeling (MLM) objective presented in Devlin et al.~\cite{devlin_bert_2019} to train
 BERT for bidirectional encoding representation and likewise in Liu et al.~\cite{liu_roberta_2019} for training RoBERTa. Given the results of the
-RoBERTa pretraining and downstream task training thereafter, it was initially decided to eliminate the next sentence prediction (NSP) task as it was
-used in BERT, however, their results suggest that the success of the MLM-only approach was due to the increase in batch and overall data
-size~\cite{liu_roberta_2019}. Taking this into account, along with the very limited amount of data available in the domain of aviation an NSP
-pretraining task was implemented where possible\footnote{Only about half of the data (only the data from ATCC, since it is continuous recordings of
-    the airspace) is in a format that enables us to extract the turn taking phenomenon that is present in most air-traffic communications.} to improve
-its pretraining results. MLM and NSP pretraining are explained more in-depth in Section \ref{sec:bert}, below.
+RoBERTa pretraining and downstream task training thereafter, it was decided to eliminate the next sentence prediction (NSP) task that was used to
+pretrain BERT. MLM and NSP pretraining are explained more in-depth in Section \ref{sec:bert}, below.
 
 \subsection{N-Gram}\label{sec:ngram}
 An N-gram language model estimates the probability of a token occurring in a sequence based on the \(N\) tokens preceding or succeeding that token.
@@ -567,25 +565,29 @@ token or, conversely, the $N$ tokens succeeding said token, BERT models are able
 succeeding tokens, thus the bidirectionality novelty.
 
 \textbf{Masked Language Modeling}. The ability of BERT to represent text in a bidirectional context is achieved through the Masked Language Modeling
-(MLM) pretraining task~\cite{devlin_bert_2019}. MLM pretraining choses a certain percentage of token positions at random for prediction, then tokens
-are replaced with either a ``mask'' token, a random token, or the original token according to preconfigured probabilities (BERT used 80\% for the mask
-token, 10\% for random tokens, and 10\% for the original/unchanged token). The original token is then predicted with cross-entropy loss.
+(MLM) pretraining task~\cite{devlin_bert_2019}. MLM pretraining chooses a certain percentage of token positions at random as labels for prediction,
+those tokens are then replaced with either a ``mask'' token, a random token, or the original token according to preconfigured probabilities (BERT used
+80\% for the mask token, 10\% for random tokens, and 10\% for the original/unchanged token). During training, the masked sequences are used as input
+to the model and the original is used as the prediction target. The model prediction is scored against the target using cross-entropy loss.
 
-\textbf{Next Sentence Prediction}. While MLM conditions the model to represent tokens within sentences, NSP is meant to condition the model to
-understand relationships between sentences/sequences to further support downstream tasks. Since BERTs training set consists primarily of literary
-works and excerpts from Wikipedia, the  model simply predicts whether two sentences appear together (one after the other) in the original text,
-making this a binary classification task as opposed to MLM which is a multi-class classification task. Instead of a single input sequence, the input
-consists of two sequences separated by a ``separation'' token and beginning with a ``classification'' token, these are represented by
-\lstinline|[SEP]| and \lstinline|[CLS]|, respectively in Devlin et al.~\cite{devlin_bert_2019}.
+\textbf{Next Sentence Prediction}. While MLM conditions the model to represent tokens within sequences and predict the most probable token based on
+its position in the sequence, NSP is meant to condition the model to understand relationships between sentences/sequences to further support
+downstream tasks. Since BERTs training set consists primarily of literary works and excerpts from Wikipedia, the model simply predicts whether two
+sentences appear together (one after the other) in the original text, making this a binary classification task as opposed to MLM which is a
+multi-class classification task. Instead of a single sequence, the input consists of two sequences separated by a ``separation'' token and
+beginning with a ``classification'' token, these are represented by \lstinline|[SEP]| and \lstinline|[CLS]|, respectively in Devlin et
+al.~\cite{devlin_bert_2019}.
 
 For symmetry between pretraining tasks, the special tokens specifying the beginning and end of input sequences are shared between tasks. For both MLM
 and NSP objectives, input sequences always start with a classification token and end with a separation token (see Figure
 \ref{fig:bert_mlm_input_example}). Likewise, NSP inputs always begin with a classification token and each input sequence is concatenated with a
-separation token terminating each sequence (see Figure \ref{fig:bert_nsp_input_example} and equations (\ref{eq:bert_mlm_input_example}) and
-(\ref{eq:bert_nsp_input_example})).
+separation token terminating each sequence (see Figure \ref{fig:bert_nsp_input_example} and equation (\ref{eq:bert_input_example})).
 
-\begin{equation}\label{eq:bert_mlm_input_example}
-    \mbox{[CLS], the, quick, brown, fox, [SEP]}
+\begin{equation}\label{eq:bert_input_example}
+    \begin{gathered}
+        \mbox{[CLS], the, quick, brown, fox, [SEP]}\\
+        \mbox{[CLS], the, quick, brown, fox, [SEP], jumps, over, the, [SEP]}
+    \end{gathered}
 \end{equation}
 
 \begin{figure}[!t]
@@ -593,10 +595,6 @@ separation token terminating each sequence (see Figure \ref{fig:bert_nsp_input_e
     \caption{An example of an input sequence for a masked language modeling pretraining task. Modified from Devlin et al.~\cite{devlin_bert_2019}.}
     \label{fig:bert_mlm_input_example}
 \end{figure}
-
-\begin{equation}\label{eq:bert_nsp_input_example}
-    \mbox{[CLS], the, quick, brown, fox, [SEP], jumps, over, the, [SEP]}
-\end{equation}
 
 \begin{figure}[!t]
     \includegraphics[width=\linewidth]{figures/BERT_NSP_input.png}
@@ -614,7 +612,7 @@ The pretraining methodology introduced by RoBERTa eliminated the NSP pretraining
 the quantity of training data along with the batch sizes in addition to training the model longer. Lastly, there is a small difference in the
 construction of input sequences as compared to BERT; input sequences always begin with a classification token (\lstinline|[CLS]|) and individual
 segments are separated by a separation token (\lstinline|[SEP]|). Rather than having sequences end with a separation token as well, they are
-terminated with an end of sequence token (\lstinline|[EOS]|). See equation \ref{eq:roberta_input_example} modified from Liu et
+terminated with an end of sequence token (\lstinline|[EOS]|). See equation (\ref{eq:roberta_input_example}) modified from Liu et
 al.~\cite{liu_roberta_2019}, below.
 
 \begin{equation}\label{eq:roberta_input_example}
@@ -693,11 +691,11 @@ al.~\cite{liu_roberta_2019}, below.
 % present and explain the tokenization algorithms used (possibly which models they correspond to)
 Tokenization is the process of separating or segmenting words in sentences into their component ``tokens''. The tokenized version of a sentence is
 referred to as a sequence. The rules by which the tokens are created or segmented depend entirely on the algorithm used. The simplest and most
-intuitive way to do this by creating tokens based on whitespace i.e., each ``word'' in the corpus is  treated as a token\footnote{The Huggingface
+intuitive way to do this is by creating tokens based on whitespace i.e., each word in the corpus is treated as a token\footnote{The Huggingface
     Tokenizer library implements this as the \lstinline|WordLevel| tokenizer.}. While this is simple and works in theory, it does not take into
 account the fact that not every word in a language will occur in a corpus. The inevitable possibility for a tokenizer to see a word that was not in
 the original training corpus is known as the out-of-vocabulary (OOV) problem~\cite{wu_googles_2016}. The OOV problem has been addressed by several
-different algorithms. For brevity's sake, only the tokenization algorithms used by the models in this work are defined and explained.
+different algorithms. For brevity's sake, only the tokenization algorithms used by the models in this thesis are defined and explained.
 
 \subsection{WordLevel}\label{sec:wordlevel}
 The WordLevel \cite{wolf_transformers_2020} tokenization algorithm, mentioned briefly as an introductory example above, is the most technically simple
@@ -706,7 +704,7 @@ This means that contractions, hyphenations, etc.~are treated as their own words 
 distinct words that are tokenized and mapped to their own integral representations.
 
 In order to map individual tokens to numerical values or IDs, an index of the words that appear in a corpus must be created. The numerical values for
-each token are derived from this index. For the WordLevel algorithm, this process is referred to as the training the tokenizer model (see algorithm
+each token are derived from this index. For the WordLevel algorithm, this process is referred to as the training the tokenizer model (see Algorithm
 \ref{alg:wordlevel_training}).
 
 The first step of the training procedure is to index any specified special tokens, such as mask, classification, or separation tokens (this is why
@@ -761,8 +759,8 @@ problem. Note that the values of the integers representing the tokens are determ
 training process (special tokens are defined and therefore seen first), so these results are completely reproducible as long as the data appears in
 the same order.
 
-The tokenization of words with shared roots but different suffixes is shown in Table \ref{tab:wordlevel_tokenization_shared_roots_example}. Clearly
-all three words are seen as independent and unique words by the tokenizer, since they are mapped to their own integer representations.
+The tokenization of words with shared roots but different suffixes is shown in Table \ref{tab:wordlevel_tokenization_shared_roots_example}. All three
+words are seen as independent and unique words by the tokenizer, since they are mapped to their own integer representations.
 
 \begin{table}[!t]
     \centering
@@ -808,12 +806,11 @@ preprocessing strategy of the tokenizer to partition contracted words into their
 % Wu et al. 2016; Schuster and Nakajima 2012
 The WordPiece algorithm was developed by Schuster and Nakajima \cite{schuster_japanese_2012} as a word segmentation algorithm for language modeling in
 Japanese and Korean voice search systems. It is further used by Wu et al.~\cite{wu_googles_2016} for neural machine translation tasks. The algorithm
-demonstrated proficiency and increased performance for the models used in both tasks and effectively addressed the OOV problem.
+demonstrated proficiency and increased performance for the models used in both tasks and effectively addresses the OOV problem.
 
 One of the primary stipulations for this algorithm is effective and efficient handling of OOV words such that none are produced during normal
 operation. To achieve this, during training, the vocabulary of the tokenizer is initialized to a basic set of characters; since WordPiece is designed
-to be language agnostic, the initial vocabulary is specified as all basic unicode characters (for the chosen language) in addition to all ASCII
-characters.
+to be language agnostic, the initial vocabulary is specified as all basic unicode characters in addition to all ASCII characters.
 
 The training procedure works by iterating over the vocabulary, combining two word units to maximize the likelihood over the training data, and
 repeating until one of two stop conditions are reached:
@@ -837,17 +834,17 @@ the following considerations to reduce the computational complexity:
 Table \ref{tab:wordpiece_tokenization_example}, below, shows an example of a WordPiece tokenizer model output on a sentence that was seen during the
 training procedure (trained on the same data as the WordLevel tokenizer in Section \ref{sec:wordlevel}). Since this sentence was in the training data,
 the segmentation is identical to that of the WordLevel tokenizer in Table \ref{tab:wordlevel_tokenization_example}, however, tokenization of similar
-words e.g.~words with shared roots or similar contractions are handled differently as in Table \ref{tab:wordpiece_tokenization_shared_roots_example}.
+words (e.g.~words with shared roots or similar contractions) are handled differently, as in Table \ref{tab:wordpiece_tokenization_shared_roots_example}.
 Since each word has a shared root word in the contractions (as well as an apostrophe separating the contraction), the tokenizer segments each word and
-represents them as groups of small, more common (thus with higher probabilities of occurring) tokens. Additionally, the WordPiece algorithm
-effectively handles OOV words. Take the OOV in Table \ref{tab:wordpiece_unk_word_similar} with a shared root and similar contraction as those in Table
-\ref{tab:wordpiece_tokenization_shared_roots_example}, which appear in the training data. Since the base of the contraction, ``you'', occurs in the
-training data as well as the apostrophe in the contraction, so the tokenizer segments those parts of the word as tokens. The last part of the word,
-``ll'', does not appear at all in the training data, so it is broken down into its component characters which are represented as ``l'' (beginning of
-a word) and ``\#\#l'' (segmented part of a word that should be concatenated to the previous token when they are recombined). Comparing this to the
-results of the WordLevel tokenizer output on the same word in Table \ref{tab:wordlevel_unk_word}, the WordPiece algorithm sidesteps the OOV problem
-for words similar to those in the trining corpus and, according to the output of the WordPiece tokenizer in Table \ref{tab:wordpiece_unk_word}, for
-words unlike those in the training corpus.
+represents them as groups of small, more common tokens (thus with higher probabilities of occurring). Additionally, the WordPiece algorithm
+effectively handles OOV words. For example, the OOV tokens in Table \ref{tab:wordpiece_unk_word_similar}, with a shared root and similar contractions
+as those in Table \ref{tab:wordpiece_tokenization_shared_roots_example}, which appear in the training data. The base of the contraction, ``you'',
+occurs in the training data as well as the apostrophe in the contraction, so the tokenizer segments those parts of the word as tokens. The last part
+of the word, ``ll'', does not appear at all in the training data, so it is broken down into its component characters which are represented as ``l''
+(beginning of a word) and ``\#\#l'' (segmented part of a word that should be concatenated to the previous token when they are recombined). Comparing
+this to the output of the WordLevel tokenizer on the same word in Table \ref{tab:wordlevel_unk_word}, the WordPiece algorithm effectively addresses
+the OOV problem for words similar to those in the trining corpus and, according to the output of the WordPiece tokenizer in Table
+\ref{tab:wordpiece_unk_word}, for words unlike those in the training corpus.
 
 \begin{table}[!t]
     \centering
@@ -912,9 +909,9 @@ words unlike those in the training corpus.
 
 \subsection{Byte-Pair Encoding}\label{sec:bpe}
 % Sennrich et al. 2016; Gage 1994
-The Byte-Pair Encoding (BPE) tokenizer algorithm was adapted from a data compression algorithm by Gage 1994~\cite{gage_feb94_1994}. The data compression
-algorithm works by replacing common pairs of bytes in data with an unused byte to reduce the overall size of the data. The tokenization algorithm
-works under the same principle, merging frequent pairs of characters or tokens into one token~\cite{sennrich_neural_2016}.
+The Byte-Pair Encoding (BPE) tokenizer algorithm was adapted from a data compression algorithm by Phillip Gage in 1994~\cite{gage_feb94_1994}. The
+data compression algorithm works by replacing common pairs of bytes in data with an unused byte to reduce the overall size of the data. The
+tokenization algorithm works under the same principle, merging frequent pairs of characters or tokens into one token~\cite{sennrich_neural_2016}.
 
 The vocabulary of the tokenizer is initialized to the base set of characters (letters, numbers, punctuation, etc.~). The training procedure begins by
 counting all pairs (``A'', ``B'') of characters that appear in the training data and combines the most frequently occurring pair into one token
@@ -990,7 +987,7 @@ of the tokens) and very similar to that of the WordLevel tokenizer.
     \label{tab:bpe_shared_roots_example}
 \end{table}
 
-Now, testing the BPE algorithm on words that did not appear in the training data, it is clear that the BPE algorithm effectively deals with and
+When testing the BPE algorithm on words that did not appear in the training data, it is clear that the BPE algorithm effectively deals with and
 processes OOV words (tables \ref{tab:bpe_unk_similar} and \ref{tab:bpe_unk}), even when no subunits of the word appear in the training data (Table
 \ref{tab:bpe_unk}).
 
@@ -1029,8 +1026,9 @@ processes OOV words (tables \ref{tab:bpe_unk_similar} and \ref{tab:bpe_unk}), ev
 \textbf{Byte-Level Byte-Pair Encoding}. This is a subset of the BPE algorithm that is also commonly used for NLP tasks such as neural machine
 translation, language modeling, and generative tasks (GPT-2 uses a byte-level BPE tokenizer~\cite{radford_language_2019}). As Huggingface's
 \lstinline|tokenizers| library implements it, this is a preprocessing step for the tokenizer model that maps all bytes in a string/sentence to their
-own unique and visible character. Functionally, byte-level BPE is nearly identical to standard BPE models except that the beginning of word symbol is
-actually rendered and represented by a visible character in the tokenized sequence (see Table \ref{tab:byte_level_bpe_example}).
+own unique and visible character. Functionally, byte-level BPE is nearly identical to the standard BPE algorithm, described above, except that the
+beginning of word symbol is actually rendered and represented by a visible character in the tokenized sequence (see Table
+\ref{tab:byte_level_bpe_example}).
 
 \begin{table}[!t]
     \centering
@@ -1050,18 +1048,36 @@ actually rendered and represented by a visible character in the tokenized sequen
 \section{Discussion}\label{sec:discussion}
 Considering the success of deep learning models with transformer-based architectures for language modeling and natural language processing (NLP)
 tasks, more generally, in the conversational and literary English domains, it follows that transformer architectures should see widespread use in the
-domain of aviation English for domain-specific NLP tasks, however, according to the literature, transformer-based language models have seen sparse
-use. The most notable example of the use of a transformer deep neural network is the application of BERT for knowledge extraction from notice to
-airmen (NOTAM) messages \cite{arnold_knowledge_2022}.
+domain of aviation English for domain-specific NLP tasks. However, according to the literature, transformer-based language models have seen sparse
+use. The most notable example of the use of a transformer neural network is the application of BERT for knowledge extraction from notice to airmen
+(NOTAM) messages \cite{arnold_knowledge_2022}.
 
+The expectation is that the language models trained from scratch will outperform the pretrained language models due to the nature of the differences
+between literary English (the language the pretrained models were trained on) and aviation English. Additionally, the data being modeled are
+orthographic transcriptions, which further extends the difference between the training corpora, thus leading to the hypothesis of the differences
+in model performance. To test this hypothesis, the models will be divided into two sets or classes: (1) models trained from scratch and (2) pretrained
+models that are fine-tuned (or transfer learned) using the data aggregated for this thesis (as described in Section \ref{sec:data_source}), these are
+denoted as the sets of \textit{scratch} and \textit{pretrained} models, respectively. Each class includes a version of the BERT and RoBERTa models,
+starting from scratch or the pretrained checkpoint, depending on the class of the model. In order to perform a fair comparison between models, the
+following parameters (and/or hyperparameters) are kept the same across all four models:
 
+\begin{itemize}
+    \item Optimization algorithm
+    \item Optimizer hyperparameters (see Table \ref{tab:optim_params})
+    \item Number of hidden layers
+    \item Number of neurons per layer
+    \item Number of attention heads
+    \item Activation functions
+    \item Type of tokenizer algorithm
+    \item Training, testing, and validation data
+\end{itemize}
 
 \subsection{Language Model Pretraining}\label{sec:lm_pretraining}
 A standard masked language modeling training procedure is used to pretrain the language models, as described in Section \ref{sec:bert}. Tokens are
-masked at random with a uniform probability of 0.2. Input sequences are padded to the maximum length allowed by the model and truncated to the maximum
-length, if greater. The maximum sequence length for BERT and RoBERTa models is 512 tokens \cite{devlin_bert_2019,liu_roberta_2019}. Based on the data
-analysis in Section \ref{sec:data_analysis}, there are few, if any, samples that meet or exceed the maximum sequence length for BERT and RoBERTa
-models.
+masked at random as described in the MLM process in Section \ref{sec:bert}. Input sequences are padded to the maximum length allowed by the model with
+a special \lstinline|[PAD]| token and truncated to the maximum length, if greater. The maximum sequence length for BERT and RoBERTa models is 512
+tokens \cite{devlin_bert_2019,liu_roberta_2019}. Based on the data analysis in Section \ref{sec:data_analysis}, there are few, if any, samples that
+meet or exceed the maximum sequence length for BERT and RoBERTa models.
 
 The models are trained with the \textit{AdamW} optimizer \cite{loshchilov_decoupled_2019} using the hyperparameters in Table \ref{tab:optim_params}
 based on the most effective pretraining configuration presented in \cite{devlin_bert_2019} and \cite{liu_roberta_2019}.
@@ -1083,15 +1099,15 @@ based on the most effective pretraining configuration presented in \cite{devlin_
     \label{tab:optim_params}
 \end{table}
 
-A train/test split of 70\% and 30\% and a validation split of 10\% of the training data was used for each model. The blank models (the models that are
-trained from randomly initialized weights; also referred to as being trained from scratch) were trained for 200 epochs and the pretrained models were
-trained for 100 epochs. These values were chosen through trial and error, monitoring the perplexity and loss curves of the
-validation set to ensure that the pretraining does not result in net negative effects on the loss and perplexity of the model (i.e.~to ensure that the
-models are not overfitting to the training data). Batch sizes of 16 were used for training all four models; this was the maximum batch size that
-worked reliably with the hardware available to train the models\footnote{Values larger than 16 would sometimes cause CUDA Out of Memory errors, so 16
-    was used to ensure all models trained continuously without error and/or interruption.}.
+A train/test split of 70\% and 30\% and a validation split of 10\% of the training data was used for each model. The models trained from scratch were
+trained for 200 epochs and the pretrained models were trained for 100 epochs. These values were chosen through trial and error, monitoring the
+perplexity and loss curves of the validation set to ensure that the pretraining does not result in net negative effects on the loss and perplexity of
+the model (i.e.~to ensure that the models are not overfitting to the training data). Batch sizes of 16 were used for training all four models; this
+was the maximum batch size that worked reliably with the hardware available to train the models\footnote{Values larger than 16 would sometimes cause
+    Out of Memory errors on the GPU device used for training, so 16 was used to ensure all models trained continuously without error and/or
+    interruption. Models were trained on a workstation 64 GB of RAM and an NVIDIA RTX 3090 GPU with 24 GB of VRAM.}.
 
-\begin{table}
+\begin{table}[!t]
     \centering
     \begin{tabular}{l r r}
         \toprule
@@ -1108,43 +1124,76 @@ worked reliably with the hardware available to train the models\footnote{Values 
 
 \subsection{Performance Metrics}\label{sec:performance_metrics}
 \textbf{Cross-Entropy Loss}. As mentioned previously, perplexity and cross-entropy loss (often shortened to loss) are used to track the performance of
-the model on the training and validation sets, per epoch, while training. Cross-entropy loss is defined by the following equation:
+the model on the training and validation sets, per epoch, while training. Cross-entropy loss is defined below.
+
+Let $\mathcal{L}(x, y)$ be the cross-entropy loss function that outputs a $N \times 1$ vector, $L$, that contains the loss values for each sample in a
+batch of $N$ samples.
+
+\begin{equation}\label{eq:cross_entropy_defs}
+    \mathcal{L}(x, y) = L = \{\mbox{$l_1$, $l_2$, ..., $l_N$}\}^T
+\end{equation}
+
+\noindent
+Where $x$ is a $512 \times N$ vector representing model inputs (a sequence of tokens) and $y$ is a $1 \times N$ vector representing the target/label
+for each sample in the batch. The cross-entropy loss for a single sample is then calculated as
 
 \begin{equation}\label{eq:cross_entropy_loss}
+    l_n = -\log \left[\frac{\exp(x_{n,y_n})}{\sum_{c=1}^{C}\exp(x_{n,c})}\right] \quad \forall n=1..N
+\end{equation}
+
+\noindent
+where $l_n$ is the loss for an individual sample in the batch, and $C$ is the number of class labels. For the purpose of language modeling, the
+set of class labels is equivalent to the vocabulary of the tokenizer (and thus the language model). Numerical labels will correspond to token IDs. The
+loss for a batch is calculated as the mean of the loss for each sample in the batch.
+
+\begin{equation}\label{eq:cross_entropy_mean}
+    \mathcal{L}(x, y) = \frac{1}{N}\sum_{i=1}^{N}l_i
+\end{equation}
+
+\noindent
+Equation (\ref{eq:cross_entropy_mean}) can then be extended to find the mean cross-entropy loss over an epoch by swapping $l_i$ for batch means and
+$\mathcal{L}(x, y)$ for the epoch mean. $N$ would then represent the number of batch in an epoch rather than the number of samples in a batch.
+
+\textbf{Perplexity}. This metric is used to measure a models ability to predict the most probable token in a sequence. It will be used to measure and
+track how well the language models can predict the most probable token for a specific point in a sequence.
+
+Let $P$ and $\hat{Y}$ be vectors representing the perplexity for samples in a batch, and non-normalized output neurons in a neural network,
+respectively.
+\begin{equation}\label{eq:perplexity_defs}
     \begin{gathered}
-        \mathcal{L}(x, y) = L = \{\mbox{$l_1$, $l_2$, ..., $l_N$}\}^T\\
-        l_n = -\log \left[\frac{\exp(x_{n,y_n})}{\sum_{c=1}^{C}\exp(x_{n,c})}\right] \quad \forall n=1..N
+        P = \{p_1, p_2, ..., p_N\}^T\\
+        \hat{Y} = \{\hat{y}_1, \hat{y}_2, ..., \hat{y}_C\}^T
     \end{gathered}
 \end{equation}
 
 \noindent
-where $x$ is a $512 \times N$ vector representing model inputs (a sequence of tokens) and $y$ is a $1 \times N$ vector representing the target/label
-for each sample in the batch. $L$ is an $N \times 1$ vector containing the losses for each sample in the batch, $N$ is the number of samples in the
-batch, $l_n$ is the loss for an individual sample, $n$, in the batch, and $C$ is the number of class labels. For the purpose of language modeling, the
-set of class labels is equivalent to the vocabulary of the tokenizer (and thus the language model). Numerical labels will correspond to token IDs. The
-overall loss is then found by taking the mean of the loss over the batch, likewise for an epoch, the loss is found by taking the average of each batch
-in the epoch.
-
-\textbf{Perplexity}. Perplexity is related to the probability of a token appearing in a sequence. It is used as a measure of how well a language model
-can predict tokens in a sequence and is defined by the equation below:
+Where $N$ is the number of samples in a batch and $C$ is the number of class labels. Then the perplexity for each sample in a batch can be calculated
+as
 
 \begin{equation}\label{eq:perplexity}
-    \begin{gathered}
-        X = \{x_1, x_2, ..., x_N\}\\
-        \mbox{PPL} = \exp\left[\frac{\sum_{i=1}^N - \log_2 x_i}{N}\right]
-    \end{gathered}
+    p_n = \exp \left[ \frac{1}{T}\sum_{i=1}^C - \log(\hat{y}_i) \right] \quad \forall n = 1..N
 \end{equation}
 
 \noindent
-Where $X$ is an input sequence, $N$ is the length of the sequence, and $x_i$ is an individual token in the sequence, $X$.
+where $p_n$ is the perplexity for an individual sample in the batch, and $T$ is the number of tokens in the sample. The perplexity for the batch is
+then calculated as the mean of the perplexities in the batch.
+
+\begin{equation}\label{eq:perplexity_mean}
+    \mbox{PPL} = \frac{1}{N}\sum_{i=1}^{N}p_i
+\end{equation}
+
+\noindent
+Where $\mbox{PPL}$ is the mean perplexity over a batch with $N$ samples. This equation can then be extended to find the mean perplexity over each
+batch in the epoch, swapping $p_i$ for batch means and $\mbox{PPL}$ for the epoch mean. $N$ would then represent the number of batches in an epoch
+rather than the number of samples in the batch.
 
 \subsection{Pretraining Results}\label{sec:pretraining_results}
 With the metrics above defined, an analysis of the results of the model pretraining can be performed. The objective of the pretraining procedure is to
-build the models' understanding of the structure of the text, in this case transcripts of air-traffic communications. By tracking the average
+build the models' understanding of the structure of the text, transcripts of air-traffic communications in this case. By tracking the average
 cross-entropy loss (loss) and perplexity (PPL) during training, we can estimate how well (and how correctly) the models are predicting tokens and if
 the models are effectively ``understanding'' token placements in sequences.
 
-Graphs of the training loss (average loss over the samples/batches in the training partition of the corpus) are presented in figure
+Graphs of the training loss (average loss over the samples/batches in the training partition of the corpus) are presented in Figure
 \ref{fig:training_loss}. Both classes of models (scratch and pretrained) quickly reach a steady state in terms of loss although the initial loss
 values are significantly different. It is notable that the pretrained models start with a significantly lower loss, about 1.3, compared to models
 trained from scratch, which started with a loss value of just over 5.0. This initially indicates that the models are training well and beginning to
@@ -1157,21 +1206,44 @@ converge on either local or global minima.
 \end{figure}
 
 The perplexity of the models on the training data yields interesting results (Figure \ref{fig:training_ppl}). Although the pretrained models have a
-more stable curve over time, the models trained from scratch result in a significantly lower perplexity. Note the difference in the scales on the
-y-axis in Figure \ref{fig:training_ppl}; the final perplexity value of each language model trained from scratch is at least two orders of magnitude
-lower than that of the pretrained models. At the end of training, the BERT and RoBERTa models trained from scratch had perplexity values of
-$0.52\times 10^7$ and $0.16\times 10^7$, respectively, whereas the pretrained models reached perplexity values of $0.29\times 10^9$ and
-$0.17\times 10^9$, for BERT and RoBERTa, respectively. This indicates that best language model performance may be achieved by pretraining models on
-in-domain data, then continuing to fine-tune on specific downstream tasks. This is a direct contradiction of the current recommended practice of using
-one of the pretrained checkpoints from Devlin et al.~\cite{devlin_bert_2019} and Liu et al.~\cite{liu_roberta_2019} then fine-tuning on specific
-downstream tasks. This is further upheld by the results of the model performance on the test partition of the corpus in Table
-\ref{tab:pretraining_results}, below. As with the training data, the perplexity of the language models trained from scratch over the test partition of
-the corpus is significantly lower than that of the pretrained language models. The loss of each model over the test set is somewhat high, but they are
-around the same values for each model, which is consistent with the loss statistics during training. A higher loss value on unseen (test) data is
-normal and expected. The BERT model trained from scratch had the best performance among the models tested despite both RoBERTa models training better
-within their model classes. Within the class of pretrained models, however, the RoBERTa model still technically performed better than the BERT model
-(values shown in Table \ref{tab:pretraining_results} were rounded to three significant figures) with a perplexity value of $0.007\times 10^9$ compared
-to BERT's $0.014\times 10^9$.
+more stable curve over time, the models trained from scratch result in a significantly lower perplexity. The final perplexity values (over the
+training set) of the models trained from scratch were significantly better than that of the pretrained models. At the end of training, the BERT and
+RoBERTa models trained from scratch had perplexity values of $0.52\times 10^7$ and $0.16\times 10^7$, respectively, whereas the pretrained models
+reached perplexity values of $0.29\times 10^9$ and $0.17\times 10^9$, for BERT and RoBERTa, respectively. Using the following equation,
+
+\begin{equation}\label{eq:relative_difference}
+    \mbox{RD} = \frac{v - v_{ref}}{v_{ref}}
+\end{equation}
+
+\noindent
+the relative difference in perplexity between the scratch and pretrained models on the final training epoch is 55.24, for the BERT models, and 104.57,
+for the RoBERTa models, which equates to an absolute difference (equation (\ref{eq:absolute_difference})) of $28.74 \times 10^7$ and
+$16.43 \times 10^7$ for the BERT and RoBERTa model, respectively.
+
+\begin{equation}\label{eq:absolute_difference}
+    \mbox{AD} = |a - b|
+\end{equation}
+
+The results from the training procedure show that the models trained from scratch outperformed their pretrained counterparts. This initially
+indicates that best language model performance may be achieved by pretraining models on in-domain data, then continuing to fine-tune on specific
+downstream tasks. This seems to be a direct contradiction of the current recommended practice of using one of the pretrained checkpoints from Devlin
+et al.~\cite{devlin_bert_2019} and Liu et al.~\cite{liu_roberta_2019} then fine-tuning on specific downstream tasks. However, this is only partially
+upheld by the results of the model performance on the test partition of the corpus (Table \ref{tab:pretraining_results}). For the BERT models, the
+pattern exhibited during training is consistent with the results on the test partition, resulting in a relative difference of 8.62 and an absolute
+difference of $1.24 \times 10^7$. For the RoBERTa models, however, the relative difference in perplexity is -0.34 with an absolute difference of
+$0.36 \times 10^7$. These results show that the pretrained RoBERTa model performed better during pretraining than the corresponding model
+that was trained from scratch, unlike the BERT models (theories as to why this occurs will be explored in the next paragraph). The loss of each
+model over the test set is somewhat high, but they are around the same values for each model, which is consistent with the loss statistics during
+training. A higher loss value on unseen (test) data is normal and expected.
+
+The BERT model trained from scratch had the best performance among the models tested followed closely by the pretrained RoBERTa model, which partially
+confirms the hypothesis that this thesis is based upon. The pretrained BERT model used both MLM and NSP pretraining objectives to create the
+checkpoint used in this thesis. The pretrained RoBERTa model, on the other hand, used only the MLM pretraining objective. It is readily apparent from
+the results of \cite{liu_roberta_2019} that RoBERTas modified pretraining methodology resulted in better model performance for in-domain problems.
+However, it seems that the pretraining method also allows RoBERTa to generalize better than BERT when transfer learned to other NLP domains. It is
+conceivable that, given additional training data in the future, the pretrained RoBERTa model could surpass the performance of the BERT model trained
+from scratch. Although, with the current volume of data available in this domain, it is clear from the results of the models on the test partition of
+the corpus that a BERT model trained from scratch will still be the best option for aviation English NLP tasks.
 
 \begin{figure}[!t]
     \includegraphics[width=\linewidth]{figures/training_ppl.png}
@@ -1183,12 +1255,12 @@ to BERT's $0.014\times 10^9$.
     \centering
     \begin{tabular}{l r r}
         \toprule
-        Model                & Loss  & Perplexity        \\
+        Model                & Loss  & Perplexity ($\times 10^7$) \\
         \midrule
-        BERT (scratch)       & 10.54 & $0.14\times 10^7$ \\ % 1435064.875
-        RoBERTa (scratch)    & 11.41 & $1.04\times 10^7$ \\ % 10376598.000
-        BERT (fine-tuned)    & 11.00 & $0.01\times 10^9$ \\ % 13805354.000
-        RoBERTa (fine-tuned) & 11.80 & $0.01\times 10^9$ \\ % 6816011.500
+        BERT (scratch)       & 10.54 & 0.14                       \\ % 1435064.875
+        RoBERTa (scratch)    & 11.41 & 1.04                       \\ % 10376598.000
+        BERT (pretrained)    & 11.00 & 1.38                       \\ % 13805354.000
+        RoBERTa (pretrained) & 11.80 & 0.68                       \\ % 6816011.500
         \bottomrule
     \end{tabular}
     \caption{Results on the test set of data after pretraining the BERT and RoBERTa models from scratch and pretrained checkpoints. Loss and
@@ -1212,8 +1284,8 @@ based on the idea that BERT was not trained on enough data \cite{liu_roberta_201
 
 \textbf{Different forms of English}. The BERT and RoBERTa pretraining checkpoints were created by training the models on literary works and typed
 articles such as those from \textit{Wikipedia}. The data used in this work are orthographic transcriptions of aviation English and while the two data
-sources share the common root of English, transfer learning from literary English to aviation English yields limited results, as evidenced above.
-Especially with relatively small amounts of data.
+sources share the common root of English, transfer learning from literary English to aviation English yields limited results, as evidenced above,
+especially with relatively small amounts of data.
 
 \textbf{Mixed regional data sources}. As described in Section \ref{sec:data_source}, the data aggregated for use here comes from several different
 regions, namely international airports in the US \cite{godfrey_air_1994} and international and domestic airports in Europe
@@ -1230,24 +1302,23 @@ so at this point the models should be trained for downstream tasks in order to f
 In the aviation domain and for this particular data, that would mean training for tasks such as callsign identification, speaker identification,
 flight phase classification, clearance recognition, etc. However, labels for these tasks are not present in the corpora used here. Corpora with
 relevant labels for downstream tasks could not be obtained within an appropriate amount of time to run and include the experiments in this work.
-Some potential algorithms were developed in an attempt to mine labels from the corpora aggregated for this work which will be expanded upon in section
-\ref{sec:future_work}. For these reasons, testing model performance and effectiveness on downstream tasks must be left for future work.
+Some potential algorithms were developed in an attempt to mine labels from the corpora aggregated for this work, which will be expanded upon in
+section \ref{sec:future_work}. For these reasons, testing model performance and effectiveness on downstream tasks must be left for future work.
 
 \section{Conclusion}\label{sec:conclusion}
-Four aviation English corpora are aggregated and unified for use in neural language modeling. Masked language modeling is then used pretrain two
-classes of BERT and RoBERTa models (models trained from scratch and pretrained models transfer learned to aviation English).
+Four aviation English corpora are aggregated and unified for use in neural language modeling. A masked language modeling pretraining methodology is
+then used to pretrain two classes of BERT and RoBERTa models (models trained from scratch and pretrained models transfer learned to aviation English).
 
 Contrary to the recommended best practice of using pretrained checkpoints and training for downstream tasks, we find that, in the domain of aviation
 English, models achieve better performance when pretrained from scratch than model checkpoints transfer learned from the available BERT and RoBERTa
-pretrained checkpoints. The BERT and RoBERTa models trained from scratch, with parameters identical to the pretrained models, reached perplexity
-values nearly two orders of magnitude lower than their corresponding pretrained checkpoints on the training partition of the corpus. Additionally,
-the BERT and RoBERTa models trained from scratch consistently outperformed the corresponding pretrained models on the test partition of the corpus,
-with BERT performing the best overall.
+pretrained checkpoints. Although the pretrained RoBERTa model achieved better performance on the test partition of the corpus than expected, the
+pretraining methods laid out in this thesis resulted in the BERT model trained from scratch achieving the lowest loss and perplexity overall.
 
-The results from the experiments in this work indicate that, for natural language processing tasks in the aviation domain, models pretrained from
-scratch are more effective than transfer learning pretrained models. Thus, models trained from scratch should be fine-tuned and used for downstream
-tasks over pretrained models. The most significant limiting factor to the performance of the models is the small volume of aviation English data
-available for pretraining and downstream task use.
+The results from the experiments in this work indicate that, for natural language processing tasks with limited data availability in the aviation
+domain, models trained from scratch are more effective than transfer learning pretrained models. Thus, models trained from scratch should be
+fine-tuned and used for downstream tasks over pretrained models. The most significant limiting factor to the performance of the models is the small
+volume of aviation English data available for pretraining and downstream task use. Investment in the creation of expansive, high quality, openly
+available aviation English corpora with appropriate formatting for the development machine learning applications is also highly recommended.
 
 \section{Future Work}\label{sec:future_work}
 This section is intended to serve as a brief proposal or set of suggestions for future work based on the results of this work. The main focus of these
