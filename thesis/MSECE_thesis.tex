@@ -125,17 +125,42 @@ controller workloads. Preliminary studies have found that AI-augmented ATM syste
 aircraft by optimizing aircraft routes in the airspace and reducing departure/arrival times, thereby reducing fuel consumption
 \cite{helmke_quantifying_2017}.
 
-At the time of this writing, the current focus of general machine learning and deep learning algorithms in the language modeling domains has been on a variety of deep learning methods/architectures, namely, recurrent, convolutional, and transformer neural networks, due to the availability of large natural language corpora such as WikiText~\cite{merity_pointer_2016} and IMDB~\cite{maas_learning_2011}. In contrast to the general domain, the aviation domain still prefers and sees much success with traditional machine learning models for language modeling applications. Typically, the most prevalent of the traditional models are N-grams, word lattices, and rule-based approaches, depending on the application and operating environment of the models. The most likely reason for this divergence between the domains is the difference and relative lack of labeled data in the aviation domain. By comparison, the largest corpora in the general domain are either WikiText or the BookCorpus, which contain trillions of tokens, whereas, for aviation, the largest corpus is Air Traffic Control Complete with approximately 26 hours of labeled data amounting to just over 300,000 tokens\footnote{Air Traffic Control Complete has approximately 70 hours of audio data, however, about 26 hours of the 70 are labeled.}. This disparity in data availability is exacerbated by the fact that aviation English uses a specialized vocabulary in addition to specialized pronunciation for some words to enhance understandability in a radiotelephonic (R/T) medium~\cite{paltridge_handbook_2013}, making it significantly more difficult to transcribe/label data as it requires transcribers to have domain knowledge and experience to create effective transcriptions. This, in addition to the following facets, further contributes to the difficulty of transcription: (1) the medium of communication, (2) the environment in which the communication occurs\footnote{For example, a noisy and possibly low fidelity medium, depending on the equipment used to transmit and receive communications}, (3) a noisy and active communication environment i.e.~an active flight deck under the influence of wind, engine noise, etc., (4) an active Air Traffic Control (ATC) tower and channels, and (5) a rapid rate of speech \cite{paltridge_handbook_2013}.
+At the time of this writing, the current focus of general machine learning and deep learning algorithms in the language modeling domains has been on a
+variety of deep learning methods/architectures, namely, recurrent, convolutional, and transformer neural networks, due to the availability of large
+natural language corpora such as WikiText \cite{merity_pointer_2016} and IMDB \cite{maas_learning_2011}. In contrast to the general domain, the
+aviation domain still prefers and sees much success with traditional machine learning models for language modeling applications. Typically, the most
+prevalent of the traditional models are N-grams, word lattices, and rule-based approaches, depending on the application and operating environment of
+the models. The most likely reason for this divergence between the domains is the difference and relative lack of labeled data in the aviation domain.
+By comparison, the largest corpora in the general domain are either WikiText or the BookCorpus, which contain trillions of tokens, whereas, for
+aviation, the largest corpus is Air Traffic Control Complete with approximately 26 hours of labeled data amounting to just over 300,000
+tokens\footnote{Air Traffic Control Complete has approximately 70 hours of audio data, however, about 26 hours of the 70 are labeled.}. This disparity
+in data availability is exacerbated by the fact that aviation English uses a specialized vocabulary in addition to specialized pronunciation for some
+words to enhance understandability in a radiotelephonic (R/T) medium \cite{paltridge_handbook_2013}, making it significantly more difficult to
+transcribe/label data as it requires transcribers to have domain knowledge and experience to create effective transcriptions. This, in addition to the
+following facets, further contributes to the difficulty of transcription: (1) the medium of communication, (2) the environment in which the
+communication occurs\footnote{For example, a noisy and possibly low fidelity medium, depending on the equipment used to transmit and receive
+    communications}, (3) a noisy and active communication environment i.e.~an active flight deck under the influence of wind, engine noise, etc., (4)
+an active Air Traffic Control (ATC) tower and channels, and (5) a rapid rate of speech \cite{paltridge_handbook_2013}.
 
 % connect complexity of aviation english to utility/necessity of NLP models (ASR and LM) in the aviation domain
-The potential for speech recognition and language modeling algorithms to reach better than human performance (for example, the Stanford Question Answering Dataset (SQuAD) benchmark has recorded results consistently better than humans since 2019\footnote{https://rajpurkar.github.io/SQuAD-explorer/})~\cite{zhang_ai_2022} suggests that these NLP algorithms could have high utility in the aviation domain. If they can achieve better-than-human performance in the aviation domain and be used with pilot and air traffic controller systems, they could easily boost efficiency, reduce workloads, and reduce and mitigate errors during normal operations.
+The potential for speech recognition and language modeling algorithms to reach better than human performance (for example, the Stanford Question
+Answering Dataset (SQuAD) benchmark has recorded results consistently better than humans since
+2019\footnote{https://rajpurkar.github.io/SQuAD-explorer/}) \cite{zhang_ai_2022} suggests that these NLP algorithms could have high utility in the
+aviation domain. If they can achieve better-than-human performance in the aviation domain and be used with pilot and air traffic controller systems,
+they could easily boost efficiency, reduce workloads, and reduce and mitigate errors during normal operations.
 
-The methods and results laid out in this thesis were done with the intention of creating a streamlined process for training and testing deep learning-based NLP methods, specifically language modeling. The results from the language models suggest that the volume of text used to train the language models is not yet sufficient to produce results akin to those in the conversational and/or literary English domains. Additionally, the results show that language models trained ``from scratch'' on in-domain data perform better than models trained on out-of-domain data and transfer learned on in-domain data, i.e., constrained BERT and RoBERTa models transfer learned to aviation English.
+The methods and results laid out in this thesis were done with the intention of creating a streamlined process for training and testing deep
+learning-based NLP methods, specifically language modeling. The results from the language models suggest that the volume of text used to train the
+language models is not yet sufficient to produce results akin to those in the conversational and/or literary English domains. Additionally, the
+results show that language models trained ``from scratch'' on in-domain data perform better than models trained on out-of-domain data and transfer
+learned on in-domain data, i.e., constrained BERT and RoBERTa models transfer learned to aviation English.
 
 \section{Notation and Terminology}
 This section is included for the sake of clarity throughout this thesis. In pursuit of that, a few terms and notations are defined below.
 
-Set notation (or set-builder notation)\footnote{That is, the notation used to denote sets and associated operations therein as it relates to the field of set theory, in mathematics.} as defined in \cite{jech_chapter_1978} is used in parts of this thesis, particularly in equations and algorithms, to convey mathematical concepts. The shorthand below is defined
+Set notation (or set-builder notation)\footnote{That is, the notation used to denote sets and associated operations therein as it relates to the field
+    of set theory, in mathematics.} as defined in \cite{jech_chapter_1978} is used in parts of this thesis, particularly in equations and algorithms, to
+convey mathematical concepts. The shorthand below is defined
 \begin{equation*}
     A; x := A \cup \{x\}
 \end{equation*}
@@ -159,7 +184,13 @@ The following words (in bold) are used throughout the thesis as they relate to l
 \section{Literature Review}\label{sec:lit_review}
 % from thesis proposal; revise and add to this as more references are used
 % transformer history (background)
-The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved state-of-the-art \cite{vaswani_attention_2017}. Transformer architectures are extremely effective at learning representations and understandings of languages to predict token probabilities instead of transforming one language into another \cite{devlin_bert_2019,liu_roberta_2019}. Transformers have also been found to be very effective at other NLP-related tasks such as prompt completion and sentiment analysis among others (i.e.~auto-regressive and sequence classification tasks, respectively) \cite{lewis_bart_2019,radford_improving_2018}. Devlin et al.~\cite{devlin_bert_2019}proposed pretraining methods such as masked language modeling and next sentence prediction to improve natural language understanding for downstream tasks, which was further expanded upon by Liu et al.~\cite{liu_roberta_2019} by training longer, with larger batch sizes, and removing the next sentence prediction task.
+The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved state-of-the-art
+\cite{vaswani_attention_2017}. Transformer architectures are extremely effective at learning representations and understandings of languages to
+predict token probabilities instead of transforming one language into another \cite{devlin_bert_2019,liu_roberta_2019}. Transformers have also been
+found to be very effective at other NLP-related tasks such as prompt completion and sentiment analysis among others (i.e.~auto-regressive and sequence
+classification tasks, respectively) \cite{lewis_bart_2019,radford_improving_2018}. Devlin et al.~\cite{devlin_bert_2019} proposed pretraining methods
+such as masked language modeling and next sentence prediction to improve natural language understanding for downstream tasks, which was further
+expanded upon by Liu et al.~\cite{liu_roberta_2019} by training longer, with larger batch sizes, and removing the next sentence prediction task.
 
 % tokenizer algorithms
 In language modeling and natural language processing tasks, the out-of-vocabulary (OOV) problem is prevalent and has been addressed by the
@@ -167,10 +198,27 @@ introduction of tokenizer algorithms. WordPiece and Byte Pair Encoding (BPE) hav
 vocabulary sizes and maximizing the likelihood of tokens in sequences \cite{wu_googles_2016,schuster_japanese_2012,sennrich_neural_2016}.
 
 % LMs and NLP in aero. domain
-Various natural language processing methods have been applied to the aviation domain to help deal with miscommunications and try to mitigate safety incidents\cite{ragnarsdottir_language_2003,tanguy_natural_2016,madeira_machine_2021}. Some machine learning approaches have been implemented to analyze the text in aviation incident and safety reports to predict contributing factors and topic models\cite{tanguy_natural_2016,madeira_machine_2021}. An ASR system with NLP post-processing has also been proposed to analyze Air-Traffic communications and condense significant features (e.g.~weather, runway, and heading info) into an XML language structure\cite{ragnarsdottir_language_2003}. Transformer language models such as BERT and RoBERTa have been applied to notice to airmen (NOTAM) messages to perform named entity recognition (NER) tasks, translation tasks (between notations; e.g.~NOTAM notation to Airlang to make parsing tasks easier) and reduce the workload for pilots during long-haul flights\cite{arnold_knowledge_2022}. Transformer models have also been used for speaker role identification tasks in the aviation domain (e.g.~identifying pilot versus controller in communications); specifically, a pretrained BERT model was used and fine-tuned on problem-specific data and compared to other models that performed well at speaker and role identification tasks in general\cite{guo_comparative_2022}.
+Various natural language processing methods have been applied to the aviation domain to help deal with miscommunications and try to mitigate safety
+incidents\cite{ragnarsdottir_language_2003,tanguy_natural_2016,madeira_machine_2021}. Some machine learning approaches have been implemented to
+analyze the text in aviation incident and safety reports to predict contributing factors and topic models
+\cite{tanguy_natural_2016,madeira_machine_2021}. An ASR system with NLP post-processing has also been proposed to analyze Air-Traffic communications
+and condense significant features (e.g.~weather, runway, and heading info) into an XML language structure\cite{ragnarsdottir_language_2003}.
+Transformer language models such as BERT and RoBERTa have been applied to notice to airmen (NOTAM) messages to perform named entity recognition (NER)
+tasks, translation tasks (between notations; e.g.~NOTAM notation to Airlang to make parsing tasks easier) and reduce the workload for pilots during
+long-haul flights\cite{arnold_knowledge_2022}. Transformer models have also been used for speaker role identification tasks in the aviation domain
+(e.g.~identifying pilot versus controller in communications); specifically, a pretrained BERT model was used and fine-tuned on problem-specific data
+and compared to other models that performed well at speaker and role identification tasks in general\cite{guo_comparative_2022}.
 
 % ASR context (suggest some need for semi-supervised approaches and therefore LMs)
-Automatic speech recognition is seeing increased use in aviation for tasks such as transcription, callsign detection, speaker identification, etc. A majority of these approaches use machine learning approaches (as opposed to deep learning) where acoustic, pronunciation, and language modeling is used to transcribe speech \cite{guo_comparative_2022,smidl_air_2019,zuluaga gomez_automatic_2020,badrinath_automatic_2022,hofbauer_atcosim_2008,helmke_quantifying_2017}. Language models have been used in the general domain (both neural and machine learning-based approaches) to boost the performance of speech recognition models \cite{han_contextnet_2020,kriman_quartznet_2020,majumdar_citrinet_2021}. Machine learning-based language models, usually N-grams and word lattices, have also been used in aviation alongside semi-supervised approaches to automatic speech recognition to leverage unlabeled data. However, none of the developed methodologies use neural language models for their applications \cite{zuluaga-gomez_contextual_2021,srinivasamurthy_semi supervised_2017,badrinath_automatic_2022}.
+Automatic speech recognition is seeing increased use in aviation for tasks such as transcription, callsign detection, speaker identification, etc. A
+majority of these approaches use machine learning approaches (as opposed to deep learning) where acoustic, pronunciation, and language modeling is
+used to transcribe speech
+\cite{guo_comparative_2022,smidl_air_2019,zuluaga-gomez_automatic_2020,badrinath_automatic_2022,hofbauer_atcosim_2008,helmke_quantifying_2017}.
+Language models have been used in the general domain (both neural and machine learning-based approaches) to boost the performance of speech
+recognition models \cite{han_contextnet_2020,kriman_quartznet_2020,majumdar_citrinet_2021}. Machine learning-based language models, usually N-grams
+and word lattices, have also been used in aviation alongside semi-supervised approaches to automatic speech recognition to leverage unlabeled data.
+However, none of the developed methodologies use neural language models for their applications
+\cite{zuluaga-gomez_contextual_2021,srinivasamurthy_semi-supervised_2017,badrinath_automatic_2022}.
 
 % differences in language (transcripts vs literary english), narrow model selection
 The use of the English language in aviation has been shown to be sufficiently different enough to be classified under its own category (aviation English) \cite{paltridge_handbook_2013}. The issue with using pretrained checkpoints of transformer-based language models is characterizing the similarity (or, conversely, the difference) between literary English and aviation English. If the two domains are sufficiently different, then training the pretrained models on aviation English data would amount to transfer learning between specific domains. Transfer learning between text domains has been shown to be possible even with data volumes significantly lower than the original data used to train the models \cite{raffel_exploring_2020}. Yadlowsky et al.~\cite{yadlowsky_pretraining_2023} recently showed that if problem domains are sufficiently different, model pretraining on out-of-domain data will negatively affect model performance.
