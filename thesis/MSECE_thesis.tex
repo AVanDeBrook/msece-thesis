@@ -155,7 +155,7 @@ they could easily boost efficiency, reduce workloads, and reduce and mitigate er
 The methods and results laid out in this thesis were done with the intention of creating a streamlined process for training and testing deep
 learning-based NLP methods, specifically language modeling. The results from the language models suggest that the volume of text used to train the
 language models is not yet sufficient to produce results akin to those in the conversational and/or literary English domains. Additionally, the
-results in Section \ref{sec:pretraining_results} show that language models trained ``from scratch'' on in-domain data perform better than models
+results in Section \ref{sec:results_comparison} show that language models trained ``from scratch'' on in-domain data perform better than models
 trained on out-of-domain data and transfer learned on in-domain data.
 
 \subsection{Problem Statement}\label{sec:problem_statement}
@@ -828,14 +828,14 @@ represented by a vector, $V$, with a dimension of $d_v$. A dot-product of the qu
 is then applied to the output, given by equation (\ref{eq:softmax}).
 
 \begin{equation}\label{eq:softmax}
-    \sigma(x) = \frac{\exp(x_i)}{\sum_{j=1}^{N}\exp(x_j)} \quad \forall i=1..N
+    \mbox{softmax}(x) = \frac{\exp(x_i)}{\sum_{j=1}^{N}\exp(x_j)} \quad \forall i=1..N
 \end{equation}
 
 \noindent
 Where $x$ is a vector of dimension $N$. Scaled-dot product attention can then be given by equation (\ref{eq:scaled_dot_attention}), below.
 
 \begin{equation}\label{eq:scaled_dot_attention}
-    \mbox{Attention}(Q,K,V) = \sigma\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+    \mbox{Attention}(Q,K,V) = \mbox{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
 \end{equation}
 
 Multi-Head attention is defined as multiple scaled-dot product attention layers, running in parallel. More specifically, the queries, keys, and values
@@ -1362,10 +1362,14 @@ initialized according to a truncated normal distribution \cite{burkardt_truncate
 checkpoints from BERT and RoBERTa \cite{devlin_bert_2019,liu_roberta_2019}. Each category contains a BERT and RoBERTa model.
 
 Considering the success of deep learning models with transformer-based architectures for language modeling and natural language processing (NLP)
-tasks, more generally, in the conversational and literary English domains, it follows that transformer architectures should see widespread use in
+tasks, more generally, in the conversational and written English domains, it follows that transformer architectures should see widespread use in
 aviation English for domain-specific NLP tasks. However, the literature shows transformer-based language models have seen sparse use. The most notable
 example of using a transformer neural network is the application of BERT for knowledge extraction from notice to airmen (NOTAM) messages
-\cite{arnold_knowledge_2022}.
+\cite{arnold_knowledge_2022}. While both BERT and RoBERTa have demonstrated that they perform well on English in general
+\cite{devlin_bert_2019,liu_roberta_2019}, it is expected that the pretrained models will have limited performance due to the highly technical and
+domain-specific nature of aviation English as well as the differing forms of the language; transcribed English speech as opposed to written English.
+We expect the domain-specific terms and pronunciations will lead to a sufficiently different vocabulary from that of written English such that the
+models trained from scratch will achieve better performance than the pretrained models.
 
 A standard masked language modeling training procedure is used to pretrain the language models, as described in Section \ref{sec:bert}. Tokens are
 masked at random as described in the MLM process in Section \ref{sec:bert}. Input sequences are padded to the maximum length the models accept with a
@@ -1680,8 +1684,8 @@ would be the most effective way to immediately improve the performance of the mo
 
 \textbf{Different forms of English}. The BERT and RoBERTa pretraining checkpoints were created by training the models on literary works and typed
 articles such as those from \textit{Wikipedia}. The data used in this work are orthographic transcriptions of aviation English, and while the two data
-sources share the common root of English, transfer learning from literary English to aviation English yields limited results, as evidenced above,
-especially with relatively small amounts of data.
+sources share the common root of English, transfer learning from the casual style of written English to the technical, highly specific use of aviation
+English yields limited results, as evidenced above, especially with relatively small amounts of data.
 
 \textbf{Mixed regional data sources}. As described in Section \ref{sec:data_source}, the data aggregated for use here comes from several different
 regions, namely international airports in the US \cite{godfrey_air_1994} and international and domestic airports in Europe
@@ -1735,11 +1739,35 @@ pretraining procedures covered earlier in this thesis.
 This training procedure was introduced by Devlin et al.~\cite{devlin_bert_2019} as a pretraining procedure for BERT and is described in more detail in
 Section \ref{sec:bert}. This can be used on top of masked language modeling for language model pretraining. However, it requires a knowledge of which
 sequences in the corpus appear next to each other. For pretraining transformer-based neural language models for the aviation domain (with orthographic
-transcriptions), this same procedure can be used to classify whether two transmissions occur in the correct order. In other words, it is classifying a
-pilot's response to an air traffic controller directive or an air traffic controller's response to a pilot query. Of the four corpora used in this
-work, ATCC is the only corpus that can be mined for an NSP-like pretraining procedure since the raw transcripts have indicators for time (start and
-end indicators), transmitting party, and intended receiver. With this information, we can estimate the correct order of transmissions between two
-parties to a reasonable degree of certainty (manually or programmatically).
+transcriptions), this same procedure can be used to classify whether two transmissions occur in the correct order. Generalizing a bit, we can consider
+two individual transmissions to be $A$ and $B$; the training objective for the network is then to predict whether transmission $B$ occurs in response to
+transmission $A$. This would be considered a binary classification task; $B$ either occurs in response to $A$ or it does not. In practice, for a true
+label (meaning $B$ does, in fact, occur in response to $A$), transmission $A$, for example, can be a pilot request to ATC and transmission $B$ would
+be ATC's response. A false label (meaning $B$ does not occur in response to $A$) would be made up of transmissions randomly shuffled such that $A$ and
+$B$ do not occur together in the corpus. Note that, since these are only two transmissions, neither $A$ nor $B$ will necessarily be one side of the
+transmission i.e.~$A$ can be either a pilot or ATC. Of the four corpora used in this work, ATCC is the only corpus that can be mined for an NSP-like
+pretraining procedure since the raw transcripts have indicators for time (start and end indicators), transmitting party, and intended receiver. With
+this information, we can estimate the correct order of transmissions between two parties to a reasonable degree of certainty (manually or
+programmatically). For example, using the following transmissions from ATCC corpus, in which the Boston-Logan tower is communicating with PAA540. The
+transmission below can be used as $A$:
+
+\begin{quote}
+    CLIPPER SIXTY FIVE FORTY IS AH FOUR FROM RIPIT CLEARED FOR THE I L S D M E TWO SEVEN APPROACH
+\end{quote}
+
+\noindent
+and the response from PAA540 to the Boston-Logan tower can be used as $B$:
+
+\begin{quote}
+    AH ROGER CLEARED FOR THE APPROACH AH CLIPPER FIVE FORTY THANK YOU
+\end{quote}
+
+\noindent
+In this case, $A$ and $B$ occur in the middle of an interaction. There are two transmissions between PAA540 and the Boston-Logan tower that occur prior
+to the two above. We can consider the two instances of $A$ and $B$ above as a true label, meaning they occur one after the other in the corpus. To
+construct a false label, we can simply reverse the input of $A$ and $B$, i.e.~$A$ becomes $B$ and $B$ becomes $A$, or choose another transmission at
+random from the corpus to replace either $A$ or $B$. For proper construction of the corpus for the NSP pretraining task, the distribution of true and
+false labels should be evenly balanced. If there are 500 samples labeled as true, then there should be 500 samples labeled as false.
 
 \subsection{Callsign Detection/Identification}
 This is the process of identifying an aircraft callsign from the transcription of the spoken callsign. This is a popular subtask for automatic speech
