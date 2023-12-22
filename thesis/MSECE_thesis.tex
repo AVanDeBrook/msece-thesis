@@ -656,6 +656,7 @@ methods. For the purposes of this work, we will focus primarily on deep learning
 spoken language in aviation (following from the data accumulated, processed, and analyzed in sections \ref{sec:data_source},
 \ref{sec:data_preparation}, and \ref{sec:data_analysis}).
 
+\subsection{Input Representation}\label{sec:asr_input_representation}
 Although the internal processing of data varies between architectures, the format of the models input and output is the same for the models described
 below. ASR models have seen much success and performance gains for speech-related tasks such as speech and speaker recognition through the use of
 Mel-frequency Cepstral Coefficients (MFCCs) \cite{sahidullah_design_2012}. Since ASR is not the main focus of this thesis, the process for computing
@@ -674,8 +675,32 @@ the MFCCs will only be described from a high level as it is described in \cite{s
 
 \noindent
 The MFCCs are then used as input to the ASR models. Each model outputs a probability distribution of characters or tokens (depending on the vocabulary
-the ASR model is initialized with) over a segment of audio. All the ASR models used are trained with a Connectionist Temporal Classification (CTC)
-loss function~\cite{graves_connectionist_2006}.
+the ASR model is initialized with) over a segment of audio.
+
+\subsection{Training Objective}\label{sec:asr_training_objective}
+The ASR models listed below both use a Connectionist Temporal Classification (CTC) training objective \cite{graves_connectionist_2006}. For a
+dataset, $D$, made up of inputs and labels, $x$ and $y$, respectively.
+
+\begin{equation}\label{eq:ctc_dataset}
+    D = \{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}
+\end{equation}
+
+\noindent
+Where $N$ is the number of samples in the dataset, $D$. The goal of the ASR model training procedure is to predict the target, $y$, based on the input
+sequence, $x$. This can also be written as maximizing the likelihood of $p(y|x)$. More formally, the CTC objective function can be written as
+
+\begin{equation}\label{eq:ctc_objective}
+    O^{ML}(D, \mathcal{N}) = - \sum_{(x,y) \in D} \ln p(y|x)
+\end{equation}
+
+\noindent
+where $\mathcal{N}$ is the network being optimized to maximize the likelihood of predicting $p(y|x)$. Put simply, the goal of the ASR network is to
+maximize the log-likelihood of predicting a label, $y$, given an input, $x$.
+
+The novelty of the CTC objective is in the fact that the audio signal does not need to be segmented in order to label and train a network. Instead,
+the output layer of the network has $L + 1$ units, where $L$ is the alphabet/vocabulary of the network. At each time step in the audio signal, the
+network will predict either a token from its vocabulary or a blank token, hence the extra unit in the output layer. Repeated predictions and blank
+tokens are removed from the prediction, then scored against the ground truth label for the audio signal \cite{graves_connectionist_2006}.
 
 \subsubsection{Jasper}\label{sec:jasper}
 Jasper is a family of end-to-end convolutional neural networks (CNNs) developed by NVIDIA to replace traditional ASR models that use separately
