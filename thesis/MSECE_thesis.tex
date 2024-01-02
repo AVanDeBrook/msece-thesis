@@ -47,7 +47,7 @@
     \LARGE
     \textbf{
         \textit{
-            Language Modeling of Aviation Communications\\
+            Spoken Language Processing and Modeling for Aviation Communications\\
         }
     }
 
@@ -105,11 +105,11 @@ Masters of Electrical \& Computer Engineering.
 
 \section{Abstract}\label{sec:abstract}
 With recent advances in machine learning and deep learning technologies and the creation of larger aviation-specific corpora, applying
-natural language processing technologies to aviation communications, especially those based on transformer neural networks, is becoming
+natural language processing technologies, especially those based on transformer neural networks, to aviation communications is becoming
 increasingly feasible. Previous work has focused on machine learning applications to natural language processing, such as N-grams and
-word lattices. This thesis will lay out a process for pretraining transformer-based language models on aviation English corpora and
+word lattices. This thesis experiments with a process for pretraining transformer-based language models on aviation English corpora and
 compare the effectiveness and performance of language models transfer learned from pretrained checkpoints and those trained from their
-base weight initializations (trained from scratch). The results show that transformer language models trained from scratch outperform
+base weight initializations (trained from scratch). The results suggest that transformer language models trained from scratch outperform
 models fine-tuned from pretrained checkpoints. The work concludes by recommending future work to improve pretraining performance and
 suggestions for downstream, in-domain tasks such as semantic extraction, named entity recognition (callsign identification), speaker
 role identification, and speech recognition.
@@ -122,9 +122,9 @@ consumer-facing products such as personal assistants, search engines, phones, te
 have begun to spin off into problem-specific domains, such as (and most notably for this work) aviation. For example, several speech recognition
 systems with rule- and machine learning-based natural language processing, inference, and semantic extraction algorithms have been implemented at
 EUROCONTROL simulation centers in Europe to train air traffic controllers and study the potential effects of AI-augmented air traffic management (ATM)
-systems on controller workloads. Preliminary studies have found that AI-augmented ATM systems reduce controller workloads and fuel consumption of
-aircraft by optimizing aircraft routes in the airspace and reducing departure/arrival times, thereby reducing fuel consumption
-\cite{helmke_quantifying_2017}.
+systems on controller workloads \cite{helmke_quantifying_2017,helmke_assistant-based_2015}. Preliminary studies have found that AI-augmented ATM
+systems reduce controller workloads and fuel consumption of aircraft by optimizing aircraft routes in the airspace and reducing departure/arrival
+times, thereby reducing fuel consumption \cite{helmke_quantifying_2017}.
 
 At the time of this writing, the current focus of general machine learning and deep learning algorithms in the language modeling domains has been on a
 variety of deep learning methods/architectures, namely, recurrent, convolutional, and transformer neural networks, due to the availability of large
@@ -141,9 +141,10 @@ significantly more difficult because it not only requires two types of data (aud
 domain knowledge and experience to create effective transcriptions. This, in addition to the following facets, further contributes to the difficulty
 of transcription: (1) the medium of communication, (2) the environment in which the communication occurs\footnote{For example, a noisy and possibly
     low fidelity medium, depending on the equipment used to transmit and receive communications}, (3) a noisy and active communication environment
-i.e.~an active flight deck under the influence of wind, engine noise, etc., (4) an active Air Traffic Control (ATC) tower and channels, and (5) a
-rapid rate of speech. Pilots are also operating sophisticated equipment during while communicating, requiring significant attention and mental
-resources further contributing to the complexity of the communications \cite{paltridge_handbook_2013}.
+i.e.~an active flight deck under the influence of wind, engine noise, etc., (4) an active Air Traffic Control (ATC) tower and channels contributing to
+increased background noise on the ATC side, and (5) a rapid rate of speech. Pilots are also operating sophisticated equipment during while
+communicating, requiring significant attention and mental resources further contributing to the complexity of the communications
+\cite{paltridge_handbook_2013}.
 
 % connect complexity of aviation english to utility/necessity of NLP models (ASR and LM) in the aviation domain
 The potential for speech recognition and language modeling algorithms to reach better than human performance (for example, the Stanford Question
@@ -183,9 +184,12 @@ the goal of this thesis is to run several experiments using transformer-based la
 the model for downstream tasks. Recommended best practice is to use a pre-existing language model checkpoint and fine-tune on additional data
 \cite{devlin_bert_2019,liu_roberta_2019,lewis_bart_2019}, although recent work suggests that if domains are sufficiently different, the performance
 of the fine-tuned model will be limited \cite{yadlowsky_pretraining_2023}. The main point of comparison in this thesis will be the performance of
-pretrained models fine-tuned on in-domain (aviation) data and models trained from scratch on in-domain data.
+pretrained models fine-tuned on in-domain (aviation) data and models trained from scratch on in-domain data. The experiments and results presented in
+this thesis are preliminary applications of end-to-end deep learning solutions to ASR and NLP problems in aviation. The intention is for this work to
+provide knowledge and possibly checkpoints for the ASR and language models which can be used for downstream tasks such as callsign detection and beam
+search prediction decoding for ASR models.
 
-\subsection{Notation and Terminology}
+\subsection{Notation \& Terminology}
 This section is included for the sake of clarity throughout this thesis. In pursuit of that, a few terms and notations are defined below.
 
 Set notation (or set-builder notation)\footnote{That is, the notation used to denote sets and associated operations therein as it relates to the field
@@ -207,9 +211,9 @@ The following words (in bold) are used throughout the thesis as they relate to l
 The definition of words and sentences stem from their definitions in the English language, succinctly, as defined in \cite{noauthor_american_2011}:
 
 \begin{itemize}
-    \item A \textbf{word} is the representation in writing of a sound or combination of sounds that symbolizes and communicates a meaning
+    \item A \textbf{word} is the representation in writing of a sound or combination of sounds that symbolizes and communicates a meaning.
     \item A \textbf{sentence} is a grammatical unit that is syntactically independent that is expressed or understood and contains at least one finite
-          verb
+          verb.
 \end{itemize}
 
 \noindent
@@ -220,12 +224,12 @@ as defined by the unicode standard \cite{allen_unicode_2012} and a sentence to b
 \begin{itemize}
     \item A \textbf{token} shall be defined as the smallest, fundamental component of a sequence; these can be single characters, groups of
           characters, punctuation, etc. \cite{devlin_bert_2019,wu_googles_2016,sennrich_neural_2016}
-    \item A \textbf{sequence} shall be defined as a set of tokens (distinct from a sentence)
+    \item A \textbf{sequence} shall be defined as a set of tokens (distinct from a sentence).
 \end{itemize}
 
 \noindent
-As mentioned above, we consider each sample in a corpus to be a sentence, then as the corpus is collated, processed, and tokenized, each sample will
-be processed into sequences of tokens. These sequences are what will be analyzed and modeled by the language models.
+As mentioned above, we consider each \textbf{sample} in a corpus to be a sentence, then as the corpus is collated, processed, and tokenized, each
+sample will be processed into sequences of tokens. These sequences are what will be analyzed and modeled by the language models.
 
 The rules by which words in sentences are broken up into tokens are defined by tokenization algorithms, otherwise known as tokenizers (elaborated
 further in Section \ref{sec:tokenizers}). While tokens can be individual characters or words as they appear in the original sample, this is not always
@@ -237,14 +241,21 @@ the case. The intention of most tokenization algorithms is the flexibility to br
 \subsection{Transformer Neural Networks}
 % from thesis proposal; revise and add to this as more references are used
 % transformer history (background)
-The transformer neural network architecture was proposed in 2017 for Neural Machine Translation tasks and immediately achieved state-of-the-art
-performance on language translation tasks \cite{vaswani_attention_2017}. Transformer architectures are extremely effective at learning representations
-and understandings of languages to predict token probabilities instead of transforming one language into another
+The transformer neural network architecture (shown in Figure \ref{fig:transformer_arch}) was proposed in 2017 for Neural Machine Translation tasks and
+immediately achieved state-of-the-art performance on language translation tasks \cite{vaswani_attention_2017}. Transformer architectures are extremely
+effective at learning representations and understandings of languages to predict token probabilities instead of transforming one language into another
 \cite{devlin_bert_2019,liu_roberta_2019}. Transformers have also been found to be very effective at other NLP tasks such as prompt completion
 and sentiment analysis among others (i.e.~auto-regressive and sequence classification tasks, respectively)
 \cite{lewis_bart_2019,radford_improving_2018}. Devlin et al.~\cite{devlin_bert_2019} proposed pretraining methods such as masked language modeling
 and next sentence prediction to improve natural language understanding for downstream tasks, which was further expanded upon by Liu et
 al.~\cite{liu_roberta_2019} by training longer, with larger batch sizes, and removing the next sentence prediction task.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/transformer_arch.png}
+    \caption{The transformer neural network architecture. Copied from Vaswani et al.~\cite{vaswani_attention_2017}}
+    \label{fig:transformer_arch}
+\end{figure}
 
 \subsection{Tokenizer Algorithms}
 % tokenizer algorithms
@@ -302,11 +313,11 @@ be possible even with data volumes significantly lower than the original data us
 al.~\cite{yadlowsky_pretraining_2023} recently showed that if problem domains are sufficiently different, model pretraining on out-of-domain data will
 negatively affect model performance.
 
-\section{Data Sources}\label{sec:data_source}
-Four corpora are used in this thesis. The datasets are primarily speech corpora intended for automatic speech recognition research in aviation
-communications, linguistics research in aviation English, or both. All data in all four corpora include both recordings and transcriptions, which are
-audio and text, respectively. The transcriptions are used to pretrain and train the language models and tokenizers (described in sections
-\ref{sec:language_models} and \ref{sec:tokenizers}).
+\section{Datasets \& Preparation}\label{sec:data_source}
+Four corpora are combined and used for the experiments in this thesis. The datasets are primarily speech corpora intended for automatic speech
+recognition research in aviation communications, linguistics research in aviation English, or both. All data in all four corpora include both
+recordings and transcriptions, which are audio and text, respectively. The transcriptions are used to pretrain and train the language models and
+tokenizers (described in sections \ref{sec:language_models} and \ref{sec:tokenizers}).
 
 The four corpora selected and used for this work are briefly described below. Further analysis is performed in Section \ref{sec:data_analysis}.
 
@@ -412,7 +423,7 @@ See Table \ref{tab:zcu_cz_atc_stats} for corpus-specific statistics.
     \label{tab:zcu_cz_atc_stats}
 \end{table}
 
-\section{Data Preparation}\label{sec:data_preparation}
+\subsection{Data Preparation}\label{sec:data_preparation}
 All corpora listed above (see Section \ref{sec:data_source}) are created at different times, for various purposes, and by multiple authors. As a
 result, the data in these corpora all have different formats. ATCC, for example, uses Lisp-style lists as below:
 
@@ -426,7 +437,6 @@ result, the data in these corpora all have different formats. ATCC, for example,
 ATCO2 and ZCU CZ ATC use XML to isolate transcribed segments of speech in the audio recordings, although the format used between the two differs.
 ATCO2 uses a form like below:
 
-\clearpage
 \begin{lstlisting}
 <data>
 <segment>
@@ -445,7 +455,6 @@ ATCO2 uses a form like below:
 </data>
 \end{lstlisting}
 
-\clearpage
 ZCU CZ ATC uses a different nesting and labeling style, like below\footnote{Some information is excluded for readability.}:
 
 \begin{lstlisting}
@@ -479,14 +488,15 @@ Each text file corresponds to the audio file from which the speech was transcrib
 Due to the differing formats above, and the intention to aggregate and use all these transcripts together, all transcripts need to be processed into
 a common format to be used together.
 
-% TODO: fix; lost some text somehow
 All data was processed in Python using primarily built-in functions/modules\footnote{The \lstinline|re| and \lstinline|xml| modules were also used,
     although these are built into most Python distributions by default.}. The text data is extracted from the corpus transcripts by reading each
 transcript into the main memory of the system according to the format prescribed by the corpus. The text corresponding to the transcript is isolated,
 copied, and stored to a separate region of memory (a Python list of strings) that corresponds to the original corpus. The resulting isolated
 transcripts are written to files that correspond to the original corpus as well as combined, shuffled, and written to a file in the standard corpus
 format (an ASCII text file with one line in the file corresponding to one sample from the corpus). The resulting output is four corpus files that
-correspond to the original corpora in addition to a fifth corpus file with the samples from all four corpora combined and shuffled for later use.
+correspond to the original corpora in addition to a fifth corpus file with the samples from all four corpora combined and shuffled for later
+use\footnote{See the \lstinline|parse_transcripts| functions in the files at \url{https://github.com/AVanDeBrook/msece-thesis/tree/main/source/data}
+    for implementation details.}.
 
 \subsection{Handling Spelling Errors \& Inconsistencies}\label{sec:spelling_errors}
 By the nature of the data labeling process, there is a high likelihood of spelling errors introduced by the annotators during corpora creation. This
@@ -498,23 +508,26 @@ consistent within corpora but become inconsistent when combined.
 % 22 spelling errors
 Manually reviewing every sample in the corpus is unrealistic, considering that there are over 50,000 data samples and would be subject to the same
 human error that introduced those errors in the first place. Instead, the frequency of token occurrence in the corpora, combined with manual review
-thereafter, was used to detect and correct the most common errors. The frequency of occurrence of a token is calculated using equation
-(\ref{eq:token_frequency_occurrence}).
+thereafter, was used to detect and correct the most common errors. Tokens with the lowest frequency across corpora (and lowest number of occurrences)
+were manually reviewed and corrected where necessary. Tokens that needed to be corrected typically occurred five times or less per corpus although
+all tokens with occurrences ranging from 1-50 were reviewed. The relative frequency of those tokens varies by corpus (due to the differing amont of
+tokens in total for each corpus) The frequency of occurrence of a token is calculated using equation (\ref{eq:token_frequency_occurrence}), below
 
 \begin{equation}\label{eq:token_frequency_occurrence}
     f_w = \frac{\phi_w(w)}{D_{tokens}}
 \end{equation}
 
 \noindent
-Where $f_w$ is the frequency at which a token occurs in a corpus, $\phi_w(w)$ is the number of times a token, $w$, occurs, and $D_{tokens}$ is the
-total number of tokens in the corpus. Tokens with the lowest frequency across corpora (and lowest number of occurrences) were manually reviewed and
-corrected where necessary. An $A \rightarrow B$ mapping system was used to correct the errors, where \(A\) is the erroneous token and \(B\) is the
+where $f_w$ is the frequency at which a token occurs in a corpus, $\phi_w(w)$ is the number of times a token, $w$, occurs, and $D_{tokens}$ is the
+total number of tokens in the corpus.
+
+An $A \rightarrow B$ mapping system was used to correct the errors, where \(A\) is the erroneous token and \(B\) is the
 corrected or replaced token. As the text is parsed from the corpora, each sample is analyzed. If an erroneous token, $A$, is found, it is replaced
 with the corrected version, $B$. 22 unique errors were detected and subsequently corrected or removed using this method. However, multiple instances
 of those errors typically occurred.
 
 % hesitations, cut off words, different kinds of filled pauses
-The mapping system described above is also used to modify corpora conventions to be consistent across corpora. Three areas are addressed here:
+The mapping system described above is also used to make corpora conventions to be consistent across corpora. Three areas are addressed here:
 hesitations, cut-off, or partial words, and filled pauses within speech. These areas are defined differently between the four corpora, which makes
 unifying the transcripts difficult. Hesitations, for example, are defined by one corpus as incomplete or non-English speech sounds and left completely
 undefined by another (despite annotators making notes about hesitations). The way in which hesitations, pauses, and partial words are transcribed
@@ -527,13 +540,13 @@ transcribing these phenomena are redefined in Table \ref{tab:phenomena_definitio
     \centering
     \begin{tabular}{l p{0.65\linewidth}}
         \toprule
-        Phenomenon               & Definition                                                                                                              \\
+        Phenomenon               & Definition                                                                                                                \\
         \midrule
-        Hesitations              & Instances of hesitation for which the specific realization is not defined (usually some special token is used instead). \\
+        Hesitations              & Instances of spoken words for which the specific realization is not defined (usually some special token is used instead). \\
         \midrule
-        Partial \& cut-off words & Partially pronounced words are indicated by a hyphen character where the pronunciation of the word is missing.          \\
+        Partial \& cut-off words & Partially pronounced words are indicated by a hyphen character where the pronunciation of the word is missing.            \\
         \midrule
-        Filled pauses            & Hesitations with a verbal component that has been described or otherwise defined by the corpus/annotator.               \\
+        Filled pauses            & Hesitations with a verbal component that has been described or otherwise defined by the corpus/annotator.                 \\
         \bottomrule
     \end{tabular}
     \caption{Speech/transcription phenomena with corresponding convention for transcribing or translating, depending on the corpus being processed.}
@@ -577,10 +590,11 @@ speech.
 
 \subsection{Data Analysis}\label{sec:data_analysis}
 % sequence lengths, unique tokens, total number of tokens, total number of samples, breakdown by each dataset
-Relevant corpora statistics were observed or calculated and are presented in Table \ref{tab:corpora_stats}. This includes the number of samples in the
-corpus, the mean sequence length per sample, the number of unique tokens, and the total number of tokens in the corpus. The same statistics were also
-calculated across corpora since all four corpora will be combined for training and testing the language and speech recognition models. Note that this
-is based on the raw data after loading and unifying the corpora before preprocessing for model training/testing and outlier removal.
+To better understand the above four corpora, we calculate and tabulate their relevant corpora statistics in Table \ref{tab:corpora_stats}. This
+includes the number of samples in the corpus, the mean sequence length per sample, the number of unique tokens, and the total number of tokens in the
+corpus. The same statistics were also calculated across corpora since all four corpora will be combined for training and testing the language and
+speech recognition models. Note that this is based on the raw data after loading and unifying the corpora before preprocessing for model
+training/testing and outlier removal.
 
 
 \begin{table}[!t]
@@ -615,15 +629,33 @@ and airline names, which vary across regions.
     \mbox{PD} = \frac{|V_1 - V_2|}{\frac{V_1 + V_2}{2}} \times 100
 \end{equation}
 
+\noindent
+In the equation above, $V_1$ and $V_2$ are the two numbers being compared.
+
 \subsection{Outlier Detection and Analysis}\label{sec:outliers}
 % TODO: should this be described in more detail? component equations, algs, etc.?
 The Local Outlier Factor (LOF) algorithm \cite{breunig_lof_2000} was used to detect and analyze outliers in the corpora. The sequence lengths of the
 data samples were used to determine outliers. Since all four corpora are aggregated, LOF analysis was performed on the aggregated data instead of on
 the individual corpora.
 
-Sci-Kit Learn's \cite{pedregosa_scikit-learn_2011} implementation of the LOF algorithm was used with a value of \(K = 35\) for the K-Nearest Neighbors
-algorithm and Minkowski distance for distance metrics/calculations (in this case, since \(p=2\), Euclidean distance is effectively used for distance
-calculations). A total of 47 samples were detected as outliers and removed for analysis. They are summarized in Table \ref{tab:outlier_stats}.
+Sci-Kit Learn's \cite{pedregosa_scikit-learn_2011} implementation of the LOF algorithm was used with a value of $K = 35$ for the K-Nearest Neighbors
+algorithm; the value for $K$ is arbitrarily chosen, partially through trial and error and the size of the clusters for sequence lengths. Minkowski
+distance is used for the distance metrics and is defined as
+
+\begin{equation}\label{eq:minkowski_distance}
+    d(x, y) = (|x - y|^p)^{\frac{1}{p}}
+\end{equation}
+
+\noindent
+where $x$ and $y$ are the points between which the distance is being measured and $p$ is the order on which to calculate the distance\footnote{For
+    the LOF algorithm, $p$ can be arbitrarily chosen.}. $p=2$ is chosen in this case to make the Minkowski distance equivalent to Euclidean distance:
+
+\begin{equation}\label{eq:euclidean_distance}
+    d(x, y) = \sqrt{|x-y|^2}
+\end{equation}
+
+\noindent
+A total of 47 samples were detected as outliers and removed for analysis. They are summarized in Table \ref{tab:outlier_stats}.
 
 \begin{table}[!t]
     \centering
@@ -645,20 +677,19 @@ calculations). A total of 47 samples were detected as outliers and removed for a
 Although all of the outliers have longer sequence lengths than the typical sequence lengths of the other samples in the data, going through the
 outlying samples manually and reviewing each reveals that, for the most part, the samples are typical albeit somewhat complex communications. Except
 for one outlier, all of the samples labeled outlying by the LOF algorithm were kept in the data. Examples of the outliers are listed in Appendix A in
-Section \ref{sec:appendix_a}, including the sample removed.
+Section \ref{sec:appendix_a}, including the removed sample.
 
-\section{Model Architectures}
-
-\subsection{Automatic Speech Recognition}\label{sec:automatic_speech_recognition}
+\section{End-to-End ASR Models \& Experiment Results}
 Automatic speech recognition (ASR) or simply speech recognition is the process of translating spoken language to text i.e.~transcribing spoken
 language. There have been a myriad of approaches to ASR problems, including, but not limited to rule-based, machine learning, and deep learning
-methods. For the purposes of this work, we will focus primarily on deep learning approaches to ASR tasks with a specific focus on transcribing
-spoken language in aviation (following from the data accumulated, processed, and analyzed in sections \ref{sec:data_source},
+methods. For the purposes of this work, we will focus primarily on end-to-end deep learning approaches to ASR tasks with a specific focus on
+transcribing spoken language in aviation (following from the data accumulated, processed, and analyzed in sections \ref{sec:data_source},
 \ref{sec:data_preparation}, and \ref{sec:data_analysis}).
 
+
 \subsection{Input Representation}\label{sec:asr_input_representation}
-Although the internal processing of data varies between architectures, the format of the models input and output is the same for the models described
-below. ASR models have seen much success and performance gains for speech-related tasks such as speech and speaker recognition through the use of
+Although the internal processing of data varies between architectures, the representation of the models' input for the models described below.
+ASR models have seen much success and performance gains for speech-related tasks such as speech and speaker recognition through the use of
 Mel-frequency Cepstral Coefficients (MFCCs) \cite{sahidullah_design_2012}. Since ASR is not the main focus of this thesis, the process for computing
 the MFCCs will only be described from a high level as it is described in \cite{sahidullah_design_2012}. Readers should refer to
 \cite{sahidullah_design_2012} for a more detailed, matrix-based approach for computing MFCCs. Given an audio signal:
@@ -674,19 +705,20 @@ the MFCCs will only be described from a high level as it is described in \cite{s
 \end{enumerate}
 
 \noindent
-The MFCCs are then used as input to the ASR models. Each model outputs a probability distribution of characters or tokens (depending on the vocabulary
-the ASR model is initialized with) over a segment of audio.
+The MFCCs are then used as input to the ASR models. It should be noted that MFCCs are not the only input representation available
+for ASR models, just the most popular choice among the models used here. Each model outputs a probability distribution of characters or tokens
+(depending on the vocabulary the ASR model is initialized with) over a segment of audio.
 
 \subsection{Training Objective}\label{sec:asr_training_objective}
 The ASR models listed below both use a Connectionist Temporal Classification (CTC) training objective \cite{graves_connectionist_2006}. For a
-dataset, $D$, made up of inputs and labels, $x$ and $y$, respectively.
+dataset, $D$, made up of samples and labels, $x$ and $y$, respectively, defined as
 
 \begin{equation}\label{eq:ctc_dataset}
     D = \{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}
 \end{equation}
 
 \noindent
-Where $N$ is the number of samples in the dataset, $D$. The goal of the ASR model training procedure is to predict the target, $y$, based on the input
+where $N$ is the number of samples in the dataset. The goal of the ASR model training procedure is to predict the target, $y$, based on the input
 sequence, $x$. This can also be written as maximizing the likelihood of $p(y|x)$. More formally, the CTC objective function can be written as
 
 \begin{equation}\label{eq:ctc_objective}
@@ -697,19 +729,22 @@ sequence, $x$. This can also be written as maximizing the likelihood of $p(y|x)$
 where $\mathcal{N}$ is the network being optimized to maximize the likelihood of predicting $p(y|x)$. Put simply, the goal of the ASR network is to
 maximize the log-likelihood of predicting a label, $y$, given an input, $x$.
 
-The novelty of the CTC objective is in the fact that the audio signal does not need to be segmented in order to label and train a network. Instead,
-the output layer of the network has $L + 1$ units, where $L$ is the alphabet/vocabulary of the network. At each time step in the audio signal, the
-network will predict either a token from its vocabulary or a blank token, hence the extra unit in the output layer. Repeated predictions and blank
-tokens are removed from the prediction, then scored against the ground truth label for the audio signal \cite{graves_connectionist_2006}.
+The novelty of the CTC objective is in the fact that the MFCC frames do not need to be aligned with the letter-based tokens to train a network.
+Instead, the output layer of the network has $L + 1$ units, where $L$ is the alphabet/vocabulary of the network. At each time step in the audio
+signal, the network will predict either a token from its vocabulary or a blank token, hence the extra unit in the output layer. Repeated predictions
+and blank tokens are removed from the prediction, then scored against the ground truth label for the audio signal \cite{graves_connectionist_2006}.
+Note that Graves et al.~\cite{graves_connectionist_2006} defined the tokens predicted at each time step as letters and the vocabulary,
+correspondingly, as the letters \textit{A} through \textit{Z} of the alphabet.
 
-\subsubsection{Jasper}\label{sec:jasper}
-Jasper is a family of end-to-end convolutional neural networks (CNNs) developed by NVIDIA to replace traditional ASR models that use separately
-learned components for each stage of the pipeline (acoustic, pronunciation, language modeling, etc.) \cite{li_jasper_2019}.
+\subsection{Jasper}\label{sec:jasper}
+Jasper is a family of deep convolutional neural networks (CNNs) developed by NVIDIA as end-to-end ASR models to replace traditional ASR models that
+use separately learned components for each stage of the pipeline (acoustic, pronunciation, language modeling, etc.) \cite{li_jasper_2019}.
 
-Jasper models are designed with $B$ blocks and $R$ sub-blocks and are named accordingly as \textit{Jasper $B\mbox{x}R$} models. The Jasper
-architecture also contains four extra convolutional blocks, one for preprocessing and three for postprocessing (see figure \ref{fig:jasper}). Each
-convolutional sub-block contains one dimensional convolutions. Li et al.~\cite{li_jasper_2019} trained and tested a Jasper 10x5 model that produced
-state-of-the-art results on the LibriSpeech, Wall Street Journal, and Fisher+Switchboard speech corpora.
+Jasper models, shown in Figure \ref{fig:jasper} are designed with $B$ blocks and $R$ sub-blocks and are named accordingly as
+\textit{Jasper $B\mbox{x}R$} models. The Jasper architecture also contains four extra convolutional blocks, one for preprocessing, shown at the
+bottom of Figure \ref{fig:jasper}, and three for postprocessing, shown at the top of Figure \ref{fig:jasper}. Each convolutional sub-block contains
+one dimensional convolutions. Li et al.~\cite{li_jasper_2019} trained and tested a Jasper 10x5 model that produced state-of-the-art results on the
+LibriSpeech, Wall Street Journal, and Fisher+Switchboard speech corpora.
 
 \begin{figure}
     \centering
@@ -718,10 +753,13 @@ state-of-the-art results on the LibriSpeech, Wall Street Journal, and Fisher+Swi
     \label{fig:jasper}
 \end{figure}
 
-\subsubsection{QuartzNet}\label{sec:quartznet}
+\subsection{QuartzNet}\label{sec:quartznet}
 The QuartzNet architecture is based on Jasper with some key modifications, namely, that the one dimensional convolutions are replaced with ``one
-dimensional time-channel separable convolutions''. As with Jasper, QuartzNet models are denoted as \textit{QuartzNet $B\mbox{x}R$}, however, blocks
-are repeated $S$ times and have a certain number of input and output channels, $c_{in}$ and $c_{out}$, respectively.
+dimensional time-channel separable convolutions'', as shown in Figure \ref{fig:quartznet}. As with Jasper, QuartzNet models are denoted as
+\textit{QuartzNet $B\mbox{x}R$} with $B$ and $R$ representing the number of blocks and sub-blocks, respectively. However, blocks are repeated $S$
+times and have a certain number of input and output channels, $c_{in}$ and $c_{out}$, respectively. Time-channel separable convolutions are separated
+into two components: (1) convolutional layers that operate on each audio channel independently across time frames and (2) convolutional layers that
+operate on time frames independently across all audio channels \cite{kriman_quartznet_2020}.
 
 In Kriman et al.~\cite{kriman_quartznet_2020} experiments with QuartzNet were conducted on the LibriSpeech and Wall Street Journal speech corpora and
 achieved near state-of-the-art performance on both. A transfer learning experiment was also performed (transferring between corpora). The model was
@@ -736,9 +774,82 @@ generalize and fine-tune well on related data.
     \label{fig:quartznet}
 \end{figure}
 
-\subsection{Language Models}\label{sec:language_models}
-% bert, roberta
-% n-gram
+\subsection{Experiment Results}
+This section will summarize the experiment setup, evaluation metrics, and final results of the two best performing ASR models. Two Jasper models with 10
+blocks and 5 sub-blocks and two QuartzNet models with 15 blocks and 5 sub-blocks were trained from scratch and fine-tuned from pretrained
+checkpoints; four models were evaluated in total. Each model used a vocabulary of 28 tokens; the English alphabet, an apostrophe, and a blank label.
+
+\subsubsection{Performance Metrics}\label{sec:asr_performance_metrics}
+% word error rate
+This section defines the metrics used to track the performance of the ASR models during training and the performance of the models on the test
+partitions of their datasets.
+
+\textbf{Word Error Rate (WER)}. This is, simply, the number of words predicted incorrectly by the model. WER is based on the edit distance between the
+models prediction and the prediction target \cite{hunt_figures_1990}. Let $N$, $S$, $I$, and $D$ be the number of words, substitutions, insertions,
+and deletions, respectively. Then the WER is calculated as
+
+\begin{equation}\label{eq:word_error_rate}
+    \mbox{WER} = \frac{S + D + I}{N} \times 100
+\end{equation}
+
+\noindent
+In this case, we calculate WER as a percentage by multiplying by 100. Note that it is possible for the WER to be greater than 100\% if
+$S + D + I > N$. This can occur, for example, if the model predicts more words than are actually present in the audio signal.
+
+\subsubsection{Optimizer}\label{sec:asr_optimizer}
+The NovoGrad optimizer \cite{ginsburg_stochastic_2019} is used with the parameters shown in Table \ref{tab:novograd_params}.
+
+\begin{table}[!t]
+    \centering
+    \begin{tabular}{l r}
+        \toprule
+        Parameter     & Value              \\
+        \midrule
+        $\beta_1$     & $0.8$              \\
+        $\beta_2$     & $0.5$              \\
+        $\epsilon$    & $1 \times 10^{-8}$ \\
+        Learning rate & $0.01$             \\
+        Weight Decay  & $0.001$            \\
+        \bottomrule
+    \end{tabular}
+    \caption{NovoGrad optimizer parameters for the Jasper and QuartzNet ASR model training procedures.}
+    \label{tab:novograd_params}
+\end{table}
+
+The Jasper model trained from scratch performed best overall with about a 15\% WER on the test data. The pretrained QuartzNet model that was
+fine-tuned on the aggregated data performed second best among the evaluated models reaching a WER of about 30\%. The best-performing ASR models are
+summarized in Table \ref{tab:asr_performance}. These tests were run using a greedy decoding method, meaning that at each time step, the most active
+neuron i.e., that with the highest value after softmax was chosen as the prediction. These results can likely be improved further by adjusting the
+parameters of the model. However we believe the most significant boost in performance can be achieved using a well-performing language model with a
+beam search decoding algorithm. Beam search-based decoding methods use a language model and a beam search algorithm to determine predictions at each
+time step. The most commonly used language model for these types of decoding methods is an N-gram and is what PyTorch's
+\lstinline|CTCDecoder|\footnote{More specifically, the \lstinline|torchaudio| package of PyTorch.} \cite{paszke_pytorch_2019} and NeMo's
+\lstinline|BeamSearchDecoderWithLM| \cite{kuchaiev_nemo_2019} use to decode predictions. The purpose of language models in beam search decoding
+algorithms is to estimate the likelihood of the decoded sequence occurring based on the language models' knowledge of sequence structures. The beam
+search algorithm is then used to select tokens to maximize the likelihood of the
+sequence occurring. As mentioned above in Section \ref{sec:ngram}, N-grams are left-associative language models (assuming the model is being
+applied to the English language in this case), which is an inherently limiting factor. A neural language model capable of representing sequences
+bidirectionally, such as those covered in this work, is a significantly more robust method of language modeling in speech recognition and has been
+used in the past to improve word error rates \cite{kriman_quartznet_2020,majumdar_citrinet_2021}. At least one instance of a deep learning-based
+language model being used for beam search decoding in aviation applications. However, it did not perform well, likely due to the small size of the
+dataset that it was trained on \cite{pellegrini_airbus_2019}. In the next section, the language model architectures, experiments, and results are defined
+for the purpose of improving ASR model performance through the use of language models and downstream tasks such as callsign detection.
+
+\begin{table}[!t]
+    \centering
+    \begin{tabular}{l r}
+        \toprule
+        Model                  & WER (\%) \\
+        \midrule
+        Jasper (scratch)       & 15.3     \\
+        QuartzNet (pretrained) & 30.2     \\
+        \bottomrule
+    \end{tabular}
+    \caption{WERs of the best-performing ASR models on the test partition of the corpus.}
+    \label{tab:asr_performance}
+\end{table}
+
+\section{Language Models and Experiment Results}\label{sec:language_models}
 This section introduces the chosen language model architectures and their pretrained checkpoints. Two transformer-based architectures, BERT and
 RoBERTa, and one statistical/machine learning-based approach: N-gram language modeling.
 
@@ -747,7 +858,7 @@ BERT for bidirectional encoding representation and likewise in Liu et al.~\cite{
 RoBERTa pretraining and downstream task training thereafter, it was decided to eliminate the next sentence prediction (NSP) task that was used to
 pretrain BERT. MLM and NSP pretraining are explained more in-depth in Section \ref{sec:bert} below.
 
-\subsubsection{N-Gram}\label{sec:ngram}
+\subsection{N-Gram}\label{sec:ngram}
 An N-gram language model estimates the probability of a token occurring in a sequence based on the $N$ tokens preceding or succeeding that token.
 In other words, for a sequence, $X$, of $T$ tokens
 
@@ -786,7 +897,7 @@ becomes very limited at the minimum sequence length in the corpus and unusable a
 implementation, the time and resources required to train a model with a large value of $N$ can be very expensive. Common values for $N$ are one, two,
 and three, sometimes called unigrams, bigrams, and trigrams, respectively.
 
-\subsubsection{Transformer}\label{sec:transformer}
+\subsection{Transformer}\label{sec:transformer}
 The transformer neural network uses an Encoder-Decoder architecture with multi-head self-attention layers throughout the network. Details of the
 general design of the network will be laid out here in more detail, including the construction of the layers, sub-layers, and operation of the
 attention mechanism. The design discussed here is identical to the network described in \textit{Attention Is All You Need}
@@ -859,7 +970,7 @@ Vaswani et al.~\cite{vaswani_attention_2017} used $h = 8$ attention heads and $d
 \textbf{Token Embeddings}. Input and output tokens are converted to learned representations of dimension $d_{model}$ by the model
 \cite{vaswani_attention_2017}.
 
-\subsubsection{BERT}\label{sec:bert}
+\subsection{BERT}\label{sec:bert}
 The purpose of BERT (Bidirectional Encoder Representations from Transformers) is to represent tokens in text sequences based on the tokens preceding
 and following the token in question. Whereas an N-gram model represents token probabilities based on the $N$ tokens preceding a specific token or,
 conversely, the $N$ tokens succeeding said token, BERT models can predict the probability of a token based on both preceding and succeeding tokens;
@@ -927,7 +1038,7 @@ separation token terminating each sequence (see Figure \ref{fig:bert_nsp_input_e
     \label{fig:bert_nsp_input_example}
 \end{figure}
 
-\subsubsection{RoBERTa}\label{sec:roberta}
+\subsection{RoBERTa}\label{sec:roberta}
 As the name implies, the Robustly Optimized BERT Pretraining Approach (RoBERTa) is an iteration on BERT (described in Section \ref{sec:bert}, above).
 The results from Liu et al.~\cite{liu_roberta_2019} indicate that BERT was initially significantly undertrained, so by training longer, with larger
 batch sizes, on longer sequences, and dynamically changing the masking pattern applied to the MLM pretraining task, the performance of BERT was
@@ -1282,80 +1393,7 @@ the beginning of word symbol is rendered and represented by a visible character 
     \label{tab:byte_level_bpe_example}
 \end{table}
 
-\section{Experiments}\label{sec:experiments}
-This section lays out the details of the setup and results of each set of experiments. The experiments are divided into two sets: ASR model
-experiments and language model experiments. Each section defines the performance metrics used to evaluate the models during the training and testing
-procedures for each experiment as well as the results of the experiments, individually and compared to each other where possible.
-
-\subsection{Automatic Speech Recognition Experiments}\label{sec:asr_experiments}
-This section will summarize the experiment setup, evaluation metrics, and final results of the two best performing ASR models. Two Jasper and
-QuartzNet models were trained from scratch and pretrained checkpoints (four models evaluated in total), similar to how the language models in Section
-\ref{sec:lm_pretraining} were setup.
-
-\subsubsection{Performance Metrics}\label{sec:asr_performance_metrics}
-% word error rate
-This section defines the metrics used to track the performance of the ASR models during training and the performance of the models on the test
-partitions of their datasets.
-
-\textbf{Word Error Rate (WER)}. This is, simply, the number of words predicted incorrectly by the model. WER is based on the edit distance between the
-models prediction and the prediction target \cite{hunt_figures_1990}. It is defined formally as follows:
-
-Let $N$, $S$, $I$, and $D$ be the number of words, substitutions, insertions, and deletions, respectively. Then the WER is calculated as
-
-\begin{equation}\label{eq:word_error_rate}
-    \mbox{WER} = \frac{S + D + I}{N} \times 100
-\end{equation}
-
-\noindent
-In this case, we calculate WER as a percentage by multiplying by 100. Note that it is possible for the WER to be greater than 100\% if
-$S + D + I > N$. This can occur, for example, if the model predicts more words than are actually present in the audio signal.
-
-\subsubsection{Optimizer}\label{sec:asr_optimizer}
-The NovoGrad optimizer \cite{ginsburg_stochastic_2019} is used with the parameters shown in Table \ref{tab:novograd_params}.
-
-\begin{table}[!t]
-    \centering
-    \begin{tabular}{l r}
-        \toprule
-        Parameter     & Value \\
-        \midrule
-        Learning rate & 0.01  \\
-        Weight Decay  & 0.001 \\
-        $\beta_1$     & 0.8   \\
-        $\beta_2$     & 0.5   \\
-        \bottomrule
-    \end{tabular}
-    \caption{NovoGrad optimizer parameters for the Jasper and QuartzNet ASR model training procedures.}
-    \label{tab:novograd_params}
-\end{table}
-
-
-\subsubsection{Results}\label{sec:asr_results}
-The Jasper model trained from scratch performed best overall with about a 15\% WER on the test data. The pretrained QuartzNet model that was
-fine-tuned on the aggregated data performed second best among the evaluated models reaching a WER of about 30\%. These tests were run using a greedy
-decoding method, meaning that at each time step, the most active neuron or that with the highest value after softmax was chosen as the prediction.
-These results can likely be improved further by using a beam search decoding algorithm with a language model. The beam search decoding algorithm is
-explained further in Appendix B in Section \ref{sec:appendix_b} The best-performing ASR models are summarized in Table \ref{tab:asr_performance}.
-
-\begin{table}[!t]
-    \centering
-    \begin{tabular}{l r}
-        \toprule
-        Model                  & WER (\%) \\
-        \midrule
-        Jasper (scratch)       & 15.3     \\
-        QuartzNet (pretrained) & 30.2     \\
-        \bottomrule
-    \end{tabular}
-    \caption{WERs of the best-performing ASR models on the test partition of the corpus.}
-    \label{tab:asr_performance}
-\end{table}
-
-The other two models that were trained and tested are left out of Table \ref{tab:asr_performance} due to their unusually poor performance on average
-over the test samples in the corpus. The QuartzNet model trained from scratch consistently reached WERs above 100\% and the pretrained Jasper model
-did not perform better than 80\% WER on the test set.
-
-\subsection{Language Model Pretraining Experiments}\label{sec:lm_pretraining}
+\subsection{Experiment Results}
 This section will layout the experiment setup and results for the language modeling pretraining experiments. The language models are divided into two
 categories, with two models in each category. The first category of models are those trained from scratch meaning that the models weights are
 initialized according to a truncated normal distribution \cite{burkardt_truncated_2014}. The second category of models are based on pretrained
@@ -1828,8 +1866,8 @@ The outlying sample that was removed from the corpus is below\footnote{The prepr
     in paris definitely okay bye
 \end{quote}
 
-This sample has a sequence length of 71 tokens, well above the mean of the aggregated corpora. The decision was made to remove this sample, because
-it has little to no relevance to aviation communications, especially the ones being examined by the model in this thesis.
+This sample has a sequence length of 71 tokens, well above the mean of the aggregated corpora. The decision was made to remove this sample because
+it has little relevance to aviation communications, especially the ones being examined by the model in this thesis.
 
 A few other samples, detected as outliers, but not removed are shown in Table \ref{tab:outlier_examples}.
 
@@ -1862,28 +1900,6 @@ A few other samples, detected as outliers, but not removed are shown in Table \r
         higher or lower than the average for the aggregated corpus were detected as outliers and flagged for additional analysis.}
     \label{tab:outlier_examples}
 \end{table}
-
-\newpage
-\section{Appendix B: Neural Language Modeling Application to Speech Recognition}\label{sec:appendix_b}
-NVIDIA's NeMo (Neural Modules) framework \cite{kuchaiev_nemo_2019} is a state-of-the-art deep learning framework with implementations for dozens of
-natural language processing models and utilities. Among those are the automatic speech recognition (ASR) model implementations and tools for
-decoding/augmenting predictions from model outputs.
-
-For ASR models, there are generally two methods of decoding predictions: greedy decoding and decoding with beam search. Greedy decoding methods simply
-use the neuron in the network's last layer (the output layer) with the highest value to determine the prediction for that time step. Beam search-based
-decoding methods use a language model and a beam search algorithm to determine predictions at each time step. The most commonly used language model
-for these types of decoding methods is an N-gram and is what PyTorch's \lstinline|CTCDecoder|\footnote{More specifically, the \lstinline|torchaudio|
-    package of PyTorch} \cite{paszke_pytorch_2019} and NeMo's \lstinline|BeamSearchDecoderWithLM| \cite{kuchaiev_nemo_2019} use to decode predictions.
-
-The purpose of language models in beam search decoding algorithms is to estimate the likelihood of the decoded sequence occurring based on the
-language models' knowledge of sequence structures. The beam search algorithm is then used to select tokens to maximize the likelihood of the
-sequence occurring. As mentioned above in Section \ref{sec:ngram}, N-grams are left-associative language models (assuming the model is being
-applied to the English language in this case), which is an inherently limiting factor. A neural language model capable of representing sequences
-bidirectionally, such as those covered in this work, is a significantly more robust method of language modeling in speech recognition and has been
-used in the past to improve word error rates \cite{kriman_quartznet_2020,majumdar_citrinet_2021}. At least one instance of a deep learning-based
-language model being used for beam search decoding in aviation applications. However, it did not perform well, likely due to the small size of the
-dataset that it was trained on \cite{pellegrini_airbus_2019}. The models trained in this work used considerably more data and will likely perform
-better in beam search decoding algorithms.
 
 \newpage
 \bibliographystyle{IEEEtran}
