@@ -69,33 +69,37 @@ Masters of Electrical \& Computer Engineering.
 
 % Signature lines/committee members
 \begin{center}
-    \begin{minipage}{3in}
-        \vspace*{0.25in}
-        THESIS COMMITTEE:\\
-        \vspace*{0.25in}
+    \begin{minipage}{4.5in}
+        \vspace*{0.35in}
         \hrule
         \vspace*{2pt}
         Jianhua Liu, Ph.D.\\
-        Committee Chairman\\
-        \vspace*{0.75in}
+        Committee Chairman \& Graduate Program Coordinator \\
+        \vspace*{0.5in}
         \hrule
         \vspace*{2pt}
         Prashant Shekhar, Ph.D.\\
         Committee Member\\
-        \vspace*{0.75in}
+        \vspace*{0.5in}
         \hrule
         \vspace*{2pt}
         Andrew Schneider\\
         Committee Member\\
-        \vspace*{0.75in}
+        \vspace*{0.5in}
         \hrule
         \vspace*{2pt}
         Massood Towhidnejad, Ph.D.\\
         Department Chair, Electrical Engineering \& Computer Science\\
-        \vspace*{0.75in}
+        \vspace*{0.5in}
         \hrule
         \vspace*{2pt}
-        Associate Vice President for Academics
+        James Gregory, Ph.D.\\
+        Dean, College of Engineering\\
+        \vspace*{0.5in}
+        \hrule
+        \vspace*{2pt}
+        Christopher D.~Grant, Ph.D.\\
+        Vice Provost of Academic Support\\
     \end{minipage}
 \end{center}
 \newpage
@@ -185,9 +189,9 @@ the model for downstream tasks. Recommended best practice is to use a pre-existi
 \cite{devlin_bert_2019,liu_roberta_2019,lewis_bart_2019}, although recent work suggests that if domains are sufficiently different, the performance
 of the fine-tuned model will be limited \cite{yadlowsky_pretraining_2023}. The main point of comparison in this thesis will be the performance of
 pretrained models fine-tuned on in-domain (aviation) data and models trained from scratch on in-domain data. The experiments and results presented in
-this thesis are preliminary applications of end-to-end deep learning solutions to ASR and NLP problems in aviation. The intention is for this work to
-provide knowledge and possibly checkpoints for the ASR and language models which can be used for downstream tasks such as callsign detection and beam
-search prediction decoding for ASR models.
+this thesis are preliminary applications of end-to-end deep learning solutions to Automatic Speech Recognition (ASR) and Natural Language Processing
+(NLP) problems in aviation. The intention is for this work to provide knowledge and possibly checkpoints for the ASR and language models which can be
+used for downstream tasks such as callsign detection and beam search prediction decoding for ASR models.
 
 \subsection{Notation \& Terminology}
 This section is included for the sake of clarity throughout this thesis. In pursuit of that, a few terms and notations are defined below.
@@ -253,7 +257,7 @@ al.~\cite{liu_roberta_2019} by training longer, with larger batch sizes, and rem
 \begin{figure}[!t]
     \centering
     \includegraphics[width=0.5\linewidth]{figures/transformer_arch.png}
-    \caption{The transformer neural network architecture. Copied from Vaswani et al.~\cite{vaswani_attention_2017}}
+    \caption{The transformer neural network architecture. Copied from page 3 of Vaswani et al.~\cite[Fig. 1]{vaswani_attention_2017}}
     \label{fig:transformer_arch}
 \end{figure}
 
@@ -827,9 +831,9 @@ time step. The most commonly used language model for these types of decoding met
 \lstinline|BeamSearchDecoderWithLM| \cite{kuchaiev_nemo_2019} use to decode predictions. The purpose of language models in beam search decoding
 algorithms is to estimate the likelihood of the decoded sequence occurring based on the language models' knowledge of sequence structures. The beam
 search algorithm is then used to select tokens to maximize the likelihood of the
-sequence occurring. As mentioned above in Section \ref{sec:ngram}, N-grams are left-associative language models (assuming the model is being
-applied to the English language in this case), which is an inherently limiting factor. A neural language model capable of representing sequences
-bidirectionally, such as those covered in this work, is a significantly more robust method of language modeling in speech recognition and has been
+sequence occurring. N-grams are left-associative language models (see Section \ref{sec:ngram}; assuming the model is being applied to the English
+language in this case), which is an inherently limiting factor. A neural language model capable of representing sequences bidirectionally, such as
+those covered in this work, is a significantly more robust method of language modeling in speech recognition and has been
 used in the past to improve word error rates \cite{kriman_quartznet_2020,majumdar_citrinet_2021}. At least one instance of a deep learning-based
 language model being used for beam search decoding in aviation applications. However, it did not perform well, likely due to the small size of the
 dataset that it was trained on \cite{pellegrini_airbus_2019}. In the next section, the language model architectures, experiments, and results are defined
@@ -1198,7 +1202,21 @@ following considerations to reduce the computational complexity:
     \item Only modify language model counts for the affected entries
 \end{itemize}
 
-Table \ref{tab:wordpiece_tokenization_example}, below, shows an example of a WordPiece tokenizer model output on a sentence that was seen during the training procedure (trained on the same data as the WordLevel tokenizer in Section \ref{sec:wordlevel}). Since this sentence was in the training data, the segmentation is identical to that of the WordLevel tokenizer in Table \ref{tab:wordlevel_tokenization_example}, however, tokenization of similar words (e.g.~words with shared roots or similar contractions) are handled differently, as in Table \ref{tab:wordpiece_tokenization_shared_roots_example}. Since each word has a shared root word in the contractions (as well as an apostrophe separating the contraction), the tokenizer segments each word and represents them as groups of small, more common tokens (thus with higher probabilities of occurring). Additionally, the WordPiece algorithm effectively handles OOV words. For example, the OOV tokens in Table \ref{tab:wordpiece_unk_word_similar}, with a shared root and similar contractions as those in Table \ref{tab:wordpiece_tokenization_shared_roots_example}, which appear in the training data. The base of the contraction, ``you'', occurs in the training data and the apostrophe in the contraction, so the tokenizer segments those parts of the word as tokens. The last part of the word, ``ll'', does not appear at all in the training data, so it is broken down into its component characters, which are represented as ``l'' (beginning of a word) and ``\#\#l'' (segmented part of a word that should be concatenated to the previous token when they are recombined). Comparing this to the output of the WordLevel tokenizer on the same word in Table \ref{tab:wordlevel_unk_word}, the WordPiece algorithm effectively addresses the OOV problem for words similar to those in the training corpus and, according to the output of the WordPiece tokenizer in Table \ref{tab:wordpiece_unk_word}, for words unlike those in the training corpus.
+Table \ref{tab:wordpiece_tokenization_example} shows an example of a WordPiece tokenizer model output on a sentence that was seen during the training
+procedure (trained on the same data as the WordLevel tokenizer in Section \ref{sec:wordlevel}). Since this sentence was in the training data, the
+segmentation is identical to that of the WordLevel tokenizer in Table \ref{tab:wordlevel_tokenization_example}, however, tokenization of similar
+words (e.g.~words with shared roots or similar contractions) are handled differently, as in Table
+\ref{tab:wordpiece_tokenization_shared_roots_example}. Since each word has a shared root word in the contractions (as well as an apostrophe separating
+the contraction), the tokenizer segments each word and represents them as groups of small, more common tokens (thus with higher probabilities of
+occurring). Additionally, the WordPiece algorithm effectively handles OOV words. For example, the OOV tokens in Table
+\ref{tab:wordpiece_unk_word_similar}, with a shared root and similar contractions as those in Table
+\ref{tab:wordpiece_tokenization_shared_roots_example}, which appear in the training data. The base of the contraction, ``you'', occurs in the training
+data and the apostrophe in the contraction, so the tokenizer segments those parts of the word as tokens. The last part of the word, ``ll'', does not
+appear at all in the training data, so it is broken down into its component characters, which are represented as ``l'' (beginning of a word) and
+``\#\#l'' (segmented part of a word that should be concatenated to the previous token when they are recombined). Comparing this to the output of the
+WordLevel tokenizer on the same word in Table \ref{tab:wordlevel_unk_word}, the WordPiece algorithm effectively addresses the OOV problem for words
+similar to those in the training corpus and, according to the output of the WordPiece tokenizer in Table \ref{tab:wordpiece_unk_word}, for words
+unlike those in the training corpus.
 
 \begin{table}[!t]
     \centering
@@ -1637,7 +1655,7 @@ proposed and explored in Section \ref{sec:results_comparison}.
 
 \subsubsection{Comparison of Results}\label{sec:results_comparison}
 Both classes of models (scratch and pretrained) quickly reach a steady state in terms of loss on the training partition of the corpus, although the
-initial loss values are significantly different. Notably, the pretrained models start with a considerably lower loss, about 1.3, compared to the
+initial loss values are considerably different. Notably, the pretrained models start with a considerably lower loss, about 1.3, compared to the
 models trained from scratch, which began with a loss value of just over 5.0. This indicates that the models are training well and starting to converge
 on local or global minima. Although, as the graphs of the loss on the validation partition show, the models are quickly overfitting to the training
 data, causing the models to begin performing poorly the validation data, which is not seen by the model during training.
@@ -1645,7 +1663,7 @@ data, causing the models to begin performing poorly the validation data, which i
 Based on the trends exhibited by the cross-entropy loss of the models on the training and validation data, we would expect to see similar trends with
 the perplexity on the training and validation partitions. However, the perplexity of the models on the training and validation data yields interesting
 and somewhat unexpected results. Although the pretrained models have a more stable curve over time, the models trained from scratch result in a
-significantly lower perplexity. The final perplexity values (over the training set) of the models trained from scratch were markedly better than that
+lower perplexity. The final perplexity values (over the training set) of the models trained from scratch were markedly better than that
 of the pretrained models. At the end of training, the BERT and RoBERTa models trained from scratch had perplexity values of $0.52\times 10^7$ and
 $0.16\times 10^7$, respectively, whereas the pretrained models reached perplexity values of $0.29\times 10^9$ and $0.17\times 10^9$, for BERT and
 RoBERTa, respectively. Using the following equation
